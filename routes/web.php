@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Models\Place;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+
+    print_r(Place::where('id',12)->get());
 });
