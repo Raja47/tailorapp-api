@@ -14,6 +14,6 @@ use App\Models\Place;
 */
 
 Route::get('/', function () {
-
-    print_r(Place::where('id',12)->get());
+     
+        echo "helo";
 });
