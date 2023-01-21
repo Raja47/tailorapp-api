@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Place;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,7 +14,8 @@ use App\Models\Place;
 |
 */
 
-Route::get('/', function () {
-     
-        echo "helo";
+//web.php
+Route::fallback(function () {
+    return abort(404); //default 404
 });
+
