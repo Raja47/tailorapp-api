@@ -34,11 +34,12 @@ class CreateTailorsTable extends Migration
             $table->string('email' , 99)->nullable();
             $table->string('password')->nullable();
             $table->string('username' , 99)->unique();
+            $table->string('picture' , 255)->nullable();
             $table->tinyInteger('country_id')->nullable();
             $table->tinyInteger('city_id')->nullable();
             $table->string('address')->nullable();
             $table->string('tailorNumber')->nullable();
-            $table->tinyInteger('servicesToGender')->default(0);
+            $table->tinyInteger('servicesToGender')->nullable()->default(0);
             $table->tinyInteger('status')->default(1);
             $table->json('attributes')->nullable();
             $table->softDeletes();
