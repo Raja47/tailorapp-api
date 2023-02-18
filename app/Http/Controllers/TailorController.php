@@ -33,7 +33,7 @@ class TailorController extends Controller
     {
         $validation = Validator::make( $request->all() ,[
             'tailorName'    => 'required|max:255',
-            'password'      => 'required|min:6|max:12',
+            'password'      => 'required|min:4|max:12',
             'username'      => 'required|unique:tailors|max:99',
             'tailorNumber'  => 'required|unique:tailors|max:15'
         ]);
@@ -52,7 +52,6 @@ class TailorController extends Controller
         $tailor->city_id = $request->input('city_id');
         $tailor->address = $request->input('address');
         $tailor->servicesToGender = $request->input('servicesToGender');
-        $tailor->picture = $request->input('picture');
         $tailor->status = $request->input('status');
         $tailor->save();
         
