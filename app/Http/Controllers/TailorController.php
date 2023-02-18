@@ -44,16 +44,16 @@ class TailorController extends Controller
         } 
         // validation passed
         $tailor = new Tailor();
-        $tailor->tailorName = $request->input('tailorName');
-        $tailor->password = $request->input('password');
-        $tailor->username = $request->input('username');
-        $tailor->tailorNumber = $request->input('tailorNumber');
-        $tailor->country_id = $request->input('country_id');
-        $tailor->city_id = $request->input('city_id');
-        $tailor->address = $request->input('address');
-        $tailor->servicesToGender = $request->input('servicesToGender');
-        $tailor->status = $request->input('status');
-        $tailor->save();
+        $tailor->tailorName         = $request->input('tailorName');
+        $tailor->password           = $request->input('password');
+        $tailor->username           = $request->input('username');
+        $tailor->tailorNumber       = $request->input('tailorNumber');
+        $tailor->picture            = $request->input('picture');
+        $tailor->country_id         = $request->input('country_id');
+        $tailor->city_id            = $request->input('city_id');
+        $tailor->address            = $request->input('address');
+        $tailor->servicesToGender   = $request->input('servicesToGender');
+        $tailor->status             = $request->input('status');
         
         if($tailor->save()){
             // Tailor is created

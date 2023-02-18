@@ -40,7 +40,7 @@ class CreateTailorsTable extends Migration
             $table->string('address')->nullable();
             $table->string('tailorNumber')->nullable();
             $table->tinyInteger('servicesToGender')->nullable()->default(0);
-            $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('status')->nullable()->default(1);
             $table->json('attributes')->nullable();
             $table->softDeletes();
             $table->unsignedBigInteger('deleted_by')->nullable();
