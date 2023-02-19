@@ -85,7 +85,7 @@ class TailorController extends Controller
             return response()->json(['success' => true  ,'message' => '' , 'data' => ['tailor' => $tailor->toArray() ] ] , 200);     
         }
 
-        return response()->json(['success' => true  ,'message' => '' , 'data' => ['tailor' => $tailor->toArray() ] ] , 200);
+        return response()->json(['success' => true  ,'message' => '' , 'data' => [] ] , 200);
 
     }
 
