@@ -30,20 +30,18 @@ class CreateTailorsTable extends Migration
          */
         Schema::create('tailors', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('tailorName' , 99);
+            $table->string('name' , 99);
             $table->string('email' , 99)->nullable();
-            $table->string('password')->nullable();
             $table->string('username' , 99)->unique();
+            $table->string('number' , 99)->unique();
+            $table->string('password')->nullable();
             $table->string('picture' , 255)->nullable();
             $table->tinyInteger('country_id')->nullable();
             $table->tinyInteger('city_id')->nullable();
-            $table->string('address')->nullable();
-            $table->string('tailorNumber')->nullable();
-            $table->tinyInteger('servicesToGender')->nullable()->default(0);
             $table->tinyInteger('status')->nullable()->default(1);
             $table->json('attributes')->nullable();
-            $table->softDeletes();
             $table->unsignedBigInteger('deleted_by')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

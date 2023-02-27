@@ -11,5 +11,11 @@ class Tailor extends Model
 
     protected $table = 'tailors';
     
-    
+     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function shops()
+    {
+        return $this->hasMany(\App\Models\Shop::class, 'tailor_id');
+    }
 }
