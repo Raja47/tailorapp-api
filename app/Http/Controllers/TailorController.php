@@ -32,10 +32,10 @@ class TailorController extends Controller
     public function store(Request $request)
     {
         $validation = Validator::make( $request->all() ,[
-            'tailorName'    => 'required|max:255',
-            'password'      => 'required|min:4|max:12',
-            'username'      => 'required|unique:tailors|max:99',
-            'tailorNumber'  => 'required|unique:tailors|max:15'
+            'name'     => 'required|max:255',
+            'password' => 'required|min:4|max:12',
+            'username' => 'required|unique:tailors|max:99',
+            'number'   => 'required|unique:tailors|max:15'
         ]);
 
         if($validation->fails()) {
@@ -44,15 +44,15 @@ class TailorController extends Controller
         } 
         // validation passed
         $tailor = new Tailor();
-        $tailor->tailorName         = $request->input('tailorName');
+        $tailor->name               = $request->input('name');
         $tailor->password           = $request->input('password');
         $tailor->username           = $request->input('username');
-        $tailor->tailorNumber       = $request->input('tailorNumber');
+        $tailor->number             = $request->input('number');
         $tailor->picture            = $request->input('picture');
         $tailor->country_id         = $request->input('country_id');
         $tailor->city_id            = $request->input('city_id');
         $tailor->address            = $request->input('address');
-        $tailor->servicesToGender   = $request->input('servicesToGender');
+        $tailor->services_to_gender = $request->input('services_to_gender');
         $tailor->status             = $request->input('status');
         
         if($tailor->save()){
@@ -76,9 +76,9 @@ class TailorController extends Controller
             return response()->json(['success' => false  ,'message' => 'Search Criteria failed' , 'data' => [] ] , 422);
         }
 
-        $tailorNumber = $request->input('tailorNumber');
+        $tailorNumber = $request->input('number');
 
-        $tailor = Tailor::where('tailorNumber' , $tailorNumber)->first();
+        $tailor = Tailor::where('number' , $tailorNumber)->first();
         
         if( !empty($tailor) ) 
         {
@@ -100,8 +100,8 @@ class TailorController extends Controller
     {   
 
         $validation = Validator::make( $request->all() ,[
-            'password'      => 'required',
-            'tailorNumber'  => 'required'
+            'password' => 'required',
+            'number'  => 'required'
         ]);
 
         if($validation->fails()) {
@@ -111,10 +111,10 @@ class TailorController extends Controller
         
        
 
-        $tailorNumber = $request->input('tailorNumber');
+        $tailorNumber = $request->input('number');
         $password = $request->input('password');
 
-        $tailor = Tailor::where('tailorNumber' , $tailorNumber)->where('password' ,$password)->first();
+        $tailor = Tailor::with('shops')->where('number' , $tailorNumber)->where('password' ,$password)->first();
         
         if( empty($tailor) ) 
         {
@@ -137,7 +137,7 @@ class TailorController extends Controller
     {
         $validation = Validator::make( $request->all() ,[
             'password'      => 'required',
-            'tailorNumber'  => 'required|min:6|max:12'
+            'number'  => 'required|min:6|max:12'
         ]);
 
         if($validation->fails()) {
@@ -145,10 +145,10 @@ class TailorController extends Controller
             return response()->json(['success' => false  ,'message' => 'Validation failed' , 'data' => $validation->errors() ] , 422);
         } 
         
-        $tailorNumber = $request->input('tailorNumber');
+        $tailorNumber = $request->input('number');
         $password = $request->input('password');
 
-        $tailor = Tailor::where('tailorNumber' , $tailorNumber)->first();
+        $tailor = Tailor::where('number' , $tailorNumber)->first();
         
         if( !empty($tailor) ) 
         {
