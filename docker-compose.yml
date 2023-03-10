@@ -44,7 +44,7 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
-      - dbdata:/var/lib/mysql
+      - /home/rk/db:/var/lib/mysql
       - ./mysql/my.cnf/:/etc/mysql/my.cnf 
     networks:
       - tailorapp-network
