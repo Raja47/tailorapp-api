@@ -65,6 +65,4 @@ networks:
   tailorapp-network:
     driver: bridge
 
-volumes:
-  dbdata:
-    driver: local
+
