@@ -52,7 +52,7 @@ class TailorController extends Controller
         $tailor->country_id         = $request->input('country_id');
         $tailor->city_id            = $request->input('city_id');
         // $tailor->address            = $request->input('address');
-        $tailor->services_to_gender = $request->input('services_to_gender');
+        // $tailor->services_to_gender = $request->input('services_to_gender');
         $tailor->status             = $request->input('status');
         
         if($tailor->save()){
