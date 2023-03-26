@@ -150,7 +150,7 @@ class TailorController extends Controller
 
         $tailor = Tailor::where('number' , $tailorNumber)->first();
         
-        if( !empty($tailor) ) 
+        if( empty($tailor) ) 
         {
             return response()->json(['success' => false  ,'message' => 'Incorrect Mobile number password' , 'data' => [] ] , 200);     
         }
