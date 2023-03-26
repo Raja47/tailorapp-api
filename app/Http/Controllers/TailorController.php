@@ -118,7 +118,7 @@ class TailorController extends Controller
         
         if( empty($tailor) ) 
         {
-            return response()->json(['success' => true  ,'message' => 'Incorrect Mobile number password' , 'data' => [] ] , 200);     
+            return response()->json(['success' => false  ,'message' => 'Incorrect Mobile number password' , 'data' => [] ] , 200);     
         }
 
         return response()->json(['success' => true  ,'message' => '' , 'data' => ['tailor' => $tailor->toArray() ] ] , 200);
@@ -133,7 +133,7 @@ class TailorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function changePassword(Request $request, $id)
+    public function changePassword(Request $request)
     {
         $validation = Validator::make( $request->all() ,[
             'password'      => 'required',
@@ -152,7 +152,7 @@ class TailorController extends Controller
         
         if( !empty($tailor) ) 
         {
-            return response()->json(['success' => true  ,'message' => 'Incorrect Mobile number password' , 'data' => [] ] , 200);     
+            return response()->json(['success' => false  ,'message' => 'Incorrect Mobile number password' , 'data' => [] ] , 200);     
         }
 
         $tailor->password = $password;
