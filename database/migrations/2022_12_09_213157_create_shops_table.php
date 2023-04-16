@@ -18,7 +18,6 @@ class CreateShopsTable extends Migration
          * id Integer not Null Primary Key AutoIncrement,
             external_id Integer not Null Unique,
             name Text,
-            identifier Text Unique null
             address Text Default Null,
             contact_number  String Not Null,
             contact_number2  String Default Null,
@@ -35,7 +34,6 @@ class CreateShopsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('tailor_id')->index();
             $table->string('name' , 99);
-            $table->string('identifier' , 99)->unique();
             $table->integer('country_id')->nullable();
             $table->integer('city_id')->index()->nullable();
             $table->string('contact_number')->nullable();

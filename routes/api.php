@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\TailorController;
+use App\Http\Controllers\ShopController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,10 +17,16 @@ use Illuminate\Support\Facades\Route;
 */
 Route::group(['prefix' => '/tailors' ], function ($router) {
     $router->get('/index',[ TailorController::class , 'index' ]);
-    $router->post('/store',[ TailorController::class , 'store' ]);
     $router->get('/search',[ TailorController::class , 'search' ]);
+    $router->post('/store',[ TailorController::class , 'store' ]);
     $router->post('/login',[ TailorController::class , 'login' ]); 
-    $router->post('/changePassword',[ TailorController::class , 'changePassword' ]); 
+    $router->post('/changePassword',[ TailorController::class , 'changePassword' ]);
+    $router->post('/shops', [ ShopController::class , '']);
+});
+
+Route::group(['prefix' => '/shops' ], function ($router) {
+    $router->post('/store',[ ShopController::class , 'store' ]);
+    $router->post('/update',[ShopController::class , 'update'] );
 });
 
 
