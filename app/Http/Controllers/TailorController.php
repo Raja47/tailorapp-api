@@ -118,7 +118,7 @@ class TailorController extends Controller
         
         if( empty($tailor) ) 
         {
-            return response()->json(['success' => false  ,'message' => 'Incorrect Mobile number password' , 'data' => [] ] , 200);     
+            return response()->json(['success' => false  ,'message' => 'Incorrect Mobile number password' , 'data' => [] ] , 422);     
         }
 
         return response()->json(['success' => true  ,'message' => '' , 'data' => ['tailor' => $tailor->toArray() ] ] , 200);
