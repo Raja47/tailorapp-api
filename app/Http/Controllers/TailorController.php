@@ -71,7 +71,7 @@ class TailorController extends Controller
      */
     public function search(Request $request) 
     {
-        if( empty($request->all()) )
+        if( empty($request->input('number')) )
         {
             return response()->json(['success' => false  ,'message' => 'Search Criteria failed' , 'data' => [] ] , 422);
         }
@@ -85,7 +85,7 @@ class TailorController extends Controller
             return response()->json(['success' => true  ,'message' => '' , 'data' => ['tailor' => $tailor->toArray() ] ] , 200);     
         }
 
-        return response()->json(['success' => true  ,'message' => '' , 'data' => [] ] , 200);
+        return response()->json(['success' => false  ,'message' => '' , 'data' => [] ] , 422);
 
     }
 
