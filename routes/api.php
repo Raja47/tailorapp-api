@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::group(['prefix' => '/tailors' ], function ($router) {
     $router->get('/index',[ TailorController::class , 'index' ]);
-    $router->get('/search',[ TailorController::class , 'search' ]);
+    $router->post('/search',[ TailorController::class , 'search' ]);
     $router->post('/store',[ TailorController::class , 'store' ]);
     $router->post('/login',[ TailorController::class , 'login' ]); 
     $router->post('/changePassword',[ TailorController::class , 'changePassword' ]);
