@@ -137,7 +137,7 @@ class TailorController extends Controller
     {
         $validation = Validator::make( $request->all() ,[
             'password'      => 'required',
-            'number'  => 'required|min:6|max:12'
+            'number'  => 'required|min:10|max:15'
         ]);
 
         if($validation->fails()) {

@@ -21,10 +21,10 @@ Route::group(['prefix' => '/tailors' ], function ($router) {
     $router->post('/store',[ TailorController::class , 'store' ]);
     $router->post('/login',[ TailorController::class , 'login' ]); 
     $router->post('/changePassword',[ TailorController::class , 'changePassword' ]);
-    $router->post('/shops', [ ShopController::class , '']);
 });
 
 Route::group(['prefix' => '/shops' ], function ($router) {
+    $router->post('/index',[ ShopController::class , 'index' ]);
     $router->post('/store',[ ShopController::class , 'store' ]);
     $router->post('/update',[ShopController::class , 'update'] );
 });
