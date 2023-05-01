@@ -36,7 +36,7 @@ class CreateTailorsTable extends Migration
             $table->string('number' , 99)->unique();
             $table->string('password')->nullable();
             $table->string('picture' , 255)->nullable();
-            $table->tinyInteger('country_id')->nullable();
+            $table->string('country_code')->nullable();
             $table->tinyInteger('city_id')->nullable();
             $table->tinyInteger('status')->nullable()->default(1);
             $table->json('attributes')->nullable();

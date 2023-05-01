@@ -49,7 +49,7 @@ class TailorController extends Controller
         $tailor->username           = $request->input('username');
         $tailor->number             = $request->input('number');
         $tailor->picture            = $request->input('picture');
-        $tailor->country_id         = $request->input('country_id');
+        $tailor->country_code       = $request->input('country_code');
         $tailor->city_id            = $request->input('city_id');
         // $tailor->address            = $request->input('address');
         // $tailor->services_to_gender = $request->input('services_to_gender');

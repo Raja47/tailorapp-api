@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Shop;
+use App\Models\Tailor;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Validator;
 
@@ -46,11 +47,18 @@ class ShopController extends Controller
             // validation failed
             return response()->json(['success' => false  ,'message' => 'Shop Validation Error' , 'data' => $validation->errors() ] , 422);
         } 
+
+        $tailor = Tailor::where('id', $request->input('tailor_id'))->first();
+
+        if( empty($tailor) ){
+            return response()->json(['success' => false , 'message' => 'Associated Tailor not found' , 'data' => [] ] , 200);
+        }
         // validation passed
         $shop = new Shop();
         $shop->tailor_id            = $request->input('tailor_id');
         $shop->name                 = $request->input('name');
         $shop->contact_number       = $request->input('contact_number');
+        $shop->country_code         = $tailor->country_code;
         $shop->contact_number2      = $request->input('contact_number2');
         $shop->address              = $request->input('address');
         $shop->picture              = $request->input('picture');
@@ -60,7 +68,7 @@ class ShopController extends Controller
             // Tailor is created
             return response()->json(['success' => true , 'message' => 'Shop Created Successfully' , 'data' => ['id' => $shop->id ] ] , 200);
         }else{
-            return response()->json(['success' => false , 'message' => 'Shop creation failed' , 'data' => [] ] , 200);
+            return response()->json(['success' => false , 'message' => 'Shop creation failed' , 'data' => [] ] , 422);
         }     
     }   
 
