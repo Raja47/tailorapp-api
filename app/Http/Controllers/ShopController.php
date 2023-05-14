@@ -39,7 +39,7 @@ class ShopController extends Controller
             'contact_number2'   => 'max:12',
             'address'           => 'required',
             'picture'           => '',
-            'city_id'           => '',
+            'city_name'           => '',
             'services_to_gender'=> '',
         ]);
 
@@ -60,6 +60,7 @@ class ShopController extends Controller
         $shop->contact_number       = $request->input('contact_number');
         $shop->country_code         = $tailor->country_code;
         $shop->contact_number2      = $request->input('contact_number2');
+        $shop->city_name            = $request->input('city_name');
         $shop->address              = $request->input('address');
         $shop->picture              = $request->input('picture');
         $shop->services_to_gender   = $request->input('services_to_gender');
@@ -101,17 +102,17 @@ class ShopController extends Controller
             $shop->contact_number2      = $request->input('contact_number2');
             $shop->address              = $request->input('address');
             $shop->picture              = $request->input('picture');
-            $shop->city_id              = $request->input('city_id');
+            $shop->city_name              = $request->input('city_name');
             $shop->services_to_gender   = $request->input('services_to_gender') ;
         }else{
-            return response()->json(['success' => false , 'message' => 'Shop creation failed' , 'data' => [] ] , 422);        
+            return response()->json(['success' => false , 'message' => 'Shop not found' , 'data' => [] ] , 422);        
         }
         
         if($shop->save()){
             // Tailor is created
-            return response()->json(['success' => true , 'message' => 'Shop Created Successfully' , 'data' => ['id' => $shop->id ] ] , 200);
+            return response()->json(['success' => true , 'message' => 'Shop Updated Successfully' , 'data' => ['id' => $shop->id ] ] , 200);
         }else{
-            return response()->json(['success' => false , 'message' => 'Shop creation failed' , 'data' => [] ] , 422); 
+            return response()->json(['success' => false , 'message' => 'Shop Updation failed' , 'data' => [] ] , 422); 
         }     
     }  
 

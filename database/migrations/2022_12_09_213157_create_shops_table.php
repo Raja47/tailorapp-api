@@ -35,7 +35,7 @@ class CreateShopsTable extends Migration
             $table->integer('tailor_id')->index();
             $table->string('name' , 99);
             $table->string('country_code')->nullable();
-            $table->integer('city_id')->index()->nullable();
+            $table->integer('city_name')->nullable();
             $table->string('contact_number')->nullable();
             $table->string('contact_number2')->nullable();
             $table->string('address')->nullable();
