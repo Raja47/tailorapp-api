@@ -14,6 +14,13 @@ use App\Models\Place;
 |
 */
 
+Route::get('/' , function (){
+    return view("index");
+});
+
+
+
+
 //web.php
 Route::fallback(function () {
     return abort(404); //default 404
