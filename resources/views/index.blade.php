@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Applight Template By W3 Template</title>
+<title>TailorInch</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
 <link rel="stylesheet" href="{{ URL::to('/') }}/css/animate.css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
@@ -24,7 +24,7 @@
         <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="1">About</a> </li>
         <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="2">Features</a> </li>
         <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="3">Team</a> </li>
-        <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="4">Testimonials</a> </li>
+        <!-- <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="4">Testimonials</a> </li> -->
         <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="5">Faq</a> </li>
         <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="6">Contact</a> </li>
       </ul>
@@ -39,11 +39,11 @@
       <div class="row">
         <div class="col-md-8 col-sm-12">
           <div class="banner-text">
-            <h2 class="white">Best App Website Template</h2>
-            <h6 class="white">This awesome template designed by <a href="http://w3Template.com" target="_blank" rel="dofollow" class="weblink">W3 Template</a>.</h6>
-            <p class="banner-text white">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur hendrerit neque massa, sit amet tristique ante porta ut. In sodales et justo vel vulputate. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+            <h2 class="white">Tailoring Management Platform</h2>
+            <!-- <h6 class="white">This awesome template designed by <a href="http://w3Template.com" target="_blank" rel="dofollow" class="weblink">W3 Template</a>.</h6> -->
+            <p class="banner-text white">The all-in-one tool for tailors. Manage customers, orders, measurements, and shop tasks seamlessly. Elevate your tailoring business effortlessly.</p>
             <ul>
-              <li><a href="#"><img src= "{{ URL::to('/') }}/images/appstore.png" class="wow fadeInUp" data-wow-delay="0.4s"/></a></li>
+              <li><a href="#"><img src="{{ URL::to('/') }}/images/appstore.png" class="wow fadeInUp" data-wow-delay="0.4s"/></a></li>
               <li><a href="#"><img src="{{ URL::to('/') }}/images/playstore.png" class="wow fadeInUp" data-wow-delay="0.7s"/></a></li>
             </ul>
           </div>
@@ -52,7 +52,7 @@
       </div>
     </div>
   </div>
-  <span class="svg-wave"> <img class="svg-hero" src="{{ URL::to('/') }}/images/applight-wave.svg"> </span> </section>
+  <span class="svg-wave"> <img class="svg-hero" width="100%" src="{{ URL::to('/') }}/images/applight-wave.svg"> </span> </section>
 
 <!-------Banner End-------> 
 
@@ -65,30 +65,30 @@
         <div class="sectioner-header text-center">
           <h3>About</h3>
           <span class="line"></span>
-          <p>Sed quis nisi nisi. Proin consectetur porttitor dui sit amet viverra. Fusce sit amet lorem faucibus, vestibulum ante in, pharetra ante.</p>
+          <p>Empowering Tailors to Streamline Operations Effortlessly</p>
         </div>
         <div class="section-content text-center">
           <div class="row">
             <div class="col-md-4">
               <div class="icon-box wow fadeInUp" data-wow-delay="0.2s"> <i class="fa fa-life-ring" aria-hidden="true"></i>
                 <h5>Support</h5>
-                <p>Phasellus lobortis justo a magna facilisis, in commodo tellus rutrum. Sed vitae condimentum nulla.</p>
+                <p>Experience dedicated assistance and guidance whenever you need it. Our responsive support ensures you're never alone in managing your tailor shop efficiently.</p>
               </div>
             </div>
             <div class="col-md-4">
               <div class="icon-box wow fadeInUp" data-wow-delay="0.4s"> <i class="fa fa-mobile" aria-hidden="true"></i>
                 <h5>Cross Platform</h5>
-                <p>Phasellus lobortis justo a magna facilisis, in commodo tellus rutrum. Sed vitae condimentum nulla.</p>
+                <p>Access StitchWise from any device, anywhere. Enjoy the flexibility and convenience of a platform that adapts to your needs.</p>
               </div>
             </div>
             <div class="col-md-4">
               <div class="icon-box wow fadeInUp" data-wow-delay="0.6s"> <i class="fa fa-bolt" aria-hidden="true"></i>
                 <h5>Fast</h5>
-                <p>Phasellus lobortis justo a magna facilisis, in commodo tellus rutrum. Sed vitae condimentum nulla.</p>
+                <p>Swift, intuitive, and efficient. StitchWise is designed to optimize your workflow, ensuring a speedy and seamless experience in managing your tailoring tasks.</p>
               </div>
             </div>
           </div>
-          <a href="#" class="about-btn">Learn More</a> </div>
+          <!-- <a href="#" class="about-btn">Learn More</a> </div> -->
       </div>
     </div>
   </div>
@@ -121,29 +121,29 @@
         <div class="sectioner-header text-center">
           <h3>Features</h3>
           <span class="line"></span>
-          <p>Sed quis nisi nisi. Proin consectetur porttitor dui sit amet viverra. Fusce sit amet lorem faucibus, vestibulum ante in, pharetra ante.</p>
+          <p>Elevating tailors' operations with a suite of seamless, integrated features.</p>
         </div>
         <div class="section-content text-center">
           <div class="row">
             <div class="col-md-4 col-sm-12">
               <div class="media single-feature wow fadeInUp" data-wow-delay="0.2s">
                 <div class="media-body text-right media-right-margin">
-                  <h5>Fast Processing</h5>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididugnt ut labore</p>
+                  <h5>Customer Management</h5>
+                  <p>Efficiently add, organize, and maintain customer profiles, keeping track of preferences and order history.</p>
                 </div>
                 <div class="media-right icon-border"> <span class="fa fa-bolt" aria-hidden="true"></span> </div>
               </div>
               <div class="media single-feature wow fadeInUp" data-wow-delay="0.4s">
                 <div class="media-body text-right media-right-margin">
-                  <h5>Low Power Consuming</h5>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididugnt ut labore</p>
+                  <h5>Order and Dress Tracking</h5>
+                  <p>Seamlessly manage dress orders, track progress, and monitor the status of each garment in production.</p>
                 </div>
                 <div class="media-right icon-border"> <span class="fa fa-battery-full" aria-hidden="true"></span> </div>
               </div>
               <div class="media single-feature wow fadeInUp" data-wow-delay="0.6s">
                 <div class="media-body text-right media-right-margin">
-                  <h5>Wifi Compatibility</h5>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididugnt ut labore</p>
+                  <h5>Measurements Repository</h5>
+                  <p>Store precise measurements securely, ensuring accuracy and consistency for every customer order.</p>
                 </div>
                 <div class="media-right icon-border"> <span class="fa fa-wifi" aria-hidden="true"></span> </div>
               </div>
@@ -155,22 +155,22 @@
               <div class="media single-feature wow fadeInUp" data-wow-delay="0.2s">
                 <div class="media-left icon-border media-right-margin"> <span class="fa fa-check-double" aria-hidden="true"></span> </div>
                 <div class="media-body text-left">
-                  <h5>Regular Updates</h5>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididugnt ut labore</p>
+                  <h5>Shop Administration</h5>
+                  <p>Simplify shop management tasks, including inventory tracking, appointment scheduling, and financial management.</p>
                 </div>
               </div>
               <div class="media single-feature wow fadeInUp" data-wow-delay="0.4s">
                 <div class="media-left icon-border media-right-margin"> <span class="fa fa-dollar-sign" aria-hidden="true"></span> </div>
                 <div class="media-body text-left">
-                  <h5>Save Money</h5>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididugnt ut labore</p>
+                  <h5>Payment Tracking</h5>
+                  <p>Keep transparent records of payments received and outstanding, streamlining financial tracking.</p>
                 </div>
               </div>
               <div class="media single-feature wow fadeInUp" data-wow-delay="0.6s">
                 <div class="media-left icon-border media-right-margin"> <span class="fa fa-hdd" aria-hidden="true"></span> </div>
                 <div class="media-body text-left">
-                  <h5>Unlimited Storage</h5>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididugnt ut labore</p>
+                  <h5>Customization and Notifications</h5>
+                  <p>Personalize services and send automated notifications to customers about order status updates.</p>
                 </div>
               </div>
             </div>
@@ -190,26 +190,26 @@
         <div class="sectioner-header text-center">
           <h3>Our Team</h3>
           <span class="line"></span>
-          <p>Sed quis nisi nisi. Proin consectetur porttitor dui sit amet viverra. Fusce sit amet lorem faucibus, vestibulum ante in, pharetra ante.</p>
+          <p>Meet the Dedicated Innovators Behind <b>TailorInch</b> A passionate team committed to revolutionizing the tailor's experience through technology and expertise</p>
         </div>
         <div class="section-content text-center">
-          <div class="row">
-            <div class="col-md-4">
+          <div class="row" style='justify-content: center;'>
+            <!-- <div class="col-md-4">
               <div class="team-detail wow bounce" data-wow-delay="0.2s"> <img src="images/user1.jpg" class="img-fluid"/>
                 <h4>Nitu Singh</h4>
                 <p>Marketing Specialist</p>
               </div>
-            </div>
+            </div> -->
             <div class="col-md-4">
-              <div class="team-detail wow bounce" data-wow-delay="0.4s"> <img src="images/user2.jpg" class="img-fluid"/>
-                <h4>Yogesh Singh</h4>
-                <p>CEO & Founder</p>
+              <div class="team-detail wow bounce" data-wow-delay="0.4s"> <img src="images/user2.png" class="img-fluid"/>
+                <h4>Raja Ram</h4>
+                <p>Founder & Developer</p>
               </div>
             </div>
             <div class="col-md-4">
               <div class="team-detail wow bounce" data-wow-delay="0.6s"> <img src="images/user3.jpg" class="img-fluid"/>
-                <h4>Nisha Sharma</h4>
-                <p>Web Developer</p>
+                <h4>Waris Waheed</h4>
+                <p>Co-Founder & Developer</p>
               </div>
             </div>
           </div>
@@ -222,7 +222,7 @@
 <!-------Team End-------> 
 
 <!-------Testimonial Start------->
-<section class="testimonial section-padding" data-scroll-index='4'>
+<!-- <section class="testimonial section-padding" data-scroll-index='4'>
   <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -255,7 +255,7 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <!-------Testimonial End-------> 
 
@@ -267,33 +267,33 @@
         <div class="sectioner-header text-center">
           <h3>Frequently Asked Questions</h3>
           <span class="line"></span>
-          <p>Sed quis nisi nisi. Proin consectetur porttitor dui sit amet viverra. Fusce sit amet lorem faucibus, vestibulum ante in, pharetra ante.</p>
+          <p>Your comprehensive solution for tailoring management, offering seamless operations and empowering tailors to elevate their craft and business effortlessly.</p>
         </div>
         <div class="section-content">
           <div class="row">
             <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.2s">
-              <h4>Nam tellus felis, dignissim quis dui ?</h4>
-              <p>Suspendisse fermentum placerat enim, at pellentesque augue. Nullam elit est, ultricies et tellus ac, euismod placerat orci. Donec commodo.</p>
+              <h4>Is TailorInch suitable for both individual tailors and tailor shops?</h4>
+              <p>TailorInch caters to both individual tailors and larger establishments, offering customized solutions for various business sizes.</p>
             </div>
             <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.2s">
-              <h4>Mauris scelerisque, dui non faucibus vulputate ?</h4>
-              <p>Sed tempus in neque ac rhoncus. Phasellus vehicula, erat tempor malesuada egestas, mauris tellus malesuada erat, at vestibulum nulla ex et lectus. Nullam elit est, ultricies et tellus ac, euismod placerat orci.</p>
+              <h4>Can I access TailorInch from my smartphone and computer?</h4>
+              <p>Yes, TailorInch is accessible on multiple devices, ensuring flexibility and convenience in managing your tailoring tasks.</p>
             </div>
             <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.4s">
-              <h4>Nullam elit est, ultricies et tellus ac ?</h4>
-              <p>Ut vestibulum euismod aliquet. Quisque nec malesuada nibh. Vivamus euismod nunc eu leo faucibus, vel elementum justo posuere. In sed varius nisi. Curabitur id porta ipsum, et vestibulum dui.</p>
+              <h4>How secure is the customer data stored on TailorInch?</h4>
+              <p>Customer data security is paramount. TailorInch employs robust encryption and security measures to safeguard all information.</p>
             </div>
             <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.4s">
-              <h4>Suspendisse fermentum placerat enim, at pellentesque augue elit est ?</h4>
-              <p>Vivamus euismod nunc eu leo faucibus, vel elementum justo posuere. In sed varius nisi.</p>
+              <h4>Is there training available for using TailorInch effectively?</h4>
+              <p>Absolutely, TailorInch offers comprehensive guides and support to ensure users make the most of the platform's capabilities.</p>
             </div>
             <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.6s">
-              <h4>Ut vestibulum euismod aliquet. Quisque nec malesuada nibh ?</h4>
-              <p>Suspendisse fermentum placerat enim, at pellentesque augue. Nullam elit est, ultricies et tellus ac, euismod placerat orci. Donec commodo dapibus congue.</p>
+              <h4>Can I customize notifications and alerts for my customers?</h4>
+              <p>Yes, TailorInch allows personalized communication, enabling tailor-made notifications for your customers about their orders.</p>
             </div>
             <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.6s">
-              <h4>Donec commodo dapibus congue ?</h4>
-              <p>Nullam elit est, ultricies et tellus ac, euismod placerat orci fermentum placerat enim, at pellentesque augue. Nullam elit est, ultricies et tellus ac, euismod placerat orci. Donec commodo dapibus congue.</p>
+              <h4>What happens if I encounter issues while using TailorInch?</h4>
+              <p>TailorInch provides dedicated customer support via live chat, email, and comprehensive documentation to assist users promptly.</p>
             </div>
           </div>
         </div>
@@ -310,9 +310,9 @@
     <div class="row">
       <div class="col-md-12">
         <div class="sectioner-header text-center">
-          <h3>Contact us</h3>
+          <h3>Get in touch with TailorInch</h3>
           <span class="line"></span>
-          <p>Sed quis nisi nisi. Proin consectetur porttitor dui sit amet viverra. Fusce sit amet lorem faucibus, vestibulum ante in, pharetra ante.</p>
+          <p>We're here to answer your queries, provide assistance, and welcome your feedback for an optimized tailoring experience.</p>
         </div>
         <div class="section-content">
           <div class="row">
@@ -336,19 +336,19 @@
                 <div class="contact-item media"> <i class="fa fa-map-marker-alt media-left media-right-margin"></i>
                   <div class="media-body">
                     <p class="text-uppercase">Address</p>
-                    <p class="text-uppercase">New Delhi, India</p>
+                    <p class="text-uppercase">Karachi, Pakistan</p>
                   </div>
                 </div>
                 <div class="contact-item media"> <i class="fa fa-mobile media-left media-right-margin"></i>
                   <div class="media-body">
                     <p class="text-uppercase">Phone</p>
-                    <p class="text-uppercase"><a class="text-white" href="tel:+15173977100">009900990099</a> </p>
+                    <p class="text-uppercase"><a class="text-white" href="tel:+15173977100">+92 3053044607</a> </p>
                   </div>
                 </div>
                 <div class="contact-item media"> <i class="fa fa-envelope media-left media-right-margin"></i>
                   <div class="media-body">
                     <p class="text-uppercase">E-mail</p>
-                    <p class="text-uppercase"><a class="text-white" href="mailto:abcdefg@gmail.com">yogeshsingh.now@gmail.com</a> </p>
+                    <p class="text-uppercase"><a class="text-white" href="mailto:abcdefg@gmail.com">rajexhkumar123@gmail.com</a> </p>
                   </div>
                 </div>
                 <div class="contact-item media"> <i class="fa fa-clock media-left media-right-margin"></i>
@@ -376,14 +376,14 @@
         <div class="sectioner-header text-center white">
           <h3>Download Our App</h3>
           <span class="line"></span>
-          <p class="white">Sed quis nisi nisi. Proin consectetur porttitor dui sit amet viverra. Fusce sit amet lorem faucibus, vestibulum ante in, pharetra ante.</p>
+          <p class="white">Enhance your tailoring experience with TailorInch. Download our app for seamless management of orders, customer profiles, measurements, and shop tasks, all at your fingertips.</p>
         </div>
       </div>
       <div class="col-md-12">
         <div class="section-content text-center">
           <ul>
-            <li><a href="#"><img src="images/appstore.png" class="wow fadeInUp" data-wow-delay="0.4s"/></a></li>
-            <li><a href="#"><img src="images/playstore.png" class="wow fadeInUp" data-wow-delay="0.7s"/></a></li>
+            <li><a href="#"><img src="{{ URL::to('/') }}/images/appstore.png" class="wow fadeInUp" data-wow-delay="0.4s"/></a></li>
+            <li><a href="#"><img src="{{ URL::to('/') }}/images/playstore.png" class="wow fadeInUp" data-wow-delay="0.7s"/></a></li>
           </ul>
         </div>
       </div>
@@ -397,7 +397,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
-        <p>2018 &copy; Applight. Website Designed by <a href="http://w3Template.com" target="_blank" rel="dofollow">W3 Template</a></p>
+        <p>2023 &copy; TailorInch.</p>
       </div>
     </div>
   </div>
@@ -475,4 +475,4 @@ $(window).on("load",function (){
 
 </script>
 </body>
-</html>
+</html
