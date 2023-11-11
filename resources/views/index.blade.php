@@ -16,7 +16,7 @@
 <body>
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg">
-  <div class="container"> <a class="navbar-brand navbar-logo" href="#"> <img src="images/logo.png" alt="logo" class="logo-1"> </a>
+  <div class="container"> <a class="navbar-brand navbar-logo" href="#"> <img src="{{ URL::to('/') }}/images/logo.png" alt="logo" class="logo-1"> </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="fas fa-bars"></span> </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto">
@@ -24,7 +24,7 @@
         <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="1">About</a> </li>
         <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="2">Features</a> </li>
         <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="3">Team</a> </li>
-        <!-- <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="4">Testimonials</a> </li> -->
+        <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="4">Privacy & Policy</a> </li>
         <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="5">Faq</a> </li>
         <li class="nav-item"> <a class="nav-link" href="#" data-scroll-nav="6">Contact</a> </li>
       </ul>
@@ -149,7 +149,7 @@
               </div>
             </div>
             <div class="col-md-4 d-none d-md-block d-lg-block">
-              <div class="feature-mobile"> <img src="images/iphone-screen-with-shadow.png" class="img-fluid wow fadeInUp"/> </div>
+              <div class="feature-mobile"> <img src="{{ URL::to('/') }}/images/iphone-screen-with-shadow.png" class="img-fluid wow fadeInUp"/> </div>
             </div>
             <div class="col-md-4 col-sm-12">
               <div class="media single-feature wow fadeInUp" data-wow-delay="0.2s">
@@ -221,43 +221,84 @@
 
 <!-------Team End-------> 
 
-<!-------Testimonial Start------->
-<!-- <section class="testimonial section-padding" data-scroll-index='4'>
+<!-------Privacy Start------->
+<section class="privacy section-padding" data-scroll-index='4'>
   <div class="container">
     <div class="row">
       <div class="col-md-12">
         <div class="sectioner-header text-center white">
-          <h3>Testimonials</h3>
+          <h3>Privacy & Policy</h3>
           <span class="line"></span>
-          <p class="white">Sed quis nisi nisi. Proin consectetur porttitor dui sit amet viverra. Fusce sit amet lorem faucibus, vestibulum ante in, pharetra ante.</p>
+          <p class="white">Our Privacy Policy outlines how we collect, use, and safeguard your information, ensuring transparency and trust in every interaction.</p>
         </div>
     
-      <div class="section-content">
-        <div class="row">
-          <div class="offset-md-2 col-md-8 col-sm-12">
-            <div class="slider">
-              <div class="slider-item">
-                <div class="test-img"><img src="images/user1.jpg" alt="Placeholder" width="157" height="157"></div>
-                <div class="test-text"><span class="title"><span>John Michal</span> Digital Designer</span> Consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam eratvo lutpat.</div>
-              </div>
-              <div class="slider-item">
-                <div class="test-img"><img src="images/user3.jpg" alt="Placeholder" width="157" height="157"></div>
-                <div class="test-text"><span class="title"><span>Steve Smith</span> App User</span> Euismod tincidunt ut laoreet dolore magna aliquam eratvo lutpat. Ut wisi enim ad minim veniam, quis nostrud v</div>
-              </div>
-              <div class="slider-item">
-                <div class="test-img"><img src="images/user3.jpg" alt="Placeholder" width="157" height="157"></div>
-                <div class="test-text"><span class="title"><span>Gordon Shaw</span> Blogger</span> Consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam eratvo lutpat. Ut wisi enim ad minim veniam, quis nostrud v</div>
-              </div>
+        <div class="section-content">
+          <div class="row">
+            <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.2s">
+              <h4>Acceptance of Terms</h4>
+              <p>By using TailorInch App, you agree to comply with and be bound by these Terms and Conditions. If you do not agree to these Terms and Conditions, please do not use the app.</p>
+            </div>
+            <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.2s">
+              <h4>Registration</h4>
+              <p>You must provide accurate and complete information during the registration process.</p>
+              <p>You are responsible for maintaining the confidentiality of your account and password.</p>
+              <p>You are responsible for all activities that occur under your account.</p>
+            </div>
+            <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.2s">
+              <h4>Services Offered</h4>
+              <p>TailorInch App provides a platform for tailors to manage their services to customers.</p>
+              <p>Tailors are responsible for the quality and accuracy of their services.</p>
+              <p>TailorInch App does not guarantee the availability of customers or the success of any transaction.</p>
+            </div>
+            <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.2s">
+              <h4>Fees and Payments</h4>
+              <p>Tailors are entitled to collect fees for TailorInch App for using the platform.</p>
+              <p>Fees and payment terms are outlined in our current contract due to no any paid services.</p>
+              <p>TailorInch App may change its fee structure at any time with prior notice for using services for using paid services once provided.</p>
+            </div>
+            <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.2s">
+              <h4>Conduct and Content</h4>
+              <p>Tailors must not use TailorInch App to engage in any unlawful, offensive, or harmful activities.</p>
+              <p>You are solely responsible for the content you post on the app.</p>
+              <p>TailorInch App reserves the right to remove or block any content that violates these terms.</p>
+            </div>
+            <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.6s">
+              <h4>Intellectual Property</h4>
+              <p>TailorInch App owns all intellectual property rights in the app and its content. Tailors will not use TailorInch App's name or logo without permission.</p>
+            </div>
+            <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.6s">
+              <h4>Privacy</h4>
+              <p>TailorInch App collects and uses personal information as described in its Privacy Policy.</p>
+              <p>Tailors must respect the privacy of customers and not misuse their personal information.</p>
+            </div>
+            <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.6s">
+              <h4>Termination</h4>
+              <p>TailorInch App may terminate your account at its discretion, with or without cause.</p>
+              <p>Tailors may terminate their account by following the process outlined on the app or they will be provided with their customers required data.</p>
+            </div>
+            <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.6s">
+              <h4>Disclaimers</h4>
+              <p>TailorInch App is not responsible for the actions or behavior of customers or tailors.</p>
+              <p>TailorInch App is not liable for any loss or damages resulting from the use of the app.</p>
+            </div>
+            <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.6s">
+              <h4>Governing Law and Dispute Resolution</h4>
+              <p>These terms are governed by the laws of Pakistan & Global Jurisdiction.</p>
+              <p>Any disputes shall be resolved through arbitration or mediation as outlined in a separate agreement.</p>
+            </div>
+            <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.6s">
+              <h4>Changes to Terms</h4>
+              <p>TailorInch App may change these Terms and Conditions at any time with prior notice. It is your responsibility to review and understand the updated terms.</p>
+              <p>By using TailorInch App, you acknowledge that you have read, understood, and agreed to these Terms and Conditions. If you have any questions, please contact rajexhkumar123@gmail.com.</p>
             </div>
           </div>
         </div>
       </div>
-      </div>
     </div>
   </div>
-</section> -->
+</section>
 
-<!-------Testimonial End-------> 
+<!-------Privacy End-------> 
 
 <!-------FAQ Start------->
 <section class="faq section-padding prelative" data-scroll-index='5'>
@@ -342,13 +383,13 @@
                 <div class="contact-item media"> <i class="fa fa-mobile media-left media-right-margin"></i>
                   <div class="media-body">
                     <p class="text-uppercase">Phone</p>
-                    <p class="text-uppercase"><a class="text-white" href="tel:+15173977100">+92 3053044607</a> </p>
+                    <p class="text-uppercase"><a class="text-white" href="tel:+923053044607">+92 3053044607</a> </p>
                   </div>
                 </div>
                 <div class="contact-item media"> <i class="fa fa-envelope media-left media-right-margin"></i>
                   <div class="media-body">
                     <p class="text-uppercase">E-mail</p>
-                    <p class="text-uppercase"><a class="text-white" href="mailto:abcdefg@gmail.com">rajexhkumar123@gmail.com</a> </p>
+                    <p class="text-uppercase"><a class="text-white" href="mailto:rajexhkumar123@gmail.com">rajexhkumar123@gmail.com</a> </p>
                   </div>
                 </div>
                 <div class="contact-item media"> <i class="fa fa-clock media-left media-right-margin"></i>
@@ -382,8 +423,8 @@
       <div class="col-md-12">
         <div class="section-content text-center">
           <ul>
-            <li><a href="#"><img src="{{ URL::to('/') }}/images/appstore.png" class="wow fadeInUp" data-wow-delay="0.4s"/></a></li>
-            <li><a href="#"><img src="{{ URL::to('/') }}/images/playstore.png" class="wow fadeInUp" data-wow-delay="0.7s"/></a></li>
+            <li><a href="#"><img src="images/appstore.png" class="wow fadeInUp" data-wow-delay="0.4s"/></a></li>
+            <li><a href="#"><img src="images/playstore.png" class="wow fadeInUp" data-wow-delay="0.7s"/></a></li>
           </ul>
         </div>
       </div>
@@ -408,8 +449,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script> 
 <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script> 
 <!-- scrollIt js --> 
-<script src="{{ URL::to('/') }}/js/scrollIt.min.js"></script> 
-<script src="{{ URL::to('/') }}/js/wow.min.js"></script> 
+<script src="js/scrollIt.min.js"></script> 
+<script src="js/wow.min.js"></script> 
 <script>
 	wow = new WOW();
 	wow.init();
@@ -475,4 +516,4 @@ $(window).on("load",function (){
 
 </script>
 </body>
-</html
+</html>
