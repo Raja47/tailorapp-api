@@ -203,7 +203,7 @@
             <div class="col-md-4">
               <div class="team-detail wow bounce" data-wow-delay="0.4s"> <img src="images/user2.png" class="img-fluid"/>
                 <h4>Raja Ram</h4>
-                <p>Founder & Developer</p>
+                <p>Co-Founder & Developer</p>
               </div>
             </div>
             <div class="col-md-4">
@@ -222,7 +222,7 @@
 <!-------Team End-------> 
 
 <!-------Privacy Start------->
-<section class="privacy section-padding" data-scroll-index='4'>
+<section class="privacy section-padding" data-scroll-index='4' id="privacy-policy">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
