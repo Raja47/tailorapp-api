@@ -168,8 +168,33 @@ class TailorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy(Request $request)
+    {   
+
+        $validation = Validator::make( $request->all() ,[
+            'id'      => 'required|numeric',
+        ]);
+
+        if($validation->fails()) {
+            // validation failed
+            return response()->json(['status' => 'error'  ,'message' => 'Validation failed' , 'data' => $validation->errors() ] , 422);
+        } 
+        
+        $tailor = Tailor::find($request->input('id'));
+
+        if( $tailor ) {
+            
+            $tailor->delete();
+            return response()->json(['status' => 'success'  ,'message' => 'Tailor Deleted successfully' , 'data' => [] ] , 200);
+        
+        }else{
+
+            return response()->json(['status' => 'error'  ,'message' => 'Tailor doesnt exist' , 'data' => [] ] , 404);
+        
+        }
     }
+
 }
+
+
+

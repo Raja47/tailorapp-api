@@ -21,6 +21,7 @@ Route::group(['prefix' => '/tailors' ], function ($router) {
     $router->post('/store',[ TailorController::class , 'store' ]);
     $router->post('/login',[ TailorController::class , 'login' ]); 
     $router->post('/changePassword',[ TailorController::class , 'changePassword' ]);
+    $router->post('/destroy',[ TailorController::class , 'destroy' ]);
 });
 
 Route::group(['prefix' => '/shops' ], function ($router) {
