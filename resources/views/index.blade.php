@@ -44,7 +44,7 @@
             <p class="banner-text white">The all-in-one tool for tailors. Manage customers, orders, measurements, and shop tasks seamlessly. Elevate your tailoring business effortlessly.</p>
             <ul>
               <li><a href="#"><img src="{{ URL::to('/') }}/images/appstore.png" class="wow fadeInUp" data-wow-delay="0.4s"/></a></li>
-              <li><a href="#"><img src="{{ URL::to('/') }}/images/playstore.png" class="wow fadeInUp" data-wow-delay="0.7s"/></a></li>
+              <li><a href="https://play.google.com/store/apps/details?id=com.xtrapp.tailorinch"><img src="{{ URL::to('/') }}/images/playstore.png" class="wow fadeInUp" data-wow-delay="0.7s"/></a></li>
             </ul>
           </div>
         </div>
@@ -289,7 +289,7 @@
             <div class="col-md-6 privacy-content wow fadeInUp" data-wow-delay="0.6s">
               <h4>Changes to Terms</h4>
               <p>TailorInch App may change these Terms and Conditions at any time with prior notice. It is your responsibility to review and understand the updated terms.</p>
-              <p>By using TailorInch App, you acknowledge that you have read, understood, and agreed to these Terms and Conditions. If you have any questions, please contact rajexhkumar123@gmail.com.</p>
+              <p>By using TailorInch App, you acknowledge that you have read, understood, and agreed to these Terms and Conditions. If you have any questions, please contact contact@tailorinch.com.</p>
             </div>
           </div>
         </div>
@@ -389,13 +389,13 @@
                 <div class="contact-item media"> <i class="fa fa-envelope media-left media-right-margin"></i>
                   <div class="media-body">
                     <p class="text-uppercase">E-mail</p>
-                    <p class="text-uppercase"><a class="text-white" href="mailto:rajexhkumar123@gmail.com">rajexhkumar123@gmail.com</a> </p>
+                    <p class=""><a class="text-white" href="mailto:contact@tailorinch.com">contact@tailorinch.com</a> </p>
                   </div>
                 </div>
                 <div class="contact-item media"> <i class="fa fa-clock media-left media-right-margin"></i>
                   <div class="media-body">
                     <p class="text-uppercase">Working Hours</p>
-                    <p class="text-uppercase">Mon-Fri 9.00 AM to 5.00PM.</p>
+                    <p class="text-uppercase">Mon-Fri 9.00 AM to 6.00PM PST.</p>
                   </div>
                 </div>
               </div>
@@ -423,8 +423,8 @@
       <div class="col-md-12">
         <div class="section-content text-center">
           <ul>
-            <li><a href="#"><img src="images/appstore.png" class="wow fadeInUp" data-wow-delay="0.4s"/></a></li>
-            <li><a href="#"><img src="images/playstore.png" class="wow fadeInUp" data-wow-delay="0.7s"/></a></li>
+            <li><a href=""><img src="images/appstore.png" class="wow fadeInUp" data-wow-delay="0.4s"/></a></li>
+            <li><a href="https://play.google.com/store/apps/details?id=com.xtrapp.tailorinch"><img src="images/playstore.png" class="wow fadeInUp" data-wow-delay="0.7s"/></a></li>
           </ul>
         </div>
       </div>
