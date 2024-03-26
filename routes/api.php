@@ -30,24 +30,6 @@ Route::group(['prefix' => '/shops' ], function ($router) {
     $router->post('/update',[ShopController::class , 'update'] );
 });
 
-Route::group(['prefix' => '/customers' ], function ($router) {
-    $router->get('/index', [CustomerController::class,'index']);
-    $router->post('/store', [CustomerController::class,'store']);
-    $router->post('/update', [CustomerController::class,'update']);
-    $router->post('/destroy', [CustomerController::class,'destroy']);
-});
-
-Route::group(['prefix' => '/tailorcustomers' ], function ($router) {
-    $router->post('/index', [TailorCustomerController::class,'index']);
-    $router->post('/countCustomers', [TailorCustomerController::class,'countCustomers']);
-    $router->post('/getCustomer', [TailorCustomerController::class,'getCustomer']);
-    $router->post('/getCustomerById', [TailorCustomerController::class,'getCustomerById']);
-    $router->post('/getCustomers', [TailorCustomerController::class,'getCustomers']);
-    $router->post('/getCustomerByNumber', [TailorCustomerController::class,'getCustomerByNumber']);
-    $router->post('/store', [TailorCustomerController::class,'store']);
-    $router->post('/update', [TailorCustomerController::class,'update']);
-    $router->post('/destroy', [TailorCustomerController::class,'destroy']);
-});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
