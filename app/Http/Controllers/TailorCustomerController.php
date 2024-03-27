@@ -58,7 +58,7 @@ class TailorCustomerController extends Controller
 
         else 
         {
-        $customer = Customer::where([['number',$request->number],['tailor_id',$request->tailor_id]])->first();
+        $customer = TailorCustomer::where([['number',$request->number],['tailor_id',$request->tailor_id]])->first();
         if(empty($customer))
         { return response()->json(['success'=>false, 'message'=>'Customer Not Found','data' => [] ] , 422); }
         else
@@ -80,7 +80,7 @@ class TailorCustomerController extends Controller
 
         else 
         {
-        $customer = Customer::where([['id',$request->customer_id],['tailor_id',$request->tailor_id]])->first();
+        $customer = TailorCustomer::where([['customer_id',$request->customer_id],['tailor_id',$request->tailor_id]])->first();
         if(empty($customer))
         { return response()->json(['success'=>false, 'message'=>'Customer Not Found','data' => [] ] , 422); }
         else
@@ -93,7 +93,7 @@ class TailorCustomerController extends Controller
     public function getCustomers(Request $request)
     {
         $rules = [
-            'searchText' => 'required',
+            'searchText' => '',
             'tailor_id' => 'required|numeric',
         ];
         $validation = Validator::make($request->all(), $rules);
@@ -104,9 +104,10 @@ class TailorCustomerController extends Controller
         {
             $text = $request->searchText;
             $tailor_id = $request->tailor_id;
-            if($text=='' || $text==NULL)
+            // dd($text,$tailor_id);
+            if($text=='' || $text==NULL || $text=="")
             {
-                $customer = Customer::where('tailor_id',$tailor_id)->first();
+                $customer = TailorCustomer::where('tailor_id',$tailor_id)->get();
                 if(empty($customer))
                 { return response()->json(['success'=>false, 'message'=>'Customer Not Found','data' => [] ] , 422); }
                 else
@@ -114,7 +115,7 @@ class TailorCustomerController extends Controller
             }
             else
             {
-                $customer = Customer::where([['tailor_id',tailor_id],['name','LIKE','%'.$text.'%']])->first();
+                $customer = TailorCustomer::where([['tailor_id',$tailor_id],['name','LIKE','%'.$text.'%']])->get();
                 if(empty($customer))
                 { return response()->json(['success'=>false, 'message'=>'Customer Not Found','data' => [] ] , 422); }
                 else
@@ -128,7 +129,7 @@ class TailorCustomerController extends Controller
     public function getCustomersByNumber(Request $request)
     {
         $rules = [
-            'searchText' => 'required',
+            'searchText' => '',
             'tailor_id' => 'required|numeric',
         ];
         $validation = Validator::make($request->all(), $rules);
@@ -139,9 +140,9 @@ class TailorCustomerController extends Controller
         {
             $text = $request->searchText;
             $tailor_id = $request->tailor_id;
-            if($text=='' || $text==NULL)
+            if($text=='' || $text==NULL || $text=="")
             {
-                $customer = Customer::where('tailor_id',$tailor_id)->first();
+                $customer = TailorCustomer::where('tailor_id',$tailor_id)->get();
                 if(empty($customer))
                 { return response()->json(['success'=>false, 'message'=>'Customer Not Found','data' => [] ] , 422); }
                 else
@@ -149,7 +150,7 @@ class TailorCustomerController extends Controller
             }
             else
             {
-                $customer = Customer::where([['tailor_id',tailor_id],['number','LIKE','%'.$text.'%']])->first();
+                $customer = TailorCustomer::where([['tailor_id',$tailor_id],['number','LIKE','%'.$text.'%']])->get();
                 if(empty($customer))
                 { return response()->json(['success'=>false, 'message'=>'Customer Not Found','data' => [] ] , 422); }
                 else
@@ -179,7 +180,7 @@ class TailorCustomerController extends Controller
             'picture' => '',
             'gender' => '',
             'city_name' => '',
-            'tailor_id' => 'required',
+            'tailor_id' => 'required|integer',
         ];
         $validation = Validator::make($request->all(), $rules);
         if($validation->fails())
@@ -187,22 +188,28 @@ class TailorCustomerController extends Controller
 
         else 
         {
-            $tailorcustomer = TailorCustomer::create([
-                'number' => $request->number,
-                'name' => $request->name,
-                'address' => $request->address,
-                'gender' => $request->gender,
-                'picture' => $request->picture,
-                'city_name' => $request->city_name,
-                'tailor_id' => $request->tailor_id,
-                'customer_id' => $customer->id,
-            ]);
-            
-            if($tailorcustomer->save()){
-                return response()->json(['success' => true , 'message' => 'Your Customer Created Successfully' , 'data' => ['id' => $tailorcustomer->id ] ] , 200);
-            }else{
-                return response()->json(['success' => false , 'message' => 'Customer Creation Failed' , 'data' => [] ] , 422);
-            }  
+            $tailorcustomer = TailorCustomer::where([['number', $request->number],['tailor_id',$request->tailor_id]])->first();
+            if(!empty($tailorcustomer))
+            { return response()->json(['success'=>false, 'message'=>'Customer Already Exists','data' => $tailorcustomer->id ] , 422); }
+            else
+            {
+                $tailorcustomer = TailorCustomer::create([
+                    'number' => $request->number,
+                    'name' => $request->name,
+                    'address' => $request->address,
+                    'gender' => $request->gender,
+                    'picture' => $request->picture,
+                    'city_name' => $request->city_name,
+                    'tailor_id' => $request->tailor_id,
+                    'customer_id' => $customer->id,
+                ]);
+                
+                if($tailorcustomer->save()){
+                    return response()->json(['success' => true , 'message' => 'Your Customer Created Successfully' , 'data' => ['id' => $tailorcustomer->id ] ] , 200);
+                }else{
+                    return response()->json(['success' => false , 'message' => 'Customer Creation Failed' , 'data' => [] ] , 422);
+                }  
+            }
     }  
 
     }

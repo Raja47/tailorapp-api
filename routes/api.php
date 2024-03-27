@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\TailorController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\TailorCustomerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,11 +41,11 @@ Route::group(['prefix' => '/customers' ], function ($router) {
 
 Route::group(['prefix' => '/tailorcustomers' ], function ($router) {
     $router->post('/index', [TailorCustomerController::class,'index']);
-    $router->post('/countCustomers', [TailorCustomerController::class,'countCustomers']);
-    $router->post('/getCustomer', [TailorCustomerController::class,'getCustomer']);
-    $router->post('/getCustomerById', [TailorCustomerController::class,'getCustomerById']);
-    $router->post('/getCustomers', [TailorCustomerController::class,'getCustomers']);
-    $router->post('/getCustomerByNumber', [TailorCustomerController::class,'getCustomerByNumber']);
+    $router->post('/countcustomers', [TailorCustomerController::class,'countCustomers']);
+    $router->post('/getcustomer', [TailorCustomerController::class,'getCustomer']);
+    $router->post('/getcustomerbyid', [TailorCustomerController::class,'getCustomerById']);
+    $router->post('/getcustomers', [TailorCustomerController::class,'getCustomers']);
+    $router->post('/getcustomerbynumber', [TailorCustomerController::class,'getCustomersByNumber']);
     $router->post('/store', [TailorCustomerController::class,'store']);
     $router->post('/update', [TailorCustomerController::class,'update']);
     $router->post('/destroy', [TailorCustomerController::class,'destroy']);
