@@ -21,7 +21,22 @@ class TailorController extends Controller
         return response()->json(Tailor::all());
     }
 
+    public function exists(Request $request)
+    {
+        $rules = [ 'number' => 'required'];
+        $validation = Validator::make($request->all(),$rules);
 
+        if($validation->fails()) 
+        { return response()->json(['success' => false  ,'message' => 'Validation Error' , 'data' => $validation->errors() ] , 422); } 
+        else
+        {
+            $tailor = Tailor::where('number',$request->number)->first();
+            if(empty($tailor))
+            { return response()->json(['success' => false] , 422); } 
+            else
+            { return response()->json(['success' => true] , 200); }
+        }
+    }
 
     /**
      * Store a newly created resource in storage.
