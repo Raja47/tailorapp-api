@@ -235,7 +235,8 @@ class TailorCustomerController extends Controller
     public function update(Request $request)
     {
         $rules = [
-            'tailor_customer_id' => 'required',
+            'tailor_id' => 'required',
+            'customer_id' => 'required',
             'number' => 'required|max:12',
             'name' => '',
             'address' => 'max:70',
@@ -249,7 +250,7 @@ class TailorCustomerController extends Controller
 
         else 
         {
-            $tailorcustomer = TailorCustomer::where('id', $request->tailor_customer_id)->first();
+            $tailorcustomer = TailorCustomer::where([['customer_id', $request->customer_id],['tailor_id',$request->tailor_id]])->first();
             if(empty($tailorcustomer))
             { return response()->json(['success' => false , 'message' => 'Customer does not exist.' , 'data' => [] ] , 422); }
             else
@@ -278,14 +279,17 @@ class TailorCustomerController extends Controller
      */
     public function destroy(Request $request)
     {
-        $rules = ['tailor_customer_id' => 'required|numeric'];
+        $rules = [
+            'tailor_id' => 'required|numeric',
+            'customer_id' => 'required|numeric',
+        ];
         $validation = Validator::make($request->all(),$rules);
 
         if($validation->fails())
         { return response()->json(['success'=>false, 'message'=>'Customer Validation Error','data' => $validation->errors() ] , 422); }
         else
         {
-            $tailorcustomer = TailorCustomer::where('id', $request->tailor_customer_id);
+            $tailorcustomer = TailorCustomer::where([['customer_id', $request->customer_id],['tailor_id',$request->tailor_id]])->first();
             if (empty($tailorcustomer))
             { return response()->json(['success' => false , 'message' => 'Customer does not exist.' , 'data' => [] ] , 422);}
             else
