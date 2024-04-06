@@ -14,24 +14,22 @@ class TailorCustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($tailor_id)
     {
-        $rules = ['tailor_id' => 'required|numeric'];
-        $validation = Validator::make($request->all(), $rules);
-
-        if($validation->fails())
-        { return response()->json(['success'=>false, 'message'=>'Customer Validation Error','data' => $validation->errors()] , 422); }
+        if($tailor_id=='' || $tailor_id==NULL || $tailor_id=="" )
+        {return 'tailor id is required';}
         else
         {
-            $tailorcustomers = TailorCustomer::where('tailor_id',$request->tailor_id)->get();
+            $tailorcustomers = TailorCustomer::where('tailor_id',$tailor_id)->get();
             return response()->json($tailorcustomers);
         }
     }
-    
+
     //param: tailor_id in request
     //count of customers for specific tailor
-    public function countCustomers(Request $request)
+    public function countCustomers()
     {
+        $tailor_id = request()->query('tailor_id');
         $rules = ['tailor_id' => 'required|numeric'];
         $validation = Validator::make($request->all(), $rules);
         
@@ -68,65 +66,17 @@ class TailorCustomerController extends Controller
     
     //param: customer_id & tailor_id in request
     //get customer by Id
-    public function getCustomerById(Request $request)
+    public function getCustomerById($tailor_id,$customer_id)
     {
-        $rules = [
-            'customer_id' => 'required|numeric',
-            'tailor_id' => 'required|numeric',
-        ];
-        $validation = Validator::make($request->all(), $rules);
-        if($validation->fails())
-        { return response()->json(['success'=>false, 'message'=>'Customer data validation error','data' => $validation->errors() ] , 422); }
-
-        else 
-        {
-        $customer = TailorCustomer::where([['customer_id',$request->customer_id],['tailor_id',$request->tailor_id]])->first();
+        $customer = TailorCustomer::where([['customer_id',$customer_id],['tailor_id',$tailor_id]])->first();
         if(empty($customer))
         { return response()->json(['success'=>false, 'message'=>'Customer Not Found','data' => [] ] , 422); }
         else
         { return response()->json(['success'=>true, 'message'=>'Customer Found','data' => ['customer'=>$customer] ] , 200); }
-        }
     }
 
-    //param: searchText & tailor_id in request
-    //get customer by name from searchText
-    public function getCustomers(Request $request)
-    {
-        $rules = [
-            'searchText' => '',
-            'tailor_id' => 'required|numeric',
-        ];
-        $validation = Validator::make($request->all(), $rules);
-        if($validation->fails())
-        { return response()->json(['success'=>false, 'message'=>'Customer data validation error','data' => $validation->errors() ] , 422); }
-
-        else 
-        {
-            $text = $request->searchText;
-            $tailor_id = $request->tailor_id;
-            // dd($text,$tailor_id);
-            if($text=='' || $text==NULL || $text=="")
-            {
-                $customer = TailorCustomer::where('tailor_id',$tailor_id)->get();
-                if(empty($customer))
-                { return response()->json(['success'=>false, 'message'=>'Customer Not Found','data' => [] ] , 422); }
-                else
-                { return response()->json(['success'=>true, 'message'=>'Customer Found','data' => ['customer'=>$customer] ] , 200); }
-            }
-            else
-            {
-                $customer = TailorCustomer::where([['tailor_id',$tailor_id],['name','LIKE','%'.$text.'%']])->get();
-                if(empty($customer))
-                { return response()->json(['success'=>false, 'message'=>'Customer Not Found','data' => [] ] , 422); }
-                else
-                { return response()->json(['success'=>true, 'message'=>'Customer Found','data' => ['customer'=>$customer] ] , 200); }
-            }
-        }
-    }
-
-    //param: searchText & tailor_id in request
-    //get customer by phone number from searchText
-    public function getCustomersByNumber(Request $request)
+    
+    public function search(Request $request)
     {
         $rules = [
             'searchText' => '',
@@ -143,15 +93,15 @@ class TailorCustomerController extends Controller
             if($text=='' || $text==NULL || $text=="")
             {
                 $customer = TailorCustomer::where('tailor_id',$tailor_id)->get();
-                if(empty($customer))
+                if(count($customer)===0)
                 { return response()->json(['success'=>false, 'message'=>'Customer Not Found','data' => [] ] , 422); }
                 else
                 { return response()->json(['success'=>true, 'message'=>'Customer Found','data' => ['customer'=>$customer] ] , 200); }
             }
             else
             {
-                $customer = TailorCustomer::where([['tailor_id',$tailor_id],['number','LIKE','%'.$text.'%']])->get();
-                if(empty($customer))
+                $customer = TailorCustomer::where([['tailor_id',$tailor_id],['number','LIKE','%'.$text.'%']])->orwhere([['tailor_id',$tailor_id],['name','LIKE','%'.$text.'%']])->get();
+                if(count($customer)===0)
                 { return response()->json(['success'=>false, 'message'=>'Customer Not Found','data' => [] ] , 422); }
                 else
                 { return response()->json(['success'=>true, 'message'=>'Customer Found','data' => ['customer'=>$customer] ] , 200); }
@@ -212,17 +162,6 @@ class TailorCustomerController extends Controller
             }
     }  
 
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**

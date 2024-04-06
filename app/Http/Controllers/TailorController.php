@@ -72,6 +72,9 @@ class TailorController extends Controller
         
         if($tailor->save()){
             // Tailor is created
+            $categories = app('App\Http\Controllers\TailorCategoryController')->default($tailor->id);
+            $parameters = app('App\Http\Controllers\TailorParameterController')->default($tailor->id);
+            $cat_parameters = app('App\Http\Controllers\TailorCategoryParameterController')->default($tailor->id);
             return response()->json(['success' => true , 'message' => 'Tailor Created Successfully' , 'data' => ['id' => $tailor->id ] ] , 200);
         }
         
@@ -135,8 +138,8 @@ class TailorController extends Controller
         {
             return response()->json(['success' => false  ,'message' => 'Incorrect Mobile number password' , 'data' => [] ] , 422);     
         }
-
-        return response()->json(['success' => true  ,'message' => '' , 'data' => ['tailor' => $tailor->toArray() ] ] , 200);
+        $token = $tailor->createToken('auth_token')->plainTextToken;
+        return response()->json(['success' => true  ,'message' => '' , 'data' => ['tailor' => $tailor->toArray(),'token' => $token ] ] , 200);
 
     }
 
@@ -208,6 +211,14 @@ class TailorController extends Controller
         
         }
     }
+    public function logout(Request $request)
+    {
+        // $tailor = Tailor::where('id',$request->tailor_id)->first();
+        // $tailor->tokens()->delete();
+        $request->user()->currentAccessToken()->delete();
+        return 'logged out';
+    }
+
 
 }
 

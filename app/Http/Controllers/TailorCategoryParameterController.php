@@ -1,0 +1,150 @@
+<?php
+
+namespace App\Http\Controllers;
+use App\Models\TailorCategoryParameter as TalCatParameter;
+use App\Models\CategoryParameter;
+use App\Models\TailorCategory;
+use Illuminate\Support\Facades\Validator;
+
+use Illuminate\Http\Request;
+
+class TailorCategoryParameterController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index($tailor_id,$category_id)
+    {
+        $parameters = TalCatParameter::where([['category_id',$category_id],['tailor_id',$tailor_id]])->get();
+        if(count($parameters)===0)
+        { return response()->json(['category_id'=>$category_id,'parameters'=>'Not Found']); }
+        else
+        { return response()->json(['category_id'=>$category_id,'parameters'=>$parameters]); }
+    }
+
+
+    public function default($tailor_id)
+    {
+        $category_parameters = CategoryParameter::all();
+        foreach($category_parameters as $category_parameter)
+        {
+            $tailor_category = TailorCategory::where([['tailor_id',$tailor_id],['category_id',$category_parameter->category_id]])->first();
+            $tal_cat_parameter = TalCatParameter::create([
+                'label' => $category_parameter->label,
+                'tailor_id' => $tailor_id,
+                'category_id' => $tailor_category->id,
+                'parameter_id' => $category_parameter->parameter_id,
+                'part' => $category_parameter->part,
+                'status' => $category_parameter->status,
+            ]);
+        }
+        if($tal_cat_parameter->save()){
+            return response()->json(['success' => true , 'message' => 'Default Categories Parameters added successfully' ] , 200);
+        }else{
+            return response()->json(['success' => false , 'message' => 'Default Category Parameters Creation Failed' ] , 422);
+        }   
+    }
+
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $rules = [
+            'label' => '',
+            'tailor_id' => 'required',
+            'category_id' => 'required',
+            'parameter_id' => 'required',
+            'part' => '',
+            'status' => '',
+        ];
+
+        $validation = Validator::make($request->all(), $rules);
+
+        if($validation->fails())
+        { return response()->json(['success'=>false, 'message'=>'Catgeory parameter data validation error','data' => $validation->errors() ] , 422); }
+
+        else 
+        {
+            $category_parameter = TalCatParameter::create([
+                'label' => $request->label,
+                'tailor_id' => $request->tailor_id,
+                'category_id' => $request->category_id,
+                'parameter_id' => $request->parameter_id,
+                'part' => $request->part,
+                'status' => $request->status,
+            ]);
+
+            if($category_parameter->save()){
+                return response()->json(['success' => true , 'message' => 'Catgeory parameter Created Successfully' , 'data' => ['id' => $category_parameter->id ] ] , 200);
+            }else{
+                return response()->json(['success' => false , 'message' => 'Catgeory parameter Creation Failed' , 'data' => [] ] , 422);
+            }   
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        $rules = [
+            'tailor_id' => 'required',
+            'category_id' => 'required',
+            'parameter_id' => 'required',
+        ];
+
+        $validation = Validator::make($request->all(), $rules);
+        
+        if($validation->fails())
+        { return response()->json(['success'=>false, 'message'=>'Paramter Validation Error','data' => $validation->errors()] , 422); }
+        else
+        {
+            $category_id = $request->category_id;
+            $tailor_id = $request->tailor_id;
+            $parameter_id = $request->parameter_id;
+            $category_parameter = TalCatParameter::where([['category_id',$category_id],['tailor_id',$tailor_id],['parameter_id',$parameter_id]])->first();
+            if(empty($category_parameter))
+            { return response()->json(['success' => false , 'message' => 'Parameter Not Found'] , 404); }
+            else
+            {
+                $category_parameter->delete();
+                return response()->json(['success' => true , 'message' => 'Parameter deleted succesfully'] , 200);
+            }
+        }
+
+    }
+}
