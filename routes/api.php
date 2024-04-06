@@ -49,7 +49,7 @@ Route::group(['prefix' => '/customers' ], function ($router) {
     $router->post('/destroy', [CustomerController::class,'destroy']);
 });
 
-Route::group(['middleware'=>['auth:sanctum'], 'prefix' => '/tailor/{tailor_id}/customers' ], function ($router) {
+Route::group(['middleware'=>['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/customers' ], function ($router) {
     $router->get('/', [TailorCustomerController::class,'index']);
     $router->get('/count', [TailorCustomerController::class,'countCustomers']);
     $router->post('/number', [TailorCustomerController::class,'getCustomer']);

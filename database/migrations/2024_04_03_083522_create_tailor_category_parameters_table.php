@@ -20,7 +20,7 @@ class CreateTailorCategoryParametersTable extends Migration
             $table->integer('category_id');
             $table->integer('parameter_id');
             $table->string('part')->nullable();
-            $table->integer('status')->default(1);
+            $table->integer('status')->nullable()->default(1);
             $table->timestamps();
         });
     }

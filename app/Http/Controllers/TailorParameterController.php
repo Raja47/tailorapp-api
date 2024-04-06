@@ -52,10 +52,9 @@ class TailorParameterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($tailor_id,Request $request)
     {
         $rules = [
-            'tailor_id' => 'required',
             'name' => 'required|unique:tailor_parameters',
             'label' => '',
             'image' => '',
@@ -68,7 +67,7 @@ class TailorParameterController extends Controller
         else
         {
             $tailor_parameter = TailorParameter::create([
-                'tailor_id' => $request->tailor_id,
+                'tailor_id' => $tailor_id,
                 'parameter_id' => 0,
                 'name' => $request->name,
                 'label' => $request->label,
@@ -100,10 +99,9 @@ class TailorParameterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($tailor_id, Request $request, $id)
     {
         $rules = [
-            'tailor_id' => 'required',
             'name' => 'required',
             'label' => '',
             'image' => '',
@@ -115,7 +113,7 @@ class TailorParameterController extends Controller
         { return response()->json(['success'=>false, 'message'=>'Category Validation Error','data' => $validation->errors()] , 422); }
         else
         {
-            $tailor_parameter = TailorParameter::where([['tailor_id',$request->tailor_id],['id',$id]])->first();
+            $tailor_parameter = TailorParameter::where([['tailor_id',$tailor_id],['id',$id]])->first();
             if(empty($tailor_parameter))
             { return response()->json(['success' => false , 'message' => 'Category does not exist.'] , 404); }
             else

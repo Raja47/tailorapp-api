@@ -55,11 +55,10 @@ class TailorCategoryParameterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($tailor_id,Request $request)
     {
         $rules = [
             'label' => '',
-            'tailor_id' => 'required',
             'category_id' => 'required',
             'parameter_id' => 'required',
             'part' => '',
@@ -75,7 +74,7 @@ class TailorCategoryParameterController extends Controller
         {
             $category_parameter = TalCatParameter::create([
                 'label' => $request->label,
-                'tailor_id' => $request->tailor_id,
+                'tailor_id' => $tailor_id,
                 'category_id' => $request->category_id,
                 'parameter_id' => $request->parameter_id,
                 'part' => $request->part,
@@ -119,10 +118,9 @@ class TailorCategoryParameterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($tailor_id,Request $request)
     {
         $rules = [
-            'tailor_id' => 'required',
             'category_id' => 'required',
             'parameter_id' => 'required',
         ];
@@ -134,7 +132,6 @@ class TailorCategoryParameterController extends Controller
         else
         {
             $category_id = $request->category_id;
-            $tailor_id = $request->tailor_id;
             $parameter_id = $request->parameter_id;
             $category_parameter = TalCatParameter::where([['category_id',$category_id],['tailor_id',$tailor_id],['parameter_id',$parameter_id]])->first();
             if(empty($category_parameter))

@@ -112,10 +112,9 @@ class TailorCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($tailor_id, Request $request, $id)
     {
         $rules = [
-            'tailor_id' => 'required',
             'name' => 'required',
             'label' => '',
             'gender' => '',
@@ -130,7 +129,7 @@ class TailorCategoryController extends Controller
         { return response()->json(['success'=>false, 'message'=>'Category Validation Error','data' => $validation->errors()] , 422); }
         else
         {
-            $tailor_category = TailorCategory::where([['tailor_id',$request->tailor_id],['id',$id]])->first();
+            $tailor_category = TailorCategory::where([['tailor_id',$tailor_id],['id',$id]])->first();
             if(empty($tailor_category))
             { return response()->json(['success' => false , 'message' => 'Category does not exist.'] , 404); }
             else
@@ -142,7 +141,6 @@ class TailorCategoryController extends Controller
                 $tailor_category->is_suggested = $request->is_suggested;
                 $tailor_category->status = $request->status;;
             }
-
         }
     }
 
