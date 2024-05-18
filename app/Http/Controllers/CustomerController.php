@@ -38,11 +38,9 @@ class CustomerController extends Controller
 
         $validation = Validator::make($request->all(), $rules);
 
-        if($validation->fails())
-        { return response()->json(['success'=>false, 'message'=>'Customer data validation error','data' => $validation->errors() ] , 422); }
-
-        else 
-        {
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
+        } else {
             $customer = Customer::create([
                 'number' => $request->number,
                 'name' => $request->name,
@@ -55,12 +53,11 @@ class CustomerController extends Controller
 
             ]);
 
-            if($customer->save()){
-                return response()->json(['success' => true , 'message' => 'Customer Created Successfully' , 'data' => ['id' => $customer->id ] ] , 200);
-            }else{
-                return response()->json(['success' => false , 'message' => 'Customer Creation Failed' , 'data' => [] ] , 422);
-            }     
-                
+            if ($customer->save()) {
+                return response()->json(['success' => true, 'message' => 'Customer Created Successfully', 'data' => ['id' => $customer->id]], 200);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Customer Creation Failed', 'data' => []], 422);
+            }
         }
     }
 
@@ -72,8 +69,7 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $customer = Customer::find()->where('id', $request->customer_id);
-
+        //
     }
 
     /**
@@ -96,19 +92,16 @@ class CustomerController extends Controller
             'password' => 'digits:6',
             'gender' => '',
         ];
-        
+
         $validation = Validator::make($request->all(), $rules);
-        
-        if($validation->fails())
-        { return response()->json(['success'=>false, 'message'=>'Customer Validation Error','data' => $validation->errors() ] , 422); }
-        
-        else 
-        {
+
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Customer Validation Error', 'data' => $validation->errors()], 422);
+        } else {
             $customer = Customer::where('id', $request->customer_id)->first();
-            if (empty($customer))
-            { return response()->json(['success' => false , 'message' => 'Customer does not exist.' , 'data' => [] ] , 422);}
-            else
-            {
+            if (empty($customer)) {
+                return response()->json(['success' => false, 'message' => 'Customer does not exist.', 'data' => []], 422);
+            } else {
                 $customer->number = $request->number;
                 $customer->name = $request->name;
                 $customer->address = $request->address;
@@ -117,13 +110,13 @@ class CustomerController extends Controller
                 $customer->email = $request->email;
                 $customer->password = $request->password;
                 $customer->gender = $request->gender;
-    
-                if($customer->save()){
-                    return response()->json(['success' => true , 'message' => 'Customer Updated Successfully' , 'data' => ['id' => $customer->id ] ] , 200);
-                }else{
-                    return response()->json(['success' => false , 'message' => 'Customer Updation Failed' , 'data' => [] ] , 422);
-                }    
-            }             
+
+                if ($customer->save()) {
+                    return response()->json(['success' => true, 'message' => 'Customer Updated Successfully', 'data' => ['id' => $customer->id]], 200);
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Customer Updation Failed', 'data' => []], 422);
+                }
+            }
         }
     }
 
@@ -136,21 +129,18 @@ class CustomerController extends Controller
     public function destroy(Request $request)
     {
         $rules = ['customer_id' => 'required|numeric'];
-        $validation = Validator::make($request->all(),$rules);
+        $validation = Validator::make($request->all(), $rules);
 
-        if($validation->fails())
-        { return response()->json(['success'=>false, 'message'=>'Customer Validation Error','data' => $validation->errors() ] , 422); }
-        else
-        {
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Customer Validation Error', 'data' => $validation->errors()], 422);
+        } else {
             $customer = Customer::find()->where('id', $request->customer_id);
-            if (empty($customer))
-            { return response()->json(['success' => false , 'message' => 'Customer does not exist.' , 'data' => [] ] , 422);}
-            else
-            {
+            if (empty($customer)) {
+                return response()->json(['success' => false, 'message' => 'Customer does not exist.', 'data' => []], 422);
+            } else {
                 $customer->delete();
-                return response()->json(['success' => true  ,'message' => 'Customer Deleted successfully' , 'data' => [] ] , 200);
+                return response()->json(['success' => true, 'message' => 'Customer Deleted successfully', 'data' => []], 200);
             }
-            
         }
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DressController;
 use App\Http\Controllers\TailorController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CustomerController;
@@ -7,11 +8,13 @@ use App\Http\Controllers\TailorCustomerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\CategoryParameterController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TailorCategoryController;
 use App\Http\Controllers\TailorParameterController;
 use App\Http\Controllers\TailorCategoryParameterController as TalCatParameterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\Tailor;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +26,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+// Route::get('/try',function(){
+//     $result = Tailor::select('name','password')->where('password','123456')->get()->groupBy('status');
+//     return $result;
+// });
 Route::group(['prefix' => '/tailors' ], function ($router) {
     $router->post('/login',[ TailorController::class , 'login' ]); 
     $router->post('/changePassword',[ TailorController::class , 'changePassword' ]);
@@ -94,6 +101,28 @@ Route::group(['middleware'=>['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/
     $router->post('/update', [TalCatParameterController::class,'update']);
     $router->post('/destroy', [TalCatParameterController::class,'destroy']);
 });
+
+// Route::group(['middleware'=>['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/dresses' ], function ($router) {
+Route::group(['prefix' => '/tailors/{tailor_id}/dresses' ], function ($router) {
+    $router->get('/{dress_id}/measurement', [DressController::class,'getOrderDressMeasurement']);
+    $router->post('/tabdress', [DressController::class,'getTabDresses']);
+    $router->post('/store', [DressController::class,'addDress']);
+    $router->post('/update', [DressController::class,'updateDress']);
+    $router->get('/countbystatus/{shop_id}/{index}', [DressController::class,'countDressesByStatus']);
+    $router->get('/count', [DressController::class,'countDresses']);
+    $router->get('/{dress_id}/delete', [DressController::class,'delete']);
+    $router->get('/order/{order_id}', [DressController::class,'getOrderDresses']);
+    $router->post('/statusupdate', [DressController::class,'updateStatus']);
+});
+
+// Route::group(['middleware'=>['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/orders' ], function ($router) {
+    Route::group(['prefix' => '/tailors/{tailor_id}/orders' ], function ($router) {
+        $router->get('/', [OrderController::class,'getOrders']);
+        $router->post('/statusupdate', [OrderController::class,'updateStatus']);
+        $router->get('/count', [OrderController::class,'countOrders']);
+        $router->get('/{order_id}/customer', [OrderController::class,'getCustomerByOrderid']);
+        $router->post('/empty', [OrderController::class,'emptyOrder']);
+    });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
