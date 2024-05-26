@@ -16,7 +16,7 @@ class CreateMeasurementValuesTable extends Migration
         Schema::create('measurement_values', function (Blueprint $table) {
             $table->id();
             $table->integer('measurement_id');
-            $table->integer('parameter');
+            $table->integer('parameter_id');
             $table->float('value');
             $table->timestamps();
         });
