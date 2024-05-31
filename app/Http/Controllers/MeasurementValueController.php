@@ -16,6 +16,13 @@ class MeasurementValueController extends Controller
 
     public function newMeasurementValue(Request $request)
     {
+        $result = MeasurementValue::newMeasurementValue($request->all());
+        return $result;
+    }
+
+    /*
+    public function newMeasurementValue(Request $request)
+    {
         $rules = [
             'measurement_id' => 'required',
             'parameter_id' => 'required',
@@ -39,7 +46,13 @@ class MeasurementValueController extends Controller
             }
         }
     }
-
+    */
+    public function updateMeasurementValue(Request $request)
+    {
+        $result = MeasurementValue::updateMeasurementValue($request->all());
+        return $result;
+    }
+    /*
     public function updateMeasurementValue(Request $request)
     {
         $validation = Validator::make($request->all(), ['parameter_id' => 'required']);
@@ -56,7 +69,7 @@ class MeasurementValueController extends Controller
             }
         }
     }
-
+    */
     public function getMeasurementValues($measurement_id)
     {
         $measurement = MeasurementValue::where('measurement_id', $measurement_id)->get()->orderBy('id');
@@ -75,7 +88,7 @@ class MeasurementValueController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Measurement data validation error', 'data' => $validation->errors()], 422);
         } else {
-            $measurements = MeasurementValue::where('measurement_id', $request->measurement_id)->whereNotIn('id', $request->valid_mvs)->get();
+            $measurements = MeasurementValue::where('measurement_id', $request->measurement_id)->whereNotIn('id', $request->valid_mvs);
             if (empty($measurements)) {
                 return response()->json(['success' => true, 'message' => 'Measurement does not exist'], 200);
             } else {
