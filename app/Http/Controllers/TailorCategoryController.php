@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\TailorCategory;
 use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
+use OpenApi\Annotations as OA;
 
 class TailorCategoryController extends Controller
 {
@@ -14,20 +15,55 @@ class TailorCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    // swagger annotations
+    /**
+     * @OA\Get(
+     *     path="/tailors/{tailor_id}/categories",
+     *     summary="Get all categories for a tailor",
+     *     tags={"Categories"},
+     *     @OA\Parameter(name="tailor_id", in="path", required=true, @OA\Schema(type="integer"), description="The ID of the tailor"),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of categories",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="tailor_id", type="integer", example=1),
+     *             @OA\Property(property="categories", type="array", @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Category 1"),
+     *                 @OA\Property(property="status", type="integer", example=1),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2023-05-31T12:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2023-05-31T12:00:00Z")
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No categories added",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="tailor_id", type="integer", example=1),
+     *             @OA\Property(property="categories", type="string", example="No categories added")
+     *         )
+     *     )
+     * )
+     */
+
+
     public function index($tailor_id)
     {
-        $categories = TailorCategory::where('tailor_id',$tailor_id)->get();
-        if (count($categories)===0)
-        { return response()->json(['tailor_id'=>$tailor_id, 'categories'=>'No categories added'],404); }
-        else
-        { return response()->json(['tailor_id'=>$tailor_id, 'categories'=>$categories],200); }
+        $categories = TailorCategory::where('tailor_id', $tailor_id)->get();
+        if (count($categories) === 0) {
+            return response()->json(['tailor_id' => $tailor_id, 'categories' => 'No categories added'], 404);
+        } else {
+            return response()->json(['tailor_id' => $tailor_id, 'categories' => $categories], 200);
+        }
     }
 
     public function default($tailor_id)
     {
         $categories = Category::all();
-        foreach($categories as $category)
-        {
+        foreach ($categories as $category) {
             $tailor_category = TailorCategory::create([
                 'tailor_id' => $tailor_id,
                 'category_id' => $category->id,
@@ -39,11 +75,77 @@ class TailorCategoryController extends Controller
                 'status' => $category->status,
             ]);
         }
-        if($tailor_category->save()){
-            return response()->json(['success' => true , 'message' => 'Default Categories added successfully' ] , 200);
-        }else{
-            return response()->json(['success' => false , 'message' => 'Default Category Creation Failed' ] , 422);
-        }   
+        if ($tailor_category->save()) {
+            return response()->json(['success' => true, 'message' => 'Default Categories added successfully'], 200);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Default Category Creation Failed'], 422);
+        }
+    }
+
+    // swagger annotations
+    /**
+     * @OA\Post(
+     *     path="/tailors/{tailor_id}/categories/{category_id}/status",
+     *     summary="Update the status of a category",
+     *     tags={"Categories"},
+     *     @OA\Parameter(
+     *         name="tailor_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The ID of the tailor"
+     *     ),
+     *     @OA\Parameter(
+     *         name="category_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The ID of the category"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Category not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Category not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Status updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Status updated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Error")
+     *         )
+     *     )
+     * )
+     */
+
+    public function updateStatus($tailor_id, $category_id)
+    {
+        $category = TailorCategory::where([['id', $category_id], ['tailor_id', $tailor_id]])->first();
+        if (empty($category)) {
+            return response()->json(['success' => false, 'message' => 'Category Not Found'], 404);
+        } else {
+            if ($category->status == 1) {
+                $category->status = 0;
+            } elseif ($category->status == 0) {
+                $category->status = 1;
+            }
+            if ($category->save()) {
+                return response()->json(['success' => true, 'message' => 'Status updated.'], 200);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Error'], 500);
+            }
+        }
     }
 
     /**
@@ -52,7 +154,7 @@ class TailorCategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($tailor_id,Request $request)
+    public function store($tailor_id, Request $request)
     {
         $rules = [
             // 'tailor_id' => 'required',
@@ -64,11 +166,10 @@ class TailorCategoryController extends Controller
         ];
 
         $validation = Validator::make($request->all(), $rules);
-        
-        if($validation->fails())
-        { return response()->json(['success'=>false, 'message'=>'Category Validation Error','data' => $validation->errors()] , 422); }
-        else
-        {
+
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Category Validation Error', 'data' => $validation->errors()], 422);
+        } else {
             $tailor_category = TailorCategory::create([
                 'tailor_id' => $tailor_id,
                 'category_id' => 0,
@@ -80,30 +181,31 @@ class TailorCategoryController extends Controller
                 'status' => 1,
             ]);
 
-            if($tailor_category->save())
-            { return response()->json(['success' => true , 'message' => 'Category Created Successfully' , 'data' => ['id' => $tailor_category->id ] ] , 200); }
-            else
-            { return response()->json(['success' => false , 'message' => 'Category Creation Failed' , 'data' => [] ] , 422); }   
-        
+            if ($tailor_category->save()) {
+                return response()->json(['success' => true, 'message' => 'Category Created Successfully', 'data' => ['id' => $tailor_category->id]], 200);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Category Creation Failed', 'data' => []], 422);
+            }
         }
     }
 
-    
+
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($tailor_id,$category_id)
+    public function show($tailor_id, $category_id)
     {
-        $category = TailorCategory::where([['id',$category_id],['tailor_id',$tailor_id]])->first();
-        if(empty($category))
-        { return response()->json(['success' => false , 'message' => 'Category Not Found' , 'data' => [] ] , 404); }
-        else
-        { return response()->json(['success' => true , 'message' => 'Category Found' , 'data' => ['category'=>$category] ] , 200); }
+        $category = TailorCategory::where([['id', $category_id], ['tailor_id', $tailor_id]])->first();
+        if (empty($category)) {
+            return response()->json(['success' => false, 'message' => 'Category Not Found', 'data' => []], 404);
+        } else {
+            return response()->json(['success' => true, 'message' => 'Category Found', 'data' => ['category' => $category]], 200);
+        }
     }
-    
+
 
     /**
      * Update the specified resource in storage.
@@ -124,16 +226,14 @@ class TailorCategoryController extends Controller
         ];
 
         $validation = Validator::make($request->all(), $rules);
-        
-        if($validation->fails())
-        { return response()->json(['success'=>false, 'message'=>'Category Validation Error','data' => $validation->errors()] , 422); }
-        else
-        {
-            $tailor_category = TailorCategory::where([['tailor_id',$tailor_id],['id',$id]])->first();
-            if(empty($tailor_category))
-            { return response()->json(['success' => false , 'message' => 'Category does not exist.'] , 404); }
-            else
-            {
+
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Category Validation Error', 'data' => $validation->errors()], 422);
+        } else {
+            $tailor_category = TailorCategory::where([['tailor_id', $tailor_id], ['id', $id]])->first();
+            if (empty($tailor_category)) {
+                return response()->json(['success' => false, 'message' => 'Category does not exist.'], 404);
+            } else {
                 $tailor_category->name = $request->name;
                 $tailor_category->label = $request->label;
                 $tailor_category->gender = $request->gender;

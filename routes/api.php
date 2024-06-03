@@ -85,23 +85,29 @@ Route::group(['prefix' => '/categories/parameters'], function ($router) {
     $router->post('/store', [CategoryParameterController::class, 'store']);
 });
 
-Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/categories'], function ($router) {
+Route::group(['prefix' => '/tailors/{tailor_id}/categories'], function ($router) {
+// Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/categories'], function ($router) {
     $router->get('/', [TailorCategoryController::class, 'index']);
     $router->post('/', [TailorCategoryController::class, 'default']);
     $router->post('/store', [TailorCategoryController::class, 'store']);
     $router->get('/{category_id}', [TailorCategoryController::class, 'show']);
+    $router->post('/{category_id}/status', [TailorCategoryController::class, 'updateStatus']);
 });
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/parameters'], function ($router) {
     $router->get('/', [TailorParameterController::class, 'index']);
     $router->post('/', [TailorParameterController::class, 'default']);
     $router->post('/store', [TailorParameterController::class, 'store']);
 });
-Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/categories/{category_id}/parameters'], function ($router) {
+Route::group(['prefix' => '/tailors/{tailor_id}/categories/{category_id}/parameters'], function ($router) {
+// Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/categories/{category_id}/parameters'], function ($router) {
     $router->get('/', [TalCatParameterController::class, 'index']);
     $router->post('/', [TalCatParameterController::class, 'default']);
-    $router->post('/store', [TalCatParameterController::class, 'store']);
     $router->post('/update', [TalCatParameterController::class, 'update']);
+});
+Route::group(['prefix' => '/tailors/{tailor_id}/categories/parameters'], function ($router) {
+    // Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/categories/parameters'], function ($router) {
     $router->post('/destroy', [TalCatParameterController::class, 'destroy']);
+    $router->post('/store', [TalCatParameterController::class, 'store']);
 });
 
 Route::group(['prefix' => '/measurements'], function ($router) {
