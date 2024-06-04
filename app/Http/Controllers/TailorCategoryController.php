@@ -49,7 +49,6 @@ class TailorCategoryController extends Controller
      * )
      */
 
-
     public function index($tailor_id)
     {
         $categories = TailorCategory::where('tailor_id', $tailor_id)->get();

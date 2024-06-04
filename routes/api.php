@@ -86,7 +86,7 @@ Route::group(['prefix' => '/categories/parameters'], function ($router) {
 });
 
 Route::group(['prefix' => '/tailors/{tailor_id}/categories'], function ($router) {
-// Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/categories'], function ($router) {
+    // Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/categories'], function ($router) {
     $router->get('/', [TailorCategoryController::class, 'index']);
     $router->post('/', [TailorCategoryController::class, 'default']);
     $router->post('/store', [TailorCategoryController::class, 'store']);
@@ -99,7 +99,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id
     $router->post('/store', [TailorParameterController::class, 'store']);
 });
 Route::group(['prefix' => '/tailors/{tailor_id}/categories/{category_id}/parameters'], function ($router) {
-// Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/categories/{category_id}/parameters'], function ($router) {
+    // Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/categories/{category_id}/parameters'], function ($router) {
     $router->get('/', [TalCatParameterController::class, 'index']);
     $router->post('/', [TalCatParameterController::class, 'default']);
     $router->post('/update', [TalCatParameterController::class, 'update']);
@@ -109,19 +109,6 @@ Route::group(['prefix' => '/tailors/{tailor_id}/categories/parameters'], functio
     $router->post('/destroy', [TalCatParameterController::class, 'destroy']);
     $router->post('/store', [TalCatParameterController::class, 'store']);
 });
-
-Route::group(['prefix' => '/measurements'], function ($router) {
-    $router->get('/dresses/{dress_id}', [MeasurementController::class, 'getDressMeasurementWithValues']);
-    $router->post('/store/{dress_id}', [MeasurementController::class, 'newMeasurementWithValues']);
-    $router->get('/customer/{customer_id}', [MeasurementController::class, 'getCustomerMeasurements']);
-    $router->get('/delete/{measurement_id}', [MeasurementController::class, 'deleteMeasurement']);
-});
-
-Route::group(['prefix' => '/measurements/values'], function ($router) {
-    $router->post('/store', [MeasurementValueController::class, 'newMeasurementValue']);
-    $router->post('/delete', [MeasurementValueController::class, 'deleteInvalidMvs']);
-});
-
 // Route::group(['middleware'=>['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/dresses' ], function ($router) {
 Route::group(['prefix' => '/tailors/{tailor_id}/dresses'], function ($router) {
     $router->get('/{dress_id}/measurement', [DressController::class, 'getOrderDressMeasurement']);

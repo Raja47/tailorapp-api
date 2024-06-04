@@ -6,8 +6,8 @@ use App\Models\TailorCategoryParameter as TalCatParameter;
 use App\Models\CategoryParameter;
 use App\Models\TailorCategory;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
+use Illuminate\Http\Request;
 
 class TailorCategoryParameterController extends Controller
 {
@@ -16,6 +16,7 @@ class TailorCategoryParameterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     // swagger annotations 
     /**
      * @OA\Get(
@@ -58,7 +59,6 @@ class TailorCategoryParameterController extends Controller
      *     )
      * )
      */
-
     public function index($tailor_id, $category_id)
     {
         $parameters = TalCatParameter::where([['category_id', $category_id], ['tailor_id', $tailor_id]])->get();
@@ -97,6 +97,7 @@ class TailorCategoryParameterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     // swagger annotations
     /**
      * @OA\Post(
@@ -144,8 +145,6 @@ class TailorCategoryParameterController extends Controller
      *     )
      * )
      */
-
-
     public function store($tailor_id, Request $request)
     {
         $rules = [
@@ -208,6 +207,7 @@ class TailorCategoryParameterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     // swagger annotations
     /**
      * @OA\Post(
@@ -255,7 +255,6 @@ class TailorCategoryParameterController extends Controller
      *     )
      * )
      */
-
     public function destroy($tailor_id, Request $request)
     {
         $rules = [
