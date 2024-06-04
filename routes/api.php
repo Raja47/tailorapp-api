@@ -111,6 +111,7 @@ Route::group(['prefix' => '/tailors/{tailor_id}/categories/parameters'], functio
 });
 // Route::group(['middleware'=>['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/dresses' ], function ($router) {
 Route::group(['prefix' => '/tailors/{tailor_id}/dresses'], function ($router) {
+    $router->post('/create', [DressController::class, 'create']);
     $router->get('/{dress_id}/measurement', [DressController::class, 'getOrderDressMeasurement']);
     $router->post('/tabdress', [DressController::class, 'getTabDresses']);
     $router->post('/store', [DressController::class, 'addDress']);

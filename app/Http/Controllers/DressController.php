@@ -5,33 +5,123 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Dress;
+use App\Models\Order;
 use App\Models\Measurement;
+use App\Models\MeasurementValue;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DressController extends Controller
 {
-    // Create Table dresses( 
-    //     id Integer not Null Primary Key AutoIncrement,  
-    //     orderId Integer Not Null,
-    //     tailor_id Integer Not Null,
-    //     shop_id Integer Not Null,
-    //     categoryId  Integer Not Null,
-    //     name Text not Null,
-    //     gender Text Default 'male',
-    //     type Text not Null Default 'new',
-    //     quantity Integer Not Null,
-    //     price Int Not Null,
-    //     deliveryDate  Timestamp DATETIME DEFAULT Null,
-    //     trialDate Timestamp DATETIME DEFAULT Null,
-    //     isUrgent Int Default 0,
-    //     notes Text DEFAULT Null,
-    //     status Integer Default 1,
-    //     deletedAt Timestamp DATETIME DEFAULT Null,
-    //     createdAt Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)
+    // ORDER
+    // $table->integer('customer_id');
+    // $table->integer('tailor_id');
+    // $table->integer('shop_id');
+    // $table->string('name');
+    // $table->integer('discount')->default(0);
+    // $table->string('notes')->nullable();
+    // $table->integer('status')->default(1);
+    //
+    // DRESS
+    // $table->integer('order_id');
+    // $table->integer('tailor_id');
+    // $table->integer('shop_id');
+    // $table->integer('category_id');
+    // $table->string('name');
+    // $table->string('gender')->default('male');
+    // $table->string('type')->default('new');
+    // $table->integer('quantity');
+    // $table->integer('price');
+    // $table->timestamp('delivery_date')->nullable();
+    // $table->timestamp('trial_date')->nullable();
+    // $table->integer('is_urgent')->default(0);
+    // $table->string('notes')->nullable();
+    // $table->integer('status')->default(1);
+    //
+    // MEASUREMENT
+    // $table->string('model')->default('dress');
+    // $table->integer('model_id');
+    // $table->string('notes')->nullable();
+    // $table->integer('status')->default(1);
 
+    public function create($tailor_id, Request $request)
+    {
+        $rules = [
+            'customer_id' => 'required',
+            'shop_id' => 'required',
+            'name' => '',
+            'discount' => '',
+            'notes' => '',
 
-    public function getOrderDressMeasurement($tailor_id,$dress_id)
+            'category_id' => 'required',
+            'name' => '',
+            'type' => 'required',
+            'quantity' => 'required',
+            'price' => 'required',
+            'delivery_date' => '',
+            'trial_date' => '',
+            'is_urgent' => '',
+            'notes' => '',
+
+            'model' => '',
+            'model_id' => '',
+            'notes' => '',
+            'measurementBoxes' => 'required|array',
+        ];
+        $validation = Validator::make($request->all(), $rules);
+
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
+        } else {
+            $order = Order::create([
+                'customer_id' => $request->customer_id,
+                'tailor_id' => $tailor_id,
+                'shop_id' => $request->shop_id,
+                'name' => 'order-1',
+                // 'discount' => $request->discount,
+                'notes' => $request->notes,
+                'status' => 0,
+            ]);
+            $order_id = $order->id;
+
+            $dress = Dress::create([
+                'order_id' => $order_id,
+                'tailor_id' => $tailor_id,
+                'shop_id' => $request->shop_id,
+                'category_id' => $request->category_id,
+                'name' => '',
+                'type' => $request->type,
+                'quantity' => $request->quantity,
+                'price' => $request->price,
+                'delivery_date' => $request->delivery_date,
+                'trial_date' => $request->trial_date,
+                // 'is_urgent' => $request->is_urgent,
+                'status' => 0,
+                'notes' => $request->notes,
+            ]);
+            $dress_id = $dress->id;
+            $dress->name = '#D-' . $request->category_id . '-' . $dress_id;
+
+            $measurement = Measurement::create([
+                'model' => 'dress',
+                'model_id' => $dress_id,
+                'status' => 1,
+                'notes' => $request->notes,
+            ]);
+            $measurement_id = $measurement->id;
+            $responses = [];
+            foreach ($request->measurementBoxes as $measurementBox) {
+                $measurementBox['measurement_id'] = $measurement_id;
+                $responses[] = MeasurementValue::newMeasurementValue($measurementBox);
+            }
+            return response()->json(['data' => [
+                'order_id' => $order_id,
+                'dress_id' => $dress_id,
+                'measurement_id' => $measurement_id
+            ]]);
+        }
+    }
+    public function getOrderDressMeasurement($tailor_id, $dress_id)
     {
         $measurement = Measurement::where([['model', 'dress'], ['model_id', $dress_id]])->first();
         return response()->json(['success' => true, 'message' => 'Dress Measurement', 'data' => ['Dress id' => $dress_id, 'Measurement' => $measurement]], 200);
@@ -278,7 +368,7 @@ class DressController extends Controller
                     ->groupBy('status')
                     ->get();
                 break;
-                
+
             default:
                 $dresses = Dress::select('status')
                     ->selectRaw('SUM(quantity) as countDress')
@@ -296,9 +386,9 @@ class DressController extends Controller
     public function countDresses()
     {
         $dress = Dress::where('status', '!=', 4)
-                ->selectRaw('SUM(quantity) as countDress')
-                ->selectRaw('SUM(quantity * price) as totalAmount')
-                ->get();
+            ->selectRaw('SUM(quantity) as countDress')
+            ->selectRaw('SUM(quantity * price) as totalAmount')
+            ->get();
         return $dress;
     }
 
