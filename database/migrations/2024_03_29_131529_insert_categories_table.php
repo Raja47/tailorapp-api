@@ -14,7 +14,10 @@ class InsertCategoriesTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {   
+        // @todo we need to add this file in public folder , not in storage  
+        // first storage are mostly for user uploaded files , and are always git ignored 
+        // app related file are to be maintianed in public e.g css , js , icons , images , jsons
         $filePath = storage_path('app/categories.json');
         $categories = json_decode(File::get($filePath), true);
 
