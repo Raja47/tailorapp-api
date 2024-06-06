@@ -47,6 +47,8 @@ class DressController extends Controller
     public function create($tailor_id, Request $request)
     {
         $rules = [
+            'order_id' => '',
+
             'customer_id' => 'required',
             'shop_id' => 'required',
             'name' => '',
@@ -63,8 +65,8 @@ class DressController extends Controller
             'is_urgent' => '',
             'notes' => '',
 
-            'model' => '',
-            'model_id' => '',
+            'model' => '',  // @todo we need to remove this structure of model from measurements as well model 
+            'model_id' => '',   // and model_id would be remove and we will add dress_id column only 
             'notes' => '',
             'measurementBoxes' => 'required|array',
         ];
@@ -73,16 +75,22 @@ class DressController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
         } else {
-            $order = Order::create([
-                'customer_id' => $request->customer_id,
-                'tailor_id' => $tailor_id,
-                'shop_id' => $request->shop_id,
-                'name' => 'order-1',
-                // 'discount' => $request->discount,
-                'notes' => $request->notes,
-                'status' => 0,
-            ]);
-            $order_id = $order->id;
+            // if order id is not provided then it mean order is new with first dress being so create order
+            $order_id = $request->order_id;
+            if( empty($request->order_id) ){
+                $order = Order::create([
+                    'customer_id' => $request->customer_id,
+                    'tailor_id' => $tailor_id,
+                    'shop_id' => $request->shop_id,
+                    'name' => 'order-1',
+                    // 'discount' => $request->discount,
+                    'notes' => $request->notes,
+                    'status' => 0,
+                ]);
+                $order_id = $order->id;
+            }
+
+            
 
             $dress = Dress::create([
                 'order_id' => $order_id,
@@ -121,6 +129,10 @@ class DressController extends Controller
             ]]);
         }
     }
+
+    /**
+     * 
+     */
     public function getOrderDressMeasurement($tailor_id, $dress_id)
     {
         $measurement = Measurement::where([['model', 'dress'], ['model_id', $dress_id]])->first();
