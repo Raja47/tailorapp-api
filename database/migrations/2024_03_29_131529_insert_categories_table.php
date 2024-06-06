@@ -15,7 +15,7 @@ class InsertCategoriesTable extends Migration
      */
     public function up()
     {
-        $filePath = storage_path('app/categories.json');
+        $filePath = public_path('/initialData/categories.json');
         $categories = json_decode(File::get($filePath), true);
 
         foreach ($categories as $category) {
