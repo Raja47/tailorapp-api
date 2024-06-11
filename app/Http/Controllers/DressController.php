@@ -76,8 +76,9 @@ class DressController extends Controller
             return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
         } else {
             // if order id is not provided then it mean order is new with first dress being so create order
-            $order_id = $request->order_id;
-            if( empty($request->order_id) ){
+            if ($request->has('order_id')) {
+                $order_id = $request->order_id;
+            } else {
                 $order = Order::create([
                     'customer_id' => $request->customer_id,
                     'tailor_id' => $tailor_id,
@@ -89,8 +90,6 @@ class DressController extends Controller
                 ]);
                 $order_id = $order->id;
             }
-
-            
 
             $dress = Dress::create([
                 'order_id' => $order_id,
