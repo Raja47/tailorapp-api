@@ -11,6 +11,7 @@
 <!-- Font Google -->
 <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="TMV_WQao6kWvCsQPHpX5vXuv-ocBm97I7rmAfwl7aQE" />
 </head>
 
 <body>
