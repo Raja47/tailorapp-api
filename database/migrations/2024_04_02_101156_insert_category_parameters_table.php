@@ -15,7 +15,7 @@ class InsertCategoryParametersTable extends Migration
      */
     public function up()
     {
-        $filePath = storage_path('app/categoryparameters.json');
+        $filePath = public_path('/initialData/categoryparameters.json');
         $categoryParameters = json_decode(File::get($filePath), true);
 
         foreach ($categoryParameters as $categoryParameter) {

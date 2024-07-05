@@ -46,7 +46,7 @@ class OrderController extends Controller
         $order_count = count($tailor_orders);
         return response()->json(['success' => true, 'data' => ['Orders' => $order_count]], 200);
     }
-
+    //ambigous
     public function getCustomerByOrderid($tailor_id, $order_id)
     {
         $order = Order::where([['tailor_id', $tailor_id], ['id', $order_id]])->first();
@@ -58,7 +58,7 @@ class OrderController extends Controller
             return response()->json(['success' => true, 'message' => 'Customer Found', 'data' => ['Order' => $order_id, 'Customer' => $customer]], 200);
         }
     }
-
+    
     public function emptyOrder($tailor_id, Request $request)
     {
         $rules = [

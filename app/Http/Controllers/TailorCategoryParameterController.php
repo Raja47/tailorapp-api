@@ -23,6 +23,7 @@ class TailorCategoryParameterController extends Controller
      *     path="/tailors/{tailor_id}/categories/{category_id}/parameters/",
      *     summary="Get parameters by tailor and category",
      *     tags={"Parameters"},
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="tailor_id",
      *         in="path",
@@ -91,8 +92,6 @@ class TailorCategoryParameterController extends Controller
         }
     }
 
-
-
     /**
      * Store a newly created resource in storage.
      *
@@ -106,6 +105,7 @@ class TailorCategoryParameterController extends Controller
      *     path="/tailors/{tailor_id}/categories/parameters/store",
      *     summary="Create a new category parameter",
      *     tags={"Parameters"},
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="tailor_id",
      *         in="path",
@@ -168,7 +168,7 @@ class TailorCategoryParameterController extends Controller
                 'category_id' => $request->category_id,
                 'parameter_id' => $request->parameter_id,
                 'part' => $request->part,
-                'status' => $request->status,
+                'status' => 1,
             ]);
 
             if ($category_parameter->save()) {
@@ -178,6 +178,7 @@ class TailorCategoryParameterController extends Controller
             }
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -215,6 +216,7 @@ class TailorCategoryParameterController extends Controller
      *     path="/tailors/{tailor_id}/categories/parameters/destroy",
      *     summary="Delete a category parameter",
      *     tags={"Parameters"},
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="tailor_id",
      *         in="path",

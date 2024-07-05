@@ -16,7 +16,7 @@ class InsertParametersTable extends Migration
     public function up()
     {
 
-        $filePath = storage_path('app/parameters.json');
+        $filePath = public_path('/initialData/parameters.json');
         $parameters = json_decode(File::get($filePath), true);
 
         foreach ($parameters as $parameter) {

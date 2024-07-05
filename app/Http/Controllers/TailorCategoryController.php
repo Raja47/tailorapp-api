@@ -21,6 +21,7 @@ class TailorCategoryController extends Controller
      * @OA\Get(
      *     path="/tailors/{tailor_id}/categories",
      *     summary="Get all categories for a tailor",
+     *     security={{"bearerAuth": {}}},
      *     tags={"Categories"},
      *     @OA\Parameter(name="tailor_id", in="path", required=true, @OA\Schema(type="integer"), description="The ID of the tailor"),
      *     @OA\Response(
@@ -87,6 +88,7 @@ class TailorCategoryController extends Controller
      *     path="/tailors/{tailor_id}/categories/{category_id}/status",
      *     summary="Update the status of a category",
      *     tags={"Categories"},
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="tailor_id",
      *         in="path",
@@ -152,6 +154,55 @@ class TailorCategoryController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     */
+
+    // swagger annotations
+    /**
+     * @OA\Post(
+     *     path="/tailors/{tailor_id}/categories/store",
+     *     summary="Store a new category for a tailor",
+     *     tags={"Categories"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="tailor_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="name", type="string", description="Name of the category"),
+     *             @OA\Property(property="label", type="string", description="Label of the category"),
+     *             @OA\Property(property="gender", type="string", description="Gender for the category"),
+     *             @OA\Property(property="image", type="string", format="binary", description="Image for the category"),
+     *             @OA\Property(property="is_suggested", type="boolean", description="Is the category suggested")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Category Created Successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object", @OA\Property(property="id", type="integer"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Category Validation Error / Category Creation Failed",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object", additionalProperties={ "type": "string" })
+     *         )
+     *     )
+     * )
      */
     public function store($tailor_id, Request $request)
     {
