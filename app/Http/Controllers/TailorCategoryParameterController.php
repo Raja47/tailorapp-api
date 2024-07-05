@@ -23,6 +23,7 @@ class TailorCategoryParameterController extends Controller
      *     path="/tailors/{tailor_id}/categories/{category_id}/parameters/",
      *     summary="Get parameters by tailor and category",
      *     tags={"Parameters"},
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="tailor_id",
      *         in="path",
@@ -104,6 +105,7 @@ class TailorCategoryParameterController extends Controller
      *     path="/tailors/{tailor_id}/categories/parameters/store",
      *     summary="Create a new category parameter",
      *     tags={"Parameters"},
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="tailor_id",
      *         in="path",
@@ -214,6 +216,7 @@ class TailorCategoryParameterController extends Controller
      *     path="/tailors/{tailor_id}/categories/parameters/destroy",
      *     summary="Delete a category parameter",
      *     tags={"Parameters"},
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="tailor_id",
      *         in="path",

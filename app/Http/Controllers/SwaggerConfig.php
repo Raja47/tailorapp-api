@@ -14,6 +14,15 @@ use OpenApi\Annotations as OA;
  *     url="/api",
  *     description="Local API Server"
  * )
+ * @OA\SecurityScheme(
+ *     type="http",
+ *     description="Use a Bearer token to authorize requests",
+ *     name="Authorization",
+ *     in="header",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     securityScheme="bearerAuth",
+ * )
  */
 class SwaggerConfig
 {
