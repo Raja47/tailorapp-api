@@ -52,7 +52,7 @@ class TailorCategoryController extends Controller
 
     public function index($tailor_id)
     {
-        $categories = TailorCategory::where('tailor_id', $tailor_id)->get();
+        $categories = TailorCategory::where([['tailor_id', $tailor_id],['status',1]])->get();
         if (count($categories) === 0) {
             return response()->json(['tailor_id' => $tailor_id, 'categories' => 'No categories added'], 404);
         } else {
