@@ -38,6 +38,12 @@ Route::group(['prefix' => '/tailors'], function ($router) {
     $router->post('/changePassword', [TailorController::class, 'changePassword']);
     $router->post('/store', [TailorController::class, 'store']);
 });
+
+// For Prefix Tailor we unauthenticated routes
+Route::group(['prefix' => '/tailors'], function ($router) {
+    $router->post('/search', [TailorController::class, 'search']);
+});
+
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors'], function ($router) {
     $router->get('/index', [TailorController::class, 'index']);
     $router->post('/search', [TailorController::class, 'search']);
