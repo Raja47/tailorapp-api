@@ -41,6 +41,7 @@ Route::group(['prefix' => '/tailors'], function ($router) {
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors'], function ($router) {
     $router->get('/index', [TailorController::class, 'index']);
     $router->post('/search', [TailorController::class, 'search']);
+    $router->get('/username/{username}', [TailorController::class, 'if_username']);
     $router->post('/exists', [TailorController::class, 'exists']);
     $router->post('/destroy', [TailorController::class, 'destroy']);
     $router->post('/logout', [TailorController::class, 'logout']);

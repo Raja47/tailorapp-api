@@ -39,6 +39,38 @@ class TailorController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/tailors/username/{username}",
+     *     summary="Check if username exists",
+     *     security={{"bearerAuth": {}}},
+     *     tags={"Tailors"},
+     *     @OA\Parameter(
+     *         name="username",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         description="The username to check"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Username check result",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="exists", type="boolean", example=true)
+     *         )
+     *     ),
+     * )
+     */
+    public function if_username($username)
+    {
+        $username = Tailor::where('username', $username)->first();
+        if (empty($username)) {
+            return response()->json(['exists' => false]);
+        } else {
+            return response()->json(['exists' => true]);
+        }
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

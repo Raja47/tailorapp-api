@@ -769,6 +769,49 @@
                 ]
             }
         },
+        "/tailors/username/{username}": {
+            "get": {
+                "tags": [
+                    "Tailors"
+                ],
+                "summary": "Check if username exists",
+                "operationId": "b48073eb8055cfb55826a0b7788c12ee",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "The username to check",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Username check result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "exists": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/store": {
             "post": {
                 "tags": [
