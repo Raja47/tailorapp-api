@@ -38,6 +38,12 @@ Route::group(['prefix' => '/tailors'], function ($router) {
     $router->post('/changePassword', [TailorController::class, 'changePassword']);
     $router->post('/store', [TailorController::class, 'store']);
 });
+
+// For Prefix Tailor we unauthenticated routes
+Route::group(['prefix' => '/tailors'], function ($router) {
+    $router->post('/search', [TailorController::class, 'search']);
+});
+
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors'], function ($router) {
     $router->get('/index', [TailorController::class, 'index']);
     $router->post('/search', [TailorController::class, 'search']);
@@ -134,13 +140,13 @@ Route::group(['prefix' => '/tailors/{tailor_id}/orders'], function ($router) {
     $router->post('/empty', [OrderController::class, 'emptyOrder']);
 });
 
-Route::group(['prefix' => '/media'], function ($router) {
-    $router->get('/order/{order_id}', [MediaController::class, 'getOrderMedia']);
-    $router->get('/dress/{dress_id}', [MediaController::class, 'getDressMedia']);
-    $router->post('/create', [MediaController::class, 'create']);
-    $router->post('/{media_id}/update', [MediaController::class, 'update']);
-    $router->post('/{media_id}/delete', [MediaController::class, 'delete']);
-});
+// Route::group(['prefix' => '/media'], function ($router) {
+//     $router->get('/order/{order_id}', [MediaController::class, 'getOrderMedia']);
+//     $router->get('/dress/{dress_id}', [MediaController::class, 'getDressMedia']);
+//     $router->post('/create', [MediaController::class, 'create']);
+//     $router->post('/{media_id}/update', [MediaController::class, 'update']);
+//     $router->post('/{media_id}/delete', [MediaController::class, 'delete']);
+// });
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

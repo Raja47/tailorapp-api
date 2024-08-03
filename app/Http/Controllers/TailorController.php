@@ -150,7 +150,8 @@ class TailorController extends Controller
             $categories = app('App\Http\Controllers\TailorCategoryController')->default($tailor->id);
             $parameters = app('App\Http\Controllers\TailorParameterController')->default($tailor->id);
             $cat_parameters = app('App\Http\Controllers\TailorCategoryParameterController')->default($tailor->id);
-            return response()->json(['success' => true, 'message' => 'Tailor Created Successfully', 'data' => ['id' => $tailor->id]], 200);
+            $token = $tailor->createToken('auth_token')->plainTextToken;
+            return response()->json(['success' => true, 'message' => 'Tailor Created Successfully', 'data' => ['id' => $tailor->id ,"token" => $token]], 200);
         }
     }
 
