@@ -15,6 +15,57 @@ class TailorParameterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    /**
+     * @OA\Get(
+     *     path="/tailors/{tailor_id}/parameters",
+     *     summary="Get all parameters for a specific tailor",
+     *     tags={"Parameters"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="tailor_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The ID of the tailor"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of parameters",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="tailor_id", type="integer", example=1),
+     *             @OA\Property(
+     *                 property="parameters",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Parameter 1"),
+     *                     @OA\Property(property="type", type="string", example="string"),
+     *                     @OA\Property(property="value", type="string", example="Some value"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2024-08-03T12:00:00Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2024-08-03T12:00:00Z")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No parameters added",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="tailor_id", type="integer", example=1),
+     *             @OA\Property(property="parameters", type="string", example="No parameters added")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
+     */
     public function index($tailor_id)
     {
         $parameters = TailorParameter::where('tailor_id',$tailor_id)->get();
