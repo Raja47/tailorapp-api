@@ -470,6 +470,106 @@
                 ]
             }
         },
+        "/tailors/{tailor_id}/categories/{category_id}/delete": {
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Delete a category for a specific tailor",
+                "operationId": "b4d7c4efd57228274776f108b98087ca",
+                "parameters": [
+                    {
+                        "name": "tailor_id",
+                        "in": "path",
+                        "description": "The ID of the tailor",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "path",
+                        "description": "The ID of the category to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category Deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category Deleted successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category does not exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category does not exist"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/{tailor_id}/categories/{category_id}/parameters/": {
             "get": {
                 "tags": [
@@ -815,7 +915,7 @@
         "/tailors/store": {
             "post": {
                 "tags": [
-                    "TailorAuth"
+                    "Tailors"
                 ],
                 "summary": "Create a new tailor",
                 "operationId": "020afb6a9bca8bb34c44ae39505d223a",

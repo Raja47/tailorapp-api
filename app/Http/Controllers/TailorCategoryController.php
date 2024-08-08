@@ -52,7 +52,7 @@ class TailorCategoryController extends Controller
 
     public function index($tailor_id)
     {
-        $categories = TailorCategory::where([['tailor_id', $tailor_id],['status',1]])->get();
+        $categories = TailorCategory::where([['tailor_id', $tailor_id], ['status', 1]])->get();
         if (count($categories) === 0) {
             return response()->json(['tailor_id' => $tailor_id, 'categories' => 'No categories added'], 404);
         } else {
@@ -300,8 +300,64 @@ class TailorCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+
+    /**
+     * @OA\Post(
+     *     path="/tailors/{tailor_id}/categories/{category_id}/delete",
+     *     summary="Delete a category for a specific tailor",
+     *     tags={"Categories"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="tailor_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The ID of the tailor"
+     *     ),
+     *     @OA\Parameter(
+     *         name="category_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The ID of the category to delete"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Category Deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Category Deleted successfully"),
+     *             @OA\Property(property="data", type="object", example={})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Category does not exist",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Category does not exist"),
+     *             @OA\Property(property="data", type="object", example={})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
+     */
+
+    public function destroy($tailor_id, $id)
     {
-        //
+        $tailor_category = TailorCategory::where([['tailor_id', $tailor_id], ['id', $id]])->first();
+
+        if ($tailor_category) {
+            $tailor_category->delete();
+            return response()->json(['status' => 'success', 'message' => 'Category Deleted successfully', 'data' => []], 200);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Category does not exist', 'data' => []], 404);
+        }
     }
 }

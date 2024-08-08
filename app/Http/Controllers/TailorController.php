@@ -82,7 +82,7 @@ class TailorController extends Controller
      * @OA\Post(
      *     path="/tailors/store",
      *     summary="Create a new tailor",
-     *     tags={"TailorAuth"},
+     *     tags={"Tailors"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(

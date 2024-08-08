@@ -46,7 +46,6 @@ Route::group(['prefix' => '/tailors'], function ($router) {
 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors'], function ($router) {
     $router->get('/index', [TailorController::class, 'index']);
-    $router->post('/search', [TailorController::class, 'search']);
     $router->get('/username/{username}', [TailorController::class, 'if_username']);
     $router->post('/exists', [TailorController::class, 'exists']);
     $router->post('/destroy', [TailorController::class, 'destroy']);
@@ -94,12 +93,12 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/categories/paramet
 });
 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/categories'], function ($router) {
-    // Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/categories'], function ($router) {
     $router->get('/', [TailorCategoryController::class, 'index']);
     $router->post('/', [TailorCategoryController::class, 'default']);
     $router->post('/store', [TailorCategoryController::class, 'store']);
     $router->get('/{category_id}', [TailorCategoryController::class, 'show']);
     $router->post('/{category_id}/status', [TailorCategoryController::class, 'updateStatus']);
+    $router->post('/{category_id}/delete', [TailorCategoryController::class, 'destroy']);
 });
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/{tailor_id}/parameters'], function ($router) {
     $router->get('/', [TailorParameterController::class, 'index']);
