@@ -103,7 +103,7 @@ class TailorCategoryParameterController extends Controller
     /**
      * @OA\Post(
      *     path="/tailors/{tailor_id}/categories/parameters/store",
-     *     summary="Create a new category parameter",
+     *     summary="Create new category parameters",
      *     tags={"Parameters"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
@@ -116,23 +116,25 @@ class TailorCategoryParameterController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="label", type="string", example="Sample Label"),
-     *             @OA\Property(property="category_id", type="integer", example=1),
-     *             @OA\Property(property="parameter_id", type="integer", example=1),
-     *             @OA\Property(property="part", type="string", example="Part Name"),
-     *             @OA\Property(property="status", type="string", example="active")
+     *             @OA\Property(property="category_id", type="integer", example=1, description="The ID of the category"),
+     *             @OA\Property(
+     *                 property="parameter_id",
+     *                 type="array",
+     *                 @OA\Items(type="integer", example=1),
+     *                 description="Array of parameter IDs"
+     *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Category parameter created successfully",
+     *         description="Category parameters created successfully",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Category parameter Created Successfully"),
+     *             @OA\Property(property="message", type="string", example="Category Parameter Added Successfully"),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 @OA\Property(property="id", type="integer", example=1)
+     *                 @OA\Property(property="ids", type="array", @OA\Items(type="integer", example=1), description="Array of created parameter IDs")
      *             )
      *         )
      *     ),
@@ -142,7 +144,11 @@ class TailorCategoryParameterController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
      *             @OA\Property(property="message", type="string", example="Category parameter data validation error"),
-     *             @OA\Property(property="data", type="object")
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="Contains validation error messages"
+     *             )
      *         )
      *     )
      * )
@@ -150,35 +156,36 @@ class TailorCategoryParameterController extends Controller
     public function store($tailor_id, Request $request)
     {
         $rules = [
-            'label' => '',
-            'category_id' => 'required',
-            'parameter_id' => 'required',
-            'part' => '',
-            'status' => '',
+            'category_id' => 'required|exists:tailor_categories,id',
+            'parameter_id' => 'required|array',
+            'parameter_id.*' => 'integer|exists:tailor_parameters,id',
         ];
 
         $validation = Validator::make($request->all(), $rules);
 
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Catgeory parameter data validation error', 'data' => $validation->errors()], 422);
-        } else {
+        }
+        $createdParameters = [];
+        foreach ($request->parameter_id as $parameter_id) {
             $category_parameter = TalCatParameter::create([
-                'label' => $request->label,
+                'label' => null,
                 'tailor_id' => $tailor_id,
                 'category_id' => $request->category_id,
-                'parameter_id' => $request->parameter_id,
-                'part' => $request->part,
+                'parameter_id' => $parameter_id,
+                'part' => null,
                 'status' => 1,
             ]);
 
             if ($category_parameter->save()) {
-                return response()->json(['success' => true, 'message' => 'Catgeory parameter Created Successfully', 'data' => ['id' => $category_parameter->id]], 200);
+                $createdParameters[] = $category_parameter->id;
             } else {
                 return response()->json(['success' => false, 'message' => 'Catgeory parameter Creation Failed', 'data' => []], 422);
             }
         }
+        return response()->json(['success' => true, 'message' => 'Catgeory Parameter Added Successfully', 'data' => ['ids' => $createdParameters]], 200);
     }
-
+    
 
     /**
      * Display the specified resource.

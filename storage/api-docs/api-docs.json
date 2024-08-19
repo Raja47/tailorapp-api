@@ -653,7 +653,7 @@
                 "tags": [
                     "Parameters"
                 ],
-                "summary": "Create a new category parameter",
+                "summary": "Create new category parameters",
                 "operationId": "5fdeb325270a206db1e94d12593d6261",
                 "parameters": [
                     {
@@ -672,25 +672,18 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "label": {
-                                        "type": "string",
-                                        "example": "Sample Label"
-                                    },
                                     "category_id": {
+                                        "description": "The ID of the category",
                                         "type": "integer",
                                         "example": 1
                                     },
                                     "parameter_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "part": {
-                                        "type": "string",
-                                        "example": "Part Name"
-                                    },
-                                    "status": {
-                                        "type": "string",
-                                        "example": "active"
+                                        "description": "Array of parameter IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -700,7 +693,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Category parameter created successfully",
+                        "description": "Category parameters created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -711,13 +704,17 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Category parameter Created Successfully"
+                                            "example": "Category Parameter Added Successfully"
                                         },
                                         "data": {
                                             "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
+                                                "ids": {
+                                                    "description": "Array of created parameter IDs",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    }
                                                 }
                                             },
                                             "type": "object"
@@ -743,6 +740,7 @@
                                             "example": "Category parameter data validation error"
                                         },
                                         "data": {
+                                            "description": "Contains validation error messages",
                                             "type": "object"
                                         }
                                     },
