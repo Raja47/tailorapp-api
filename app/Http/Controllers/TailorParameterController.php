@@ -86,7 +86,7 @@ class TailorParameterController extends Controller
                 'parameter_id' => $parameter->id,
                 'name' => $parameter->name,
                 'label' => $parameter->label,
-                'image' => $parameter->image,
+                'image' => 'parameters/'.$parameter->image,
             ]);
         }
         if($tailor_parameter->save()){
