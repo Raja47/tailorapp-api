@@ -44,7 +44,7 @@ class DressController extends Controller
     // $table->string('notes')->nullable();
     // $table->integer('status')->default(1);
 
-    public function create($tailor_id, Request $request)
+    public function create(Request $request)
     {
         $rules = [
             'order_id' => '',
@@ -75,6 +75,7 @@ class DressController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             // if order id is not provided then it mean order is new with first dress being so create order
             if ($request->has('order_id')) {
                 $order_id = $request->order_id;
@@ -132,13 +133,13 @@ class DressController extends Controller
     /**
      * 
      */
-    public function getOrderDressMeasurement($tailor_id, $dress_id)
+    public function getOrderDressMeasurement($dress_id)
     {
         $measurement = Measurement::where([['model', 'dress'], ['model_id', $dress_id]])->first();
         return response()->json(['success' => true, 'message' => 'Dress Measurement', 'data' => ['Dress id' => $dress_id, 'Measurement' => $measurement]], 200);
     }
 
-    public function getTabDresses($tailor_id, Request $request)
+    public function getTabDresses(Request $request)
     {
         $rules = [
             'shop_id' => 'required',
@@ -267,7 +268,7 @@ class DressController extends Controller
         }
     }
 
-    public function addDress($tailor_id, Request $request)
+    public function addDress(Request $request)
     {
         $rules = [
             'order_id' => 'required',
@@ -282,6 +283,7 @@ class DressController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Dress data validation error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $dress = Dress::create([
                 'order_id' => $request->order_id,
                 'tailor_id' => $tailor_id,
@@ -310,7 +312,7 @@ class DressController extends Controller
     }
 
 
-    public function updateDress($tailor_id, Request $request)
+    public function updateDress(Request $request)
     {
         $rules = [
             'dress_id' => 'required'
@@ -320,6 +322,7 @@ class DressController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Dress data validation error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $dress = Dress::where([['id', $request->dress_id], ['tailor_id', $tailor_id]])->first();
             $dress->category_id = $request->category_id;
             $dress->name = '';
@@ -339,9 +342,10 @@ class DressController extends Controller
         }
     }
 
-    public function countDressesByStatus($tailor_id, $shop_id, $index)
+    public function countDressesByStatus($shop_id, $index)
     {
         $now = Carbon::now();
+        $tailor_id = auth('sanctum')->user()->id;
         switch ($index) {
             case 0:
                 //this month
@@ -403,15 +407,17 @@ class DressController extends Controller
         return $dress;
     }
 
-    public function delete($tailor_id, $dress_id)
+    public function delete($dress_id)
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $dress = Dress::where([['id', $dress_id], ['tailor_id', $tailor_id]])->get();
         $dress->delete();
         return response()->json(['success' => true, 'message' => 'Dress Deleted', 'data' => ['countDeletes' => $dress->count()]], 200);
     }
 
-    public function getOrderDresses($tailor_id, $order_id)
+    public function getOrderDresses($order_id)
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $query = DB::table('dresses')
             ->select('dresses.*', 'categories.name AS catName', 'pictures.path AS picture')
             ->leftjoin('categories', 'categories.id', '=', 'dresses.category_id')
@@ -423,7 +429,7 @@ class DressController extends Controller
         return $dresses;
     }
 
-    public function updateStatus($tailor_id, Request $request)
+    public function updateStatus(Request $request)
     {
         $rules = [
             'dress_id' => 'required',
@@ -435,6 +441,7 @@ class DressController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Dress data validation error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $dress = Dress::where([['id', $request->dress_id], ['tailor_id', $tailor_id]])->first();
             $dress->status = $request->status_id;
 

@@ -19,11 +19,10 @@ class TailorCategoryController extends Controller
     // swagger annotations
     /**
      * @OA\Get(
-     *     path="/tailors/{tailor_id}/categories",
+     *     path="/tailors/categories",
      *     summary="Get all categories for a tailor",
      *     security={{"bearerAuth": {}}},
      *     tags={"Categories"},
-     *     @OA\Parameter(name="tailor_id", in="path", required=true, @OA\Schema(type="integer"), description="The ID of the tailor"),
      *     @OA\Response(
      *         response=200,
      *         description="List of categories",
@@ -50,8 +49,9 @@ class TailorCategoryController extends Controller
      * )
      */
 
-    public function index($tailor_id)
+    public function index()
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $categories = TailorCategory::where([['tailor_id', $tailor_id], ['status', 1]])->get();
         if (count($categories) === 0) {
             return response()->json(['tailor_id' => $tailor_id, 'categories' => 'No categories added'], 404);
@@ -60,8 +60,9 @@ class TailorCategoryController extends Controller
         }
     }
 
-    public function default($tailor_id)
+    public function default()
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $categories = Category::all();
         foreach ($categories as $category) {
             $tailor_category = TailorCategory::create([
@@ -85,17 +86,10 @@ class TailorCategoryController extends Controller
     // swagger annotations
     /**
      * @OA\Post(
-     *     path="/tailors/{tailor_id}/categories/{category_id}/status",
+     *     path="/tailors/categories/{category_id}/status",
      *     summary="Update the status of a category",
      *     tags={"Categories"},
      *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="tailor_id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer"),
-     *         description="The ID of the tailor"
-     *     ),
      *     @OA\Parameter(
      *         name="category_id",
      *         in="path",
@@ -130,8 +124,9 @@ class TailorCategoryController extends Controller
      * )
      */
 
-    public function updateStatus($tailor_id, $category_id)
+    public function updateStatus($category_id)
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $category = TailorCategory::where([['id', $category_id], ['tailor_id', $tailor_id]])->first();
         if (empty($category)) {
             return response()->json(['success' => false, 'message' => 'Category Not Found'], 404);
@@ -159,18 +154,10 @@ class TailorCategoryController extends Controller
     // swagger annotations
     /**
      * @OA\Post(
-     *     path="/tailors/{tailor_id}/categories/store",
+     *     path="/tailors/categories/store",
      *     summary="Store a new category for a tailor",
      *     tags={"Categories"},
      *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="tailor_id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -204,10 +191,9 @@ class TailorCategoryController extends Controller
      *     )
      * )
      */
-    public function store($tailor_id, Request $request)
+    public function store(Request $request)
     {
         $rules = [
-            // 'tailor_id' => 'required',
             'name' => 'required',
             'label' => '',
             'gender' => '',
@@ -220,6 +206,7 @@ class TailorCategoryController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Category Validation Error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $tailor_category = TailorCategory::create([
                 'tailor_id' => $tailor_id,
                 'category_id' => 0,
@@ -246,8 +233,9 @@ class TailorCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($tailor_id, $category_id)
+    public function show($category_id)
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $category = TailorCategory::where([['id', $category_id], ['tailor_id', $tailor_id]])->first();
         if (empty($category)) {
             return response()->json(['success' => false, 'message' => 'Category Not Found', 'data' => []], 404);
@@ -264,7 +252,7 @@ class TailorCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($tailor_id, Request $request, $id)
+    public function update(Request $request, $id)
     {
         $rules = [
             'name' => 'required',
@@ -280,6 +268,7 @@ class TailorCategoryController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Category Validation Error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $tailor_category = TailorCategory::where([['tailor_id', $tailor_id], ['id', $id]])->first();
             if (empty($tailor_category)) {
                 return response()->json(['success' => false, 'message' => 'Category does not exist.'], 404);
@@ -301,19 +290,13 @@ class TailorCategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    // swagger annotations
     /**
      * @OA\Post(
-     *     path="/tailors/{tailor_id}/categories/{category_id}/delete",
+     *     path="/tailors/categories/{category_id}/delete",
      *     summary="Delete a category for a specific tailor",
      *     tags={"Categories"},
      *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="tailor_id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer"),
-     *         description="The ID of the tailor"
-     *     ),
      *     @OA\Parameter(
      *         name="category_id",
      *         in="path",
@@ -349,8 +332,9 @@ class TailorCategoryController extends Controller
      * )
      */
 
-    public function destroy($tailor_id, $id)
+    public function destroy($id)
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $tailor_category = TailorCategory::where([['tailor_id', $tailor_id], ['id', $id]])->first();
 
         if ($tailor_category) {

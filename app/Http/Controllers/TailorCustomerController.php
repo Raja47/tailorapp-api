@@ -14,39 +14,36 @@ class TailorCustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($tailor_id, Request $request)
+    public function index(Request $request)
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $page = $request->input('page');
         $perpage = $request->input('perpage');
-        if (empty($tailor_id)) {
-            return 'tailor id is required';
-        } else {
-            if (empty($page) or empty($perpage)) {
-                $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->get();
-            } else {
-                $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->forpage($page, $perpage)->get();
-            }
 
-            if (count($tailorcustomers) === 0) {
-                return response()->json(['success' => false, 'message' => 'No Customer Found', 'data' => ['tailor_id' => $tailor_id]], 200);
-            } else {
-                return response()->json(['success' => true, 'message' => 'Customers Found', 'data' => ['tailor_id' => $tailor_id, 'customers' => $tailorcustomers]], 200);
-            }
+        if (empty($page) or empty($perpage)) {
+            $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->get();
+        } else {
+            $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->forpage($page, $perpage)->get();
+        }
+
+        if (count($tailorcustomers) === 0) {
+            return response()->json(['success' => false, 'message' => 'No Customer Found', 'data' => ['tailor_id' => $tailor_id]], 200);
+        } else {
+            return response()->json(['success' => true, 'message' => 'Customers Found', 'data' => ['tailor_id' => $tailor_id, 'customers' => $tailorcustomers]], 200);
         }
     }
 
-
-    //param: tailor_id in request
     //count of customers for specific tailor
-    public function countCustomers($tailor_id)
+    public function countCustomers()
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $countCustomers = TailorCustomer::where('tailor_id', $tailor_id)->count();
         return response()->json(['success' => true, 'message' => 'Customer Count', 'data' => ['tailor_id' => $tailor_id, 'countCustomer' => $countCustomers]], 200);
     }
 
-    //param: phone number & tailor_id in request
+    //param: phone number in request
     //get customer by phone number
-    public function getCustomer($tailor_id, Request $request)
+    public function getCustomer(Request $request)
     {
         $rules = [
             'number' => 'required',
@@ -55,6 +52,7 @@ class TailorCustomerController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $customer = TailorCustomer::where([['number', $request->number], ['tailor_id', $tailor_id]])->first();
             if (empty($customer)) {
                 return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 200);
@@ -64,10 +62,11 @@ class TailorCustomerController extends Controller
         }
     }
 
-    //param: customer_id & tailor_id in request
+    //param: customer_id in request
     //get customer by Id
-    public function getCustomerById($tailor_id, $customer_id)
+    public function getCustomerById($customer_id)
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $customer = TailorCustomer::where([['customer_id', $customer_id], ['tailor_id', $tailor_id]])->first();
         if (empty($customer)) {
             return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 200);
@@ -77,7 +76,7 @@ class TailorCustomerController extends Controller
     }
 
 
-    public function search($tailor_id, Request $request)
+    public function search(Request $request)
     {
         $page = $request->input('page');
         $perpage = $request->input('perpage');
@@ -88,6 +87,7 @@ class TailorCustomerController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $text = $request->searchText;
             if (empty($text)) {
                 if (empty($page) or empty($perpage)) {
@@ -121,7 +121,7 @@ class TailorCustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($tailor_id, Request $request)
+    public function store(Request $request)
     {
         $customer = Customer::where('number', $request->number)->first();
 
@@ -141,6 +141,7 @@ class TailorCustomerController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $tailorcustomer = TailorCustomer::where([['number', $request->number], ['tailor_id', $tailor_id]])->first();
             if (!empty($tailorcustomer)) {
                 return response()->json(['success' => false, 'message' => 'Customer Already Exists', 'data' => $tailorcustomer->id], 200);
@@ -172,7 +173,7 @@ class TailorCustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($tailor_id, Request $request)
+    public function update(Request $request)
     {
         $rules = [
             'customer_id' => 'required',
@@ -187,6 +188,7 @@ class TailorCustomerController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $tailorcustomer = TailorCustomer::where([['customer_id', $request->customer_id], ['tailor_id', $tailor_id]])->first();
             if (empty($tailorcustomer)) {
                 return response()->json(['success' => false, 'message' => 'Customer does not exist.', 'data' => []], 200);
@@ -213,7 +215,7 @@ class TailorCustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($tailor_id, Request $request)
+    public function destroy(Request $request)
     {
         $rules = [
             'customer_id' => 'required|numeric',
@@ -223,6 +225,7 @@ class TailorCustomerController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Customer Validation Error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $tailorcustomer = TailorCustomer::where([['customer_id', $request->customer_id], ['tailor_id', $tailor_id]])->first();
             if (empty($tailorcustomer)) {
                 return response()->json(['success' => false, 'message' => 'Customer does not exist.', 'data' => []], 404);

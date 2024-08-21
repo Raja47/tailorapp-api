@@ -16,19 +16,13 @@ class TailorParameterController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    // swagger annotations
     /**
      * @OA\Get(
-     *     path="/tailors/{tailor_id}/parameters",
+     *     path="/tailors/parameters",
      *     summary="Get all parameters for a specific tailor",
      *     tags={"Parameters"},
      *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="tailor_id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer"),
-     *         description="The ID of the tailor"
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="List of parameters",
@@ -66,34 +60,36 @@ class TailorParameterController extends Controller
      *     )
      * )
      */
-    public function index($tailor_id)
+    public function index()
     {
-        $parameters = TailorParameter::where('tailor_id',$tailor_id)->get();
-        if(count($parameters)===0)
-        { return response()->json(['tailor_id'=>$tailor_id,'parameters'=>'No parameters added'], 404); }
-        else
-        { return response()->json(['tailor_id'=>$tailor_id,'parameters'=>$parameters],200); }
+        $tailor_id = auth('sanctum')->user()->id;
+        $parameters = TailorParameter::where('tailor_id', $tailor_id)->get();
+        if (count($parameters) === 0) {
+            return response()->json(['tailor_id' => $tailor_id, 'parameters' => 'No parameters added'], 404);
+        } else {
+            return response()->json(['tailor_id' => $tailor_id, 'parameters' => $parameters], 200);
+        }
     }
 
 
-    public function default($tailor_id)
+    public function default()
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $parameters = Parameter::all();
-        foreach($parameters as $parameter)
-        {
+        foreach ($parameters as $parameter) {
             $tailor_parameter = TailorParameter::create([
                 'tailor_id' => $tailor_id,
                 'parameter_id' => $parameter->id,
                 'name' => $parameter->name,
                 'label' => $parameter->label,
-                'image' => 'parameters/'.$parameter->image,
+                'image' => 'parameters/' . $parameter->image,
             ]);
         }
-        if($tailor_parameter->save()){
-            return response()->json(['success' => true , 'message' => 'Default parameters added successfully' ] , 200);
-        }else{
-            return response()->json(['success' => false , 'message' => 'Default parameters Creation Failed' ] , 422);
-        }   
+        if ($tailor_parameter->save()) {
+            return response()->json(['success' => true, 'message' => 'Default parameters added successfully'], 200);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Default parameters Creation Failed'], 422);
+        }
     }
 
 
@@ -103,7 +99,7 @@ class TailorParameterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($tailor_id,Request $request)
+    public function store(Request $request)
     {
         $rules = [
             'name' => 'required|unique:tailor_parameters',
@@ -112,11 +108,11 @@ class TailorParameterController extends Controller
         ];
 
         $validation = Validator::make($request->all(), $rules);
-        
-        if($validation->fails())
-        { return response()->json(['success'=>false, 'message'=>'Category Validation Error','data' => $validation->errors()] , 422); }
-        else
-        {
+
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Category Validation Error', 'data' => $validation->errors()], 422);
+        } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $tailor_parameter = TailorParameter::create([
                 'tailor_id' => $tailor_id,
                 'parameter_id' => 0,
@@ -125,10 +121,11 @@ class TailorParameterController extends Controller
                 'image' => $request->image,
             ]);
 
-            if($tailor_parameter->save())
-            { return response()->json(['success' => true , 'message' => 'Parameter Created Successfully' , 'data' => ['id' => $tailor_parameter->id ] ] , 200); }
-            else
-            { return response()->json(['success' => false , 'message' => 'Parameter Creation Failed' , 'data' => [] ] , 422); }   
+            if ($tailor_parameter->save()) {
+                return response()->json(['success' => true, 'message' => 'Parameter Created Successfully', 'data' => ['id' => $tailor_parameter->id]], 200);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Parameter Creation Failed', 'data' => []], 422);
+            }
         }
     }
 
@@ -150,7 +147,7 @@ class TailorParameterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($tailor_id, Request $request, $id)
+    public function update(Request $request, $id)
     {
         $rules = [
             'name' => 'required',
@@ -159,28 +156,24 @@ class TailorParameterController extends Controller
         ];
 
         $validation = Validator::make($request->all(), $rules);
-        
-        if($validation->fails())
-        { return response()->json(['success'=>false, 'message'=>'Category Validation Error','data' => $validation->errors()] , 422); }
-        else
-        {
-            $tailor_parameter = TailorParameter::where([['tailor_id',$tailor_id],['id',$id]])->first();
-            if(empty($tailor_parameter))
-            { return response()->json(['success' => false , 'message' => 'Category does not exist.'] , 404); }
-            else
-            {
+
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Category Validation Error', 'data' => $validation->errors()], 422);
+        } else {
+            $tailor_id = auth('sanctum')->user()->id;
+            $tailor_parameter = TailorParameter::where([['tailor_id', $tailor_id], ['id', $id]])->first();
+            if (empty($tailor_parameter)) {
+                return response()->json(['success' => false, 'message' => 'Category does not exist.'], 404);
+            } else {
                 $tailor_parameter->name = $request->name;
                 $tailor_parameter->label = $request->label;
                 $tailor_parameter->image = $request->image;
-
-                if($tailor_parameter->save()){
-                    return response()->json(['success' => true , 'message' => 'Parameter Updated Successfully' , 'data' => ['id' => $tailor_parameter->id ] ] , 200);
-                }else{
-                    return response()->json(['success' => false , 'message' => 'Parameter Updation Failed' , 'data' => [] ] , 422);
-                }  
-
+                if ($tailor_parameter->save()) {
+                    return response()->json(['success' => true, 'message' => 'Parameter Updated Successfully', 'data' => ['id' => $tailor_parameter->id]], 200);
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Parameter Updation Failed', 'data' => []], 422);
+                }
             }
-
         }
     }
 

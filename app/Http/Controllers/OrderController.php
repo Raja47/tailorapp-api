@@ -19,7 +19,7 @@ class OrderController extends Controller
         //
     }
 
-    public function updateStatus($tailor_id, Request $request)
+    public function updateStatus(Request $request)
     {
         $rules = [
             'order_id' => 'required',
@@ -30,6 +30,7 @@ class OrderController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Order data validation error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $order = Order::where([['id', $request->order_id], ['tailor_id', $tailor_id]])->first();
             $order->status = $request->status;
             if ($order->save()) {
@@ -40,15 +41,17 @@ class OrderController extends Controller
         }
     }
 
-    public function countOrders($tailor_id)
+    public function countOrders()
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 1]])->get();
         $order_count = count($tailor_orders);
         return response()->json(['success' => true, 'data' => ['Orders' => $order_count]], 200);
     }
     //ambigous
-    public function getCustomerByOrderid($tailor_id, $order_id)
+    public function getCustomerByOrderid($order_id)
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $order = Order::where([['tailor_id', $tailor_id], ['id', $order_id]])->first();
         $customer_id = $order->customer_id;
         $customer = Customer::where('id', $customer_id)->first();
@@ -59,7 +62,7 @@ class OrderController extends Controller
         }
     }
     
-    public function emptyOrder($tailor_id, Request $request)
+    public function emptyOrder(Request $request)
     {
         $rules = [
             'customer_id' => 'required',
@@ -73,6 +76,7 @@ class OrderController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Order data validation error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $order = Order::create([
                 'customer_id' => $request->customer_id,
                 'tailor_id' => $tailor_id,
@@ -89,8 +93,9 @@ class OrderController extends Controller
         }
     }
 
-    public function getOrders($tailor_id)
+    public function getOrders()
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $tailor_orders = Order::where('tailor_id', $tailor_id)->get();
         if (count($tailor_orders) === 0) {
             return response()->json(['success' => false, 'message' => 'No Order Found'], 200);
@@ -115,8 +120,9 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($tailor_id, $order_id)
+    public function show($order_id)
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $order = Order::where([['id', $order_id], ['tailor_id', $tailor_id]])->first();
         if (empty($order)) {
             return response()->json(['success' => false, 'message' => 'Order Not Found'], 200);
@@ -125,20 +131,21 @@ class OrderController extends Controller
         }
     }
 
-    public function countCustomerOrders($tailor_id, Request $request)
+    public function countCustomerOrders(Request $request)
     {
         $validation = Validator::make($request->all(), ['customer_id' => 'required']);
 
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Order data validation error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $customer_orders = Order::where([['tailor_id', $tailor_id], ['customer_id', $request->customer_id]])->get();
             $order_count = count($customer_orders);
             return response()->json(['success' => true, 'data' => ['Customer Orders' => $order_count]], 200);
         }
     }
 
-    public function getCustomerOrders($tailor_id, Request $request)
+    public function getCustomerOrders(Request $request)
     {
         $validation = Validator::make($request->all(), ['customer_id' => 'required']);
 

@@ -20,17 +20,10 @@ class TailorCategoryParameterController extends Controller
     // swagger annotations 
     /**
      * @OA\Get(
-     *     path="/tailors/{tailor_id}/categories/{category_id}/parameters/",
+     *     path="/tailors/categories/{category_id}/parameters/",
      *     summary="Get parameters by tailor and category",
      *     tags={"Parameters"},
      *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="tailor_id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer"),
-     *         description="The ID of the tailor"
-     *     ),
      *     @OA\Parameter(
      *         name="category_id",
      *         in="path",
@@ -60,8 +53,9 @@ class TailorCategoryParameterController extends Controller
      *     )
      * )
      */
-    public function index($tailor_id, $category_id)
+    public function index($category_id)
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $parameters = TalCatParameter::where([['category_id', $category_id], ['tailor_id', $tailor_id]])->get();
         if (count($parameters) === 0) {
             return response()->json(['category_id' => $category_id, 'parameters' => 'Not Found']);
@@ -70,9 +64,9 @@ class TailorCategoryParameterController extends Controller
         }
     }
 
-
-    public function default($tailor_id)
+    public function default()
     {
+        $tailor_id = auth('sanctum')->user()->id;
         $category_parameters = CategoryParameter::all();
         foreach ($category_parameters as $category_parameter) {
             $tailor_category = TailorCategory::where([['tailor_id', $tailor_id], ['category_id', $category_parameter->category_id]])->first();
@@ -102,17 +96,10 @@ class TailorCategoryParameterController extends Controller
     // swagger annotations
     /**
      * @OA\Post(
-     *     path="/tailors/{tailor_id}/categories/parameters/store",
+     *     path="/tailors/categories/parameters/store",
      *     summary="Create new category parameters",
      *     tags={"Parameters"},
      *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="tailor_id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer"),
-     *         description="The ID of the tailor"
-     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -153,7 +140,7 @@ class TailorCategoryParameterController extends Controller
      *     )
      * )
      */
-    public function store($tailor_id, Request $request)
+    public function store(Request $request)
     {
         $rules = [
             'category_id' => 'required|exists:tailor_categories,id',
@@ -162,10 +149,10 @@ class TailorCategoryParameterController extends Controller
         ];
 
         $validation = Validator::make($request->all(), $rules);
-
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Catgeory parameter data validation error', 'data' => $validation->errors()], 422);
         }
+        $tailor_id = auth('sanctum')->user()->id;
         $createdParameters = [];
         foreach ($request->parameter_id as $parameter_id) {
             $category_parameter = TalCatParameter::create([
@@ -185,7 +172,7 @@ class TailorCategoryParameterController extends Controller
         }
         return response()->json(['success' => true, 'message' => 'Catgeory Parameter Added Successfully', 'data' => ['ids' => $createdParameters]], 200);
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -220,17 +207,10 @@ class TailorCategoryParameterController extends Controller
     // swagger annotations
     /**
      * @OA\Post(
-     *     path="/tailors/{tailor_id}/categories/parameters/destroy",
+     *     path="/tailors/categories/parameters/destroy",
      *     summary="Delete a category parameter",
      *     tags={"Parameters"},
      *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="tailor_id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer"),
-     *         description="The ID of the tailor"
-     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -265,7 +245,7 @@ class TailorCategoryParameterController extends Controller
      *     )
      * )
      */
-    public function destroy($tailor_id, Request $request)
+    public function destroy(Request $request)
     {
         $rules = [
             'category_id' => 'required',
@@ -277,6 +257,7 @@ class TailorCategoryParameterController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Paramter Validation Error', 'data' => $validation->errors()], 422);
         } else {
+            $tailor_id = auth('sanctum')->user()->id;
             $category_id = $request->category_id;
             $parameter_id = $request->parameter_id;
             $category_parameter = TalCatParameter::where([['category_id', $category_id], ['tailor_id', $tailor_id], ['parameter_id', $parameter_id]])->first();

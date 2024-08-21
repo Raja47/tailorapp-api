@@ -172,24 +172,13 @@
                 }
             }
         },
-        "/tailors/{tailor_id}/categories": {
+        "/tailors/categories": {
             "get": {
                 "tags": [
                     "Categories"
                 ],
                 "summary": "Get all categories for a tailor",
-                "operationId": "32e8f124a680926566059ae6e9aff558",
-                "parameters": [
-                    {
-                        "name": "tailor_id",
-                        "in": "path",
-                        "description": "The ID of the tailor",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "operationId": "138c4989c8b6b8c63bec27ccbc4a6a35",
                 "responses": {
                     "200": {
                         "description": "List of categories",
@@ -265,23 +254,14 @@
                 ]
             }
         },
-        "/tailors/{tailor_id}/categories/{category_id}/status": {
+        "/tailors/categories/{category_id}/status": {
             "post": {
                 "tags": [
                     "Categories"
                 ],
                 "summary": "Update the status of a category",
-                "operationId": "36754dbf32381468e1fbb133478e6fe8",
+                "operationId": "59a34f787b3ae951a64af641107a19b8",
                 "parameters": [
-                    {
-                        "name": "tailor_id",
-                        "in": "path",
-                        "description": "The ID of the tailor",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
                     {
                         "name": "category_id",
                         "in": "path",
@@ -361,23 +341,13 @@
                 ]
             }
         },
-        "/tailors/{tailor_id}/categories/store": {
+        "/tailors/categories/store": {
             "post": {
                 "tags": [
                     "Categories"
                 ],
                 "summary": "Store a new category for a tailor",
-                "operationId": "f9a8e50b1534923f359fa9b2ef264cb2",
-                "parameters": [
-                    {
-                        "name": "tailor_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "operationId": "9779ff53ccd4912a353e04fd68c76842",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -470,23 +440,14 @@
                 ]
             }
         },
-        "/tailors/{tailor_id}/categories/{category_id}/delete": {
+        "/tailors/categories/{category_id}/delete": {
             "post": {
                 "tags": [
                     "Categories"
                 ],
                 "summary": "Delete a category for a specific tailor",
-                "operationId": "b4d7c4efd57228274776f108b98087ca",
+                "operationId": "07d7a6a6c1b08d34e2c0c45af8d5ef40",
                 "parameters": [
-                    {
-                        "name": "tailor_id",
-                        "in": "path",
-                        "description": "The ID of the tailor",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
                     {
                         "name": "category_id",
                         "in": "path",
@@ -570,23 +531,14 @@
                 ]
             }
         },
-        "/tailors/{tailor_id}/categories/{category_id}/parameters/": {
+        "/tailors/categories/{category_id}/parameters/": {
             "get": {
                 "tags": [
                     "Parameters"
                 ],
                 "summary": "Get parameters by tailor and category",
-                "operationId": "bd4dc0031b7f176a5a3d6ffece19b44d",
+                "operationId": "00d4a079a3657717ce713306de795d1b",
                 "parameters": [
-                    {
-                        "name": "tailor_id",
-                        "in": "path",
-                        "description": "The ID of the tailor",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
                     {
                         "name": "category_id",
                         "in": "path",
@@ -648,24 +600,13 @@
                 ]
             }
         },
-        "/tailors/{tailor_id}/categories/parameters/store": {
+        "/tailors/categories/parameters/store": {
             "post": {
                 "tags": [
                     "Parameters"
                 ],
                 "summary": "Create new category parameters",
-                "operationId": "5fdeb325270a206db1e94d12593d6261",
-                "parameters": [
-                    {
-                        "name": "tailor_id",
-                        "in": "path",
-                        "description": "The ID of the tailor",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "operationId": "d8ca77b7a7958aa87d12adebf2cd2a60",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -757,24 +698,13 @@
                 ]
             }
         },
-        "/tailors/{tailor_id}/categories/parameters/destroy": {
+        "/tailors/categories/parameters/destroy": {
             "post": {
                 "tags": [
                     "Parameters"
                 ],
                 "summary": "Delete a category parameter",
-                "operationId": "af61fa259f83db0045acd832ef041593",
-                "parameters": [
-                    {
-                        "name": "tailor_id",
-                        "in": "path",
-                        "description": "The ID of the tailor",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "operationId": "1570c03c752267698141d2f884816cbc",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1101,24 +1031,13 @@
                 }
             }
         },
-        "/tailors/{tailor_id}/parameters": {
+        "/tailors/parameters": {
             "get": {
                 "tags": [
                     "Parameters"
                 ],
                 "summary": "Get all parameters for a specific tailor",
-                "operationId": "f36cfb94821279f078664070bebe8f89",
-                "parameters": [
-                    {
-                        "name": "tailor_id",
-                        "in": "path",
-                        "description": "The ID of the tailor",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "operationId": "dd7d74e965a471cea82fbeb9bc51631a",
                 "responses": {
                     "200": {
                         "description": "List of parameters",
