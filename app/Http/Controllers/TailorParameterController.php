@@ -72,9 +72,8 @@ class TailorParameterController extends Controller
     }
 
 
-    public function default()
+    public function default($tailor_id)
     {
-        $tailor_id = auth('sanctum')->user()->id;
         $parameters = Parameter::all();
         foreach ($parameters as $parameter) {
             $tailor_parameter = TailorParameter::create([

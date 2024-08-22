@@ -64,9 +64,8 @@ class TailorCategoryParameterController extends Controller
         }
     }
 
-    public function default()
+    public function default($tailor_id)
     {
-        $tailor_id = auth('sanctum')->user()->id;
         $category_parameters = CategoryParameter::all();
         foreach ($category_parameters as $category_parameter) {
             $tailor_category = TailorCategory::where([['tailor_id', $tailor_id], ['category_id', $category_parameter->category_id]])->first();

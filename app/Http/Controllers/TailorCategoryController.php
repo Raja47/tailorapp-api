@@ -60,9 +60,8 @@ class TailorCategoryController extends Controller
         }
     }
 
-    public function default()
+    public function default($tailor_id)
     {
-        $tailor_id = auth('sanctum')->user()->id;
         $categories = Category::all();
         foreach ($categories as $category) {
             $tailor_category = TailorCategory::create([
