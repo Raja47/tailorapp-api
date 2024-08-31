@@ -172,6 +172,104 @@
                 }
             }
         },
+        "/parameters": {
+            "get": {
+                "tags": [
+                    "Parameters"
+                ],
+                "summary": "Get all parameters",
+                "operationId": "edc4a1334c4a48ec76726ee360fe3650",
+                "responses": {
+                    "200": {
+                        "description": "List of parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "parameters": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Parameter 1"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "example": "string"
+                                                    },
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "Some value"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-08-03T12:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-08-03T12:00:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No parameters added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "tailor_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "parameters": {
+                                            "type": "string",
+                                            "example": "No parameters added"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/categories": {
             "get": {
                 "tags": [
