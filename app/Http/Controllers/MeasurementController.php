@@ -18,6 +18,7 @@ class MeasurementController extends Controller
      *     path="/measurements/dresses/{dress_id}",
      *     summary="Get dress measurements",
      *     tags={"Measurements"},
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="dress_id",
      *         in="path",
@@ -93,6 +94,7 @@ class MeasurementController extends Controller
      *     path="/measurements/store",
      *     summary="Create a new measurement",
      *     tags={"Measurements"},
+     *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(

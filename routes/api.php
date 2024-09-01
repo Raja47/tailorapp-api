@@ -130,14 +130,20 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/dresses'],
     $router->post('/statusupdate', [DressController::class, 'updateStatus']);
 });
 
-Route::group(['middleware'=>['auth:sanctum'], 'prefix' => '/tailors/orders' ], function ($router) {
-// Route::group(['prefix' => '/tailors/{tailor_id}/orders'], function ($router) {
+Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/orders'], function ($router) {
+    // Route::group(['prefix' => '/tailors/{tailor_id}/orders'], function ($router) {
     $router->get('/', [OrderController::class, 'getOrders']);
     $router->post('/statusupdate', [OrderController::class, 'updateStatus']);
     $router->get('/count', [OrderController::class, 'countOrders']);
     $router->get('/{order_id}/customer', [OrderController::class, 'getCustomerByOrderid']);
     $router->post('/empty', [OrderController::class, 'emptyOrder']);
 });
+
+Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/measurements'], function ($router) {
+    $router->get('/dresses/{dress_id}', [MeasurementController::class, 'getDressMeasurementWithValues']);
+    $router->post('/store}', [MeasurementController::class, 'newMeasurement']);
+});
+
 
 // Route::group(['prefix' => '/media'], function ($router) {
 //     $router->get('/order/{order_id}', [MediaController::class, 'getOrderMedia']);
