@@ -100,11 +100,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories
     $router->post('/{category_id}/status', [TailorCategoryController::class, 'updateStatus']);
     $router->post('/{category_id}/delete', [TailorCategoryController::class, 'destroy']);
 });
-Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/parameters'], function ($router) {
-    $router->get('/', [TailorParameterController::class, 'index']);
-    $router->post('/', [TailorParameterController::class, 'default']);
-    $router->post('/store', [TailorParameterController::class, 'store']);
-});
+
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories/{category_id}/parameters'], function ($router) {
     // Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories/{category_id}/parameters'], function ($router) {
     $router->get('/', [TalCatParameterController::class, 'index']);

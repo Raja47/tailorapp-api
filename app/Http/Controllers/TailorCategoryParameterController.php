@@ -144,7 +144,7 @@ class TailorCategoryParameterController extends Controller
         $rules = [
             'category_id' => 'required|exists:tailor_categories,id',
             'parameter_id' => 'required|array',
-            'parameter_id.*' => 'integer|exists:tailor_parameters,id',
+            'parameter_id.*' => 'integer|exists:parameters,id',
         ];
 
         $validation = Validator::make($request->all(), $rules);

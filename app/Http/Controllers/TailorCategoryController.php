@@ -208,7 +208,7 @@ class TailorCategoryController extends Controller
             $tailor_id = auth('sanctum')->user()->id;
             $tailor_category = TailorCategory::create([
                 'tailor_id' => $tailor_id,
-                'category_id' => 0,
+                'category_id' => null,
                 'name' => $request->name,
                 'label' => $request->label,
                 'gender' => $request->gender,
