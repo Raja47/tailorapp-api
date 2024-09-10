@@ -66,6 +66,72 @@ class MeasurementController extends Controller
             return $responses;
         }
     }
+
+    /**
+     * @OA\Post(
+     *     path="/measurements/dresses/{dress_id}/store",
+     *     summary="Create a new measurement with values",
+     *     tags={"Measurements"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="dress_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The ID of the dress"
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="measurementBoxes",
+     *                 type="array",
+     *                 description="Array of measurement values",
+     *                 @OA\Items(
+     *                     @OA\Property(
+     *                         property="measurement_id",
+     *                         type="integer",
+     *                         description="ID of the measurement",
+     *                         example=2
+     *                     ),
+     *                     @OA\Property(
+     *                         property="parameter_id",
+     *                         type="integer",
+     *                         description="ID of the parameter",
+     *                         example=3
+     *                     ),
+     *                     @OA\Property(
+     *                         property="value",
+     *                         type="number",
+     *                         description="Measurement value",
+     *                         example=56
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Measurement created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="measurement_id", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Measurement data validation error"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="Details about the validation errors",
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function newMeasurementWithValues($dress_id, Request $request)
     {
         $rules = [
@@ -89,50 +155,6 @@ class MeasurementController extends Controller
         }
     }
 
-    /**
-     * @OA\Post(
-     *     path="/measurements/store",
-     *     summary="Create a new measurement",
-     *     tags={"Measurements"},
-     *     security={{"bearerAuth": {}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"model", "model_id"},
-     *             @OA\Property(property="model", type="string", example="dress"),
-     *             @OA\Property(property="model_id", type="integer", example=123)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Measurement added successfully",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Measurement Added Successfully"),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="measuremnet_id", type="integer", example=1)
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Validation error",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Measurement data validation error"),
-     *             @OA\Property(property="data", type="object", additionalProperties={"type"="string"})
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Server error",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Measurement cannot be added")
-     *         )
-     *     )
-     * )
-     */
     public function newMeasurement(array $data)
     {
         $rules = [

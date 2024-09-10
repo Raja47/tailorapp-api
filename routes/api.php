@@ -141,7 +141,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/orders'], 
 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/measurements'], function ($router) {
     $router->get('/dresses/{dress_id}', [MeasurementController::class, 'getDressMeasurementWithValues']);
-    $router->post('/store}', [MeasurementController::class, 'newMeasurement']);
+    $router->post('/dresses/{dress_id}/store', [MeasurementController::class, 'newMeasurementWithValues']);
 });
 
 
