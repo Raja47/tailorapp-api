@@ -57,7 +57,7 @@ class TailorCategoryParameterController extends Controller
     public function index($category_id)
     {
         $tailor_id = auth('sanctum')->user()->id;
-        $parameters = TalCatParameter::where([['id', $category_id], ['tailor_id', $tailor_id]])->get();
+        $parameters = TalCatParameter::where([['category_id', $category_id], ['tailor_id', $tailor_id]])->get();
         if (count($parameters) === 0) {
             return response()->json(['category_id' => $category_id, 'parameters' => 'Not Found']);
         } else {
