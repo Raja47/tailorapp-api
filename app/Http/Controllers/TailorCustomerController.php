@@ -14,22 +14,107 @@ class TailorCustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    // swagger annotation
+    /**
+     * @OA\Get(
+     *     path="/tailors/customers",
+     *     summary="Retrieve a paginated list of customers for the authenticated tailor",
+     *     tags={"Customers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The page number for pagination"
+     *     ),
+     *     @OA\Parameter(
+     *         name="perpage",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="Number of customers to retrieve per page"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Customers retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Customers Found"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="tailor_id", type="integer", example=1),
+     *                 @OA\Property(
+     *                     property="customers",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="name", type="string", example="John Doe"),
+     *                         @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *                         @OA\Property(property="phone", type="string", example="1234567890")
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer data validation error"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="Validation error details"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No customers found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No Customer Found"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="tailor_id", type="integer", example=1)
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
     public function index(Request $request)
     {
-        $tailor_id = auth('sanctum')->user()->id;
-        $page = $request->input('page');
-        $perpage = $request->input('perpage');
-
-        if (empty($page) or empty($perpage)) {
-            $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->get();
+        $rules = [
+            'page' => 'required',
+            'perpage' => 'required',
+        ];
+        $validation = Validator::make($request->all(), $rules);
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
         } else {
-            $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->forpage($page, $perpage)->get();
-        }
 
-        if (count($tailorcustomers) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Customer Found', 'data' => ['tailor_id' => $tailor_id]], 200);
-        } else {
-            return response()->json(['success' => true, 'message' => 'Customers Found', 'data' => ['tailor_id' => $tailor_id, 'customers' => $tailorcustomers]], 200);
+            $tailor_id = auth('sanctum')->user()->id;
+            $page = $request->input('page');
+            $perpage = $request->input('perpage');
+
+            if (empty($page) or empty($perpage)) {
+                $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->get();
+            } else {
+                $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->forpage($page, $perpage)->get();
+            }
+
+            if (count($tailorcustomers) === 0) {
+                return response()->json(['success' => false, 'message' => 'No Customer Found', 'data' => ['tailor_id' => $tailor_id]], 404);
+            } else {
+                return response()->json(['success' => true, 'message' => 'Customers Found', 'data' => ['tailor_id' => $tailor_id, 'customers' => $tailorcustomers]], 200);
+            }
         }
     }
 
