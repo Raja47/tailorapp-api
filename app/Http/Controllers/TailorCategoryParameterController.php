@@ -159,8 +159,10 @@ class TailorCategoryParameterController extends Controller
         $tailor_id = auth('sanctum')->user()->id;
         $createdParameters = [];
         foreach ($request->parameter_id as $parameter_id) {
+            
+            $param = Parameter::find($parameter_id);
             $category_parameter = TalCatParameter::create([
-                'label' => null,
+                'label' => $param->label,
                 'tailor_id' => $tailor_id,
                 'category_id' => $request->category_id,
                 'parameter_id' => $parameter_id,
