@@ -12,59 +12,49 @@
         }
     ],
     "paths": {
-        "/tailors/login": {
-            "post": {
+        "/categories": {
+            "get": {
                 "tags": [
-                    "TailorAuth"
+                    "Categories"
                 ],
-                "summary": "Login a tailor",
-                "operationId": "785c0ca1c1eb2d93924180e59411c7a8",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "number": {
-                                        "description": "Tailor's mobile number",
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "description": "Tailor's password",
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
+                "summary": "Get all categories for a tailor",
+                "operationId": "ead5fb1cf2a7453acb2e37928a1b1eaf",
                 "responses": {
                     "200": {
-                        "description": "Login Successful",
+                        "description": "List of categories",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "tailor": {
-                                                    "type": "object",
-                                                    "additionalProperties": {
-                                                        "type": "string"
+                                        "categories": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Category 1"
+                                                    },
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-05-31T12:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-05-31T12:00:00Z"
                                                     }
                                                 },
-                                                "token": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "type": "object"
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -72,55 +62,15 @@
                             }
                         }
                     },
-                    "422": {
-                        "description": "Validation Failed / Incorrect Mobile number password",
+                    "404": {
+                        "description": "No categories added",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/tailors/username/{username}": {
-            "get": {
-                "tags": [
-                    "Tailors"
-                ],
-                "summary": "Check if username exists",
-                "operationId": "b48073eb8055cfb55826a0b7788c12ee",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "path",
-                        "description": "The username to check",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Username check result",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "exists": {
-                                            "type": "boolean",
-                                            "example": true
+                                        "categories": {
+                                            "type": "string",
+                                            "example": "No categories added"
                                         }
                                     },
                                     "type": "object"
@@ -134,116 +84,6 @@
                         "bearerAuth": []
                     }
                 ]
-            }
-        },
-        "/tailors/store": {
-            "post": {
-                "tags": [
-                    "Tailors"
-                ],
-                "summary": "Create a new tailor",
-                "operationId": "020afb6a9bca8bb34c44ae39505d223a",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "description": "Name of the tailor",
-                                        "type": "string",
-                                        "maxLength": 255
-                                    },
-                                    "password": {
-                                        "description": "Password of the tailor",
-                                        "type": "string",
-                                        "maxLength": 12,
-                                        "minLength": 4
-                                    },
-                                    "username": {
-                                        "description": "Unique username of the tailor",
-                                        "type": "string",
-                                        "maxLength": 99
-                                    },
-                                    "number": {
-                                        "description": "Unique mobile number of the tailor",
-                                        "type": "string",
-                                        "maxLength": 15
-                                    },
-                                    "picture": {
-                                        "description": "Picture of the tailor",
-                                        "type": "string"
-                                    },
-                                    "country_code": {
-                                        "description": "Country code of the tailor",
-                                        "type": "string"
-                                    },
-                                    "city_id": {
-                                        "description": "City ID of the tailor",
-                                        "type": "integer"
-                                    },
-                                    "status": {
-                                        "description": "Status of the tailor",
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Tailor Created Successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "additionalProperties": {
-                                                "type": "string"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
             }
         },
         "/measurements/dresses/{dress_id}": {
@@ -1125,6 +965,240 @@
                         "bearerAuth": []
                     }
                 ]
+            }
+        },
+        "/tailors/username/{username}": {
+            "get": {
+                "tags": [
+                    "Tailors"
+                ],
+                "summary": "Check if username exists",
+                "operationId": "b48073eb8055cfb55826a0b7788c12ee",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "The username to check",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Username check result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "exists": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/store": {
+            "post": {
+                "tags": [
+                    "Tailors"
+                ],
+                "summary": "Create a new tailor",
+                "operationId": "020afb6a9bca8bb34c44ae39505d223a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of the tailor",
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "password": {
+                                        "description": "Password of the tailor",
+                                        "type": "string",
+                                        "maxLength": 12,
+                                        "minLength": 4
+                                    },
+                                    "username": {
+                                        "description": "Unique username of the tailor",
+                                        "type": "string",
+                                        "maxLength": 99
+                                    },
+                                    "number": {
+                                        "description": "Unique mobile number of the tailor",
+                                        "type": "string",
+                                        "maxLength": 15
+                                    },
+                                    "picture": {
+                                        "description": "Picture of the tailor",
+                                        "type": "string"
+                                    },
+                                    "country_code": {
+                                        "description": "Country code of the tailor",
+                                        "type": "string"
+                                    },
+                                    "city_id": {
+                                        "description": "City ID of the tailor",
+                                        "type": "integer"
+                                    },
+                                    "status": {
+                                        "description": "Status of the tailor",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tailor Created Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tailors/login": {
+            "post": {
+                "tags": [
+                    "TailorAuth"
+                ],
+                "summary": "Login a tailor",
+                "operationId": "785c0ca1c1eb2d93924180e59411c7a8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "number": {
+                                        "description": "Tailor's mobile number",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "Tailor's password",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "tailor": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "token": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Failed / Incorrect Mobile number password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/tailors/customers": {
