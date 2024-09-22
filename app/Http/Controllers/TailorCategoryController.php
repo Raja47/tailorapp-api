@@ -178,7 +178,7 @@ class TailorCategoryController extends Controller
     {
         $tailor_id = auth('sanctum')->user()->id;
         $categories = Category::all();
-        $talCategories = TailorCategory::where('tailor_id', $tailor_id)->pluck('id')->toArray();;
+        $talCategories = TailorCategory::where('tailor_id', $tailor_id)->pluck('category_id')->toArray();
         foreach ($categories as $category) {
             if (in_array($category->id, $talCategories)) {
                 $category['exists'] = true;
