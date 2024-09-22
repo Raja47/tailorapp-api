@@ -12,80 +12,6 @@
         }
     ],
     "paths": {
-        "/categories": {
-            "get": {
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "Get all categories for a tailor",
-                "operationId": "ead5fb1cf2a7453acb2e37928a1b1eaf",
-                "responses": {
-                    "200": {
-                        "description": "List of categories",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "categories": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "name": {
-                                                        "type": "string",
-                                                        "example": "Category 1"
-                                                    },
-                                                    "status": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2023-05-31T12:00:00Z"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2023-05-31T12:00:00Z"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "No categories added",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "categories": {
-                                            "type": "string",
-                                            "example": "No categories added"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
         "/measurements/dresses/{dress_id}": {
             "get": {
                 "tags": [
@@ -496,6 +422,92 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/categories/exists": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get all categories for a tailor with existing status",
+                "operationId": "8d9e301486e3a06449b11e4015829a56",
+                "responses": {
+                    "200": {
+                        "description": "List of categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "tailor_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "categories": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Category 1"
+                                                    },
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-05-31T12:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-05-31T12:00:00Z"
+                                                    },
+                                                    "exists": {
+                                                        "type": "boolean",
+                                                        "example": "false"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No categories added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "tailor_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "categories": {
+                                            "type": "string",
+                                            "example": "No categories added"
                                         }
                                     },
                                     "type": "object"
