@@ -8,37 +8,6 @@ use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
-
-    // swagger annotations
-    /**
-     * @OA\Get(
-     *     path="/categories",
-     *     summary="Get all categories for a tailor",
-     *     security={{"bearerAuth": {}}},
-     *     tags={"Categories"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of categories",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="categories", type="array", @OA\Items(
-     *                 type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="name", type="string", example="Category 1"),
-     *                 @OA\Property(property="status", type="integer", example=1),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2023-05-31T12:00:00Z"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2023-05-31T12:00:00Z")
-     *             ))
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="No categories added",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="categories", type="string", example="No categories added")
-     *         )
-     *     )
-     * )
-     */
     public function index()
     {
         $categories = Category::all();
