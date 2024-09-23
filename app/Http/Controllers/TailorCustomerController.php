@@ -294,6 +294,53 @@ class TailorCustomerController extends Controller
         }
     }
 
+    // swagger annotaion
+    /**
+     * @OA\Post(
+     *     path="/tailors/customers/destroy",
+     *     summary="Delete a customer for tailor",
+     *     tags={"Customers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="customer_id", type="integer", example=1, description="The ID of the customer to delete")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Customer deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Customer Deleted successfully"),
+     *             @OA\Property(property="data", type="object", example={})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Customer not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer does not exist."),
+     *             @OA\Property(property="data", type="object", example={})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer Validation Error"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="Validation error details"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
     /**
      * Remove the specified resource from storage.
      *
