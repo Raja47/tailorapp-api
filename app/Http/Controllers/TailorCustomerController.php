@@ -160,20 +160,92 @@ class TailorCustomerController extends Controller
         }
     }
 
+    //swagger annotaions
+    /**
+     * @OA\Get(
+     *     path="/tailors/customers/search",
+     *     summary="Search for customers by name or number",
+     *     tags={"Customers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         required=false,
+     *         description="Text to search for in customer name or number",
+     *         @OA\Schema(type="string", example="John Doe")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=true,
+     *         description="Page number for pagination",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="perpage",
+     *         in="query",
+     *         required=true,
+     *         description="Number of results per page",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Customer(s) found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Customer Found"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="customer",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="name", type="string", example="John Doe"),
+     *                         @OA\Property(property="number", type="string", example="123456789")
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No customer found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer Not Found"),
+     *             @OA\Property(property="data", type="object", example={})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer data validation error"),
+     *             @OA\Property(property="data", type="object", description="Validation error details")
+     *         )
+     *     )
+     * )
+     */
 
     public function search(Request $request)
     {
-        $page = $request->input('page');
-        $perpage = $request->input('perpage');
         $rules = [
             'searchText' => '',
+            'page' => 'required',
+            'perpage' => 'required'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
         } else {
             $tailor_id = auth('sanctum')->user()->id;
-            $text = $request->searchText;
+            $text = $request->input('searchText');
+            $page = $request->input('page');
+            $perpage = $request->input('perpage');
+
             if (empty($text)) {
                 if (empty($page) or empty($perpage)) {
                     $customer = TailorCustomer::where('tailor_id', $tailor_id)->get();
@@ -181,7 +253,7 @@ class TailorCustomerController extends Controller
                     $customer = TailorCustomer::where('tailor_id', $tailor_id)->forpage($page, $perpage)->get();
                 }
                 if (count($customer) === 0) {
-                    return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 200);
+                    return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 404);
                 } else {
                     return response()->json(['success' => true, 'message' => 'Customer Found', 'data' => ['customer' => $customer]], 200);
                 }
@@ -192,7 +264,7 @@ class TailorCustomerController extends Controller
                     $customer = TailorCustomer::where([['tailor_id', $tailor_id], ['number', 'LIKE', '%' . $text . '%']])->orwhere([['tailor_id', $tailor_id], ['name', 'LIKE', '%' . $text . '%']])->forpage($page, $perpage)->get();
                 }
                 if (count($customer) === 0) {
-                    return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 200);
+                    return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 404);
                 } else {
                     return response()->json(['success' => true, 'message' => 'Customer Found', 'data' => ['customer' => $customer]], 200);
                 }
@@ -294,11 +366,19 @@ class TailorCustomerController extends Controller
         }
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
     // swagger annotaion
+
     /**
      * @OA\Post(
      *     path="/tailors/customers/destroy",
-     *     summary="Delete a customer for tailor",
+     *     summary="Delete a customer for the authenticated tailor",
      *     tags={"Customers"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
@@ -341,12 +421,6 @@ class TailorCustomerController extends Controller
      * )
      */
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         $rules = [
