@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\TailorCustomer;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class TailorCustomerController extends Controller
 {
@@ -278,48 +279,127 @@ class TailorCustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    // swagger annotations
+    /**
+     * @OA\Post(
+     *     path="/tailors/customers/store",
+     *     summary="Create a new Tailor Customer",
+     *     description="Store a new customer associated with a tailor. If a customer already exists for the tailor, an error is returned.",
+     *     tags={"Customers"},
+     *     security={{"bearerAuth": {}}},
+     *     
+     *     @OA\RequestBody(
+     *     required=true,
+     *     @OA\MediaType(
+     *         mediaType="multipart/form-data",
+     *         @OA\Schema(
+     *             type="object",
+     *             required={"number", "name", "gender"},
+     *             @OA\Property(property="number", type="string", description="Customer phone number, unique.", example="1234567890"),
+     *             @OA\Property(property="name", type="string", description="Customer name.", example="John Doe"),
+     *             @OA\Property(property="address", type="string", description="Customer address, optional.", example="123 Main Street"),
+     *             @OA\Property(property="gender", type="string", description="Customer gender.", example="Male"),
+     *             @OA\Property(property="city_name", type="string", description="Customer city name, optional.", example="Karachi"),
+     *             @OA\Property(property="picture", type="string", format="binary", description="Picture of the customer (image upload).")
+     *         )
+     *     )
+     * ),
+     * 
+     *     @OA\Response(
+     *         response=200,
+     *         description="Customer Created Successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Your Customer Created Successfully"),
+     *             @OA\Property(property="data", type="object", 
+     *                 @OA\Property(property="Tailor Customer id", type="integer", description="ID of the created customer")
+     *             ),
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer data validation error"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=500,
+     *         description="Customer Creation Failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer Creation Failed"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=400,
+     *         description="Customer Already Exists",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer Already Exists"),
+     *             @OA\Property(property="data", type="integer", description="ID of the existing customer")
+     *         )
+     *     ),
+     * )
+     */
+
     public function store(Request $request)
     {
-        $customer = Customer::where('number', $request->number)->first();
-
-        if (empty($customer)) {
-            $customer = Customer::create(['number' => $request->number]);
-        }
-
         $rules = [
-            'number' => 'required|max:12',
-            'name' => '',
+            'number' => 'unique:tailor_customers|required|max:12',
+            'name' => 'required',
             'address' => 'max:70',
-            'picture' => '',
-            'gender' => '',
+            'gender' => 'required',
             'city_name' => '',
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
-        } else {
-            $tailor_id = auth('sanctum')->user()->id;
-            $tailorcustomer = TailorCustomer::where([['number', $request->number], ['tailor_id', $tailor_id]])->first();
-            if (!empty($tailorcustomer)) {
-                return response()->json(['success' => false, 'message' => 'Customer Already Exists', 'data' => $tailorcustomer->id], 200);
-            } else {
-                $tailorcustomer = TailorCustomer::create([
-                    'number' => $request->number,
-                    'name' => $request->name,
-                    'address' => $request->address,
-                    'gender' => $request->gender,
-                    'picture' => $request->picture,
-                    'city_name' => $request->city_name,
-                    'tailor_id' => $tailor_id,
-                    'customer_id' => $customer->id,
-                ]);
+        }
 
-                if ($tailorcustomer->save()) {
-                    return response()->json(['success' => true, 'message' => 'Your Customer Created Successfully', 'data' => ['Tailor Customer id' => $tailorcustomer->id]], 200);
-                } else {
-                    return response()->json(['success' => false, 'message' => 'Customer Creation Failed', 'data' => []], 500);
-                }
-            }
+        $tailor_id = auth('sanctum')->user()->id;
+        $tailorcustomer = TailorCustomer::where([['number', $request->number], ['tailor_id', $tailor_id]])->first();
+        if (!empty($tailorcustomer)) {
+            return response()->json(['success' => false, 'message' => 'Customer Already Exists', 'data' => $tailorcustomer->id], 400);
+        }
+
+        $path = null;
+        if ($request->hasFile('picture')) {
+            $file = $request->file('picture');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/customers', $filename);
+            $path = 'storage/customers/' . $filename;
+            // Storage::putFileAs('public',$file,$filename);
+        }
+
+        $customer = Customer::where('number', $request->number)->first();
+        if (empty($customer)) {
+            $customer = Customer::create(['number' => $request->number]);
+        }
+
+        $tailorcustomer = TailorCustomer::create([
+            'number' => $request->number,
+            'name' => $request->name,
+            'address' => $request->address,
+            'gender' => $request->gender,
+            'picture' => $path,
+            'city_name' => $request->city_name,
+            'tailor_id' => $tailor_id,
+            'customer_id' => $customer->id,
+        ]);
+
+        if ($tailorcustomer->save()) {
+            return response()->json(['success' => true, 'message' => 'Your Customer Created Successfully', 'data' => ['Customer' => $tailorcustomer]], 200);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Customer Creation Failed', 'data' => []], 500);
         }
     }
 

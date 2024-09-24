@@ -1496,6 +1496,169 @@
                 ]
             }
         },
+        "/tailors/customers/store": {
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Create a new Tailor Customer",
+                "description": "Store a new customer associated with a tailor. If a customer already exists for the tailor, an error is returned.",
+                "operationId": "1c01c5ee6ab127951efcdb27b493e71d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "number",
+                                    "name",
+                                    "gender"
+                                ],
+                                "properties": {
+                                    "number": {
+                                        "description": "Customer phone number, unique.",
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "name": {
+                                        "description": "Customer name.",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "address": {
+                                        "description": "Customer address, optional.",
+                                        "type": "string",
+                                        "example": "123 Main Street"
+                                    },
+                                    "gender": {
+                                        "description": "Customer gender.",
+                                        "type": "string",
+                                        "example": "Male"
+                                    },
+                                    "city_name": {
+                                        "description": "Customer city name, optional.",
+                                        "type": "string",
+                                        "example": "Karachi"
+                                    },
+                                    "picture": {
+                                        "description": "Picture of the customer (image upload).",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Customer Created Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your Customer Created Successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "Tailor Customer id": {
+                                                    "description": "ID of the created customer",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Customer Creation Failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Creation Failed"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Customer Already Exists",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Already Exists"
+                                        },
+                                        "data": {
+                                            "description": "ID of the existing customer",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/customers/destroy": {
             "post": {
                 "tags": [
