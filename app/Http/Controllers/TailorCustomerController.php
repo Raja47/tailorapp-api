@@ -376,8 +376,9 @@ class TailorCustomerController extends Controller
             $file = $request->file('picture');
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/customers', $filename);
-            $path = 'storage/customers/' . $filename;
-            // Storage::putFileAs('public',$file,$filename);
+
+            $base_url = env('APP_URL');
+            $path = $base_url . '/storage/customers/' . $filename;
         }
 
         $customer = Customer::where('number', $request->number)->first();
