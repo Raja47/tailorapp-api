@@ -186,7 +186,7 @@ class TailorCategoryController extends Controller
                 $category['exists'] = false;
             }
         }
-        return response()->json(['success' => true, 'data' => [$categories]], 200);
+        return response()->json(['success' => true, 'data' => $categories], 200);
     }
 
     /**
