@@ -383,7 +383,13 @@ class TailorCustomerController extends Controller
 
         $customer = Customer::where('number', $request->number)->first();
         if (empty($customer)) {
-            $customer = Customer::create(['number' => $request->number]);
+            $customer = Customer::create([
+                'number' => $request->number,
+                'name' => $request->name,
+                'address' => $request->address,
+                'gender' => $request->gender,
+                'city_name' => $request->city_name,
+            ]);
         }
 
         $tailorcustomer = TailorCustomer::create([
