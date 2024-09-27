@@ -29,7 +29,7 @@ use App\Models\Tailor;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/default',function($tailor_id){
+Route::post('/tailor/default/{$tailor_id}',function($tailor_id){
     $categories = app('App\Http\Controllers\TailorCategoryController')->default($tailor_id);
     $cat_parameters = app('App\Http\Controllers\TailorCategoryParameterController')->default($tailor_id);
 });
