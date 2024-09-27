@@ -377,7 +377,7 @@ class TailorCustomerController extends Controller
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/customers', $filename);
 
-            $base_url = env('APP_URL');
+            $base_url = url('');
             $path = $base_url . '/storage/customers/' . $filename;
         }
 
