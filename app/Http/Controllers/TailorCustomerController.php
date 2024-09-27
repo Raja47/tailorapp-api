@@ -353,7 +353,7 @@ class TailorCustomerController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'number' => 'unique:tailor_customers|required|max:12',
+            'number' => 'required|max:12',
             'name' => 'required',
             'address' => 'max:70',
             'gender' => 'required',
