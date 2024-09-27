@@ -28,14 +28,16 @@ class TailorCustomerController extends Controller
      *         in="query",
      *         required=true,
      *         @OA\Schema(type="integer"),
-     *         description="The page number for pagination"
+     *         description="The page number for pagination",
+     *         example=1
      *     ),
      *     @OA\Parameter(
      *         name="perpage",
      *         in="query",
      *         required=true,
      *         @OA\Schema(type="integer"),
-     *         description="Number of customers to retrieve per page"
+     *         description="Number of customers to retrieve per page",
+     *         example=10
      *     ),
      *     @OA\Response(
      *         response=200,
