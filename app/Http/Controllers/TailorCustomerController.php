@@ -150,14 +150,62 @@ class TailorCustomerController extends Controller
 
     //param: customer_id in request
     //get customer by Id
+
+    /**
+     * @OA\Get(
+     *     path="/tailors/customers/{customer_id}",
+     *     tags={"Customers"},
+     *     summary="Show customer by ID",
+     *     description="Retrieve details of a customer by their ID",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="customer_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the customer to retrieve.",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Customer found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Customer Found"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="customer_id", type="integer", example=1),
+     *                     @OA\Property(property="number", type="string", example="1234567890"),
+     *                     @OA\Property(property="name", type="string", example="John Doe"),
+     *                     @OA\Property(property="address", type="string", example="123 Main Street"),
+     *                     @OA\Property(property="gender", type="string", example="Male"),
+     *                     @OA\Property(property="city_name", type="string", example="Karachi"),
+     *                     @OA\Property(property="picture", type="string", example="storage/customers/filename.jpg")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Customer not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer Not Found"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
     public function getCustomerById($customer_id)
     {
         $tailor_id = auth('sanctum')->user()->id;
         $customer = TailorCustomer::where([['customer_id', $customer_id], ['tailor_id', $tailor_id]])->first();
         if (empty($customer)) {
-            return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 200);
+            return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 404);
         } else {
-            return response()->json(['success' => true, 'message' => 'Customer Found', 'data' => ['customer' => $customer]], 200);
+            return response()->json(['success' => true, 'message' => 'Customer Found', 'data' => [$customer]], 200);
         }
     }
 

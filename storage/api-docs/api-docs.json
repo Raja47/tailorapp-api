@@ -1355,6 +1355,114 @@
                 ]
             }
         },
+        "/tailors/customers/{customer_id}": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Show customer by ID",
+                "description": "Retrieve details of a customer by their ID",
+                "operationId": "2b6b09ec9ef474cb32db1452547612ae",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "description": "ID of the customer to retrieve.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customer found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Found"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "customer_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "number": {
+                                                        "type": "string",
+                                                        "example": "1234567890"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "address": {
+                                                        "type": "string",
+                                                        "example": "123 Main Street"
+                                                    },
+                                                    "gender": {
+                                                        "type": "string",
+                                                        "example": "Male"
+                                                    },
+                                                    "city_name": {
+                                                        "type": "string",
+                                                        "example": "Karachi"
+                                                    },
+                                                    "picture": {
+                                                        "type": "string",
+                                                        "example": "storage/customers/filename.jpg"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Not Found"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/customers/search": {
             "get": {
                 "tags": [
