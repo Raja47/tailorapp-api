@@ -29,10 +29,10 @@ use App\Models\Tailor;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// Route::get('/try',function(){
-//     $result = Tailor::select('name','password')->where('password','123456')->get()->groupBy('status');
-//     return $result;
-// });
+Route::post('/default',function($tailor_id){
+    $categories = app('App\Http\Controllers\TailorCategoryController')->default($tailor_id);
+    $cat_parameters = app('App\Http\Controllers\TailorCategoryParameterController')->default($tailor_id);
+});
 Route::group(['prefix' => '/tailors'], function ($router) {
     $router->post('/login', [TailorController::class, 'login']);
     $router->post('/changePassword', [TailorController::class, 'changePassword']);
