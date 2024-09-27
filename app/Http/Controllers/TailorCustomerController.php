@@ -417,15 +417,117 @@ class TailorCustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+    /**
+     * @OA\Post(
+     *     path="/tailors/customers/update",
+     *     tags={"Customers"},
+     *     summary="Update a customer",
+     *     description="Update an existing customer's details",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"customer_id", "number", "name", "gender"},
+     *                 @OA\Property(
+     *                     property="customer_id",
+     *                     type="integer",
+     *                     description="ID of the customer to be updated.",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="number",
+     *                     type="string",
+     *                     description="Customer phone number.",
+     *                     example="1234567890"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     description="Customer name.",
+     *                     example="John Doe"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="address",
+     *                     type="string",
+     *                     description="Customer address, optional.",
+     *                     example="123 Main Street"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="gender",
+     *                     type="string",
+     *                     description="Customer gender.",
+     *                     example="Male"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="city_name",
+     *                     type="string",
+     *                     description="Customer city name, optional.",
+     *                     example="Karachi"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="picture",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Picture of the customer (image upload)."
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Customer updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Your Customer Updated Successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer data validation error"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer Updation Failed"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Customer does not exist",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Customer does not exist."),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
     public function update(Request $request)
     {
         $rules = [
             'customer_id' => 'required',
-            'number' => 'required|max:12',
-            'name' => '',
+            'number' => 'max:12',
+            'name' => 'required',
             'address' => 'max:70',
-            'gender' => '',
-            'picture' => '',
+            'gender' => 'required',
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
             'city_name' => '',
         ];
         $validation = Validator::make($request->all(), $rules);
@@ -433,15 +535,25 @@ class TailorCustomerController extends Controller
             return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
         } else {
             $tailor_id = auth('sanctum')->user()->id;
+
+            $path = null;
+            if ($request->hasFile('picture')) {
+                $file = $request->file('picture');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('public/customers', $filename);
+
+                $base_url = url('');
+                $path = $base_url . '/storage/customers/' . $filename;
+            }
+
             $tailorcustomer = TailorCustomer::where([['customer_id', $request->customer_id], ['tailor_id', $tailor_id]])->first();
             if (empty($tailorcustomer)) {
-                return response()->json(['success' => false, 'message' => 'Customer does not exist.', 'data' => []], 200);
+                return response()->json(['success' => false, 'message' => 'Customer does not exist.', 'data' => []], 404);
             } else {
-                $tailorcustomer->number = $request->number;
                 $tailorcustomer->name = $request->name;
                 $tailorcustomer->address = $request->address;
                 $tailorcustomer->gender = $request->gender;
-                $tailorcustomer->picture = $request->picture;
+                $tailorcustomer->picture = $path;
                 $tailorcustomer->city_name = $request->city_name;
 
                 if ($tailorcustomer->save()) {

@@ -1659,6 +1659,174 @@
                 ]
             }
         },
+        "/tailors/customers/update": {
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Update a customer",
+                "description": "Update an existing customer's details",
+                "operationId": "3c8889223771f4c50f0025fb6100e2d4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "customer_id",
+                                    "number",
+                                    "name",
+                                    "gender"
+                                ],
+                                "properties": {
+                                    "customer_id": {
+                                        "description": "ID of the customer to be updated.",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "number": {
+                                        "description": "Customer phone number.",
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "name": {
+                                        "description": "Customer name.",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "address": {
+                                        "description": "Customer address, optional.",
+                                        "type": "string",
+                                        "example": "123 Main Street"
+                                    },
+                                    "gender": {
+                                        "description": "Customer gender.",
+                                        "type": "string",
+                                        "example": "Male"
+                                    },
+                                    "city_name": {
+                                        "description": "Customer city name, optional.",
+                                        "type": "string",
+                                        "example": "Karachi"
+                                    },
+                                    "picture": {
+                                        "description": "Picture of the customer (image upload).",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Customer updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your Customer Updated Successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Updation Failed"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Customer does not exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer does not exist."
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/customers/destroy": {
             "post": {
                 "tags": [
