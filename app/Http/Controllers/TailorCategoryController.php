@@ -297,15 +297,76 @@ class TailorCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    /**
+     * @OA\Post(
+     *     path="/api/tailors/categories/{id}/update",
+     *     summary="Update a tailor category",
+     *     tags={"Categories"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the category to be updated",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "label", "gender"},
+     *             @OA\Property(property="name", type="string", description="Category name", example="Casual Wear"),
+     *             @OA\Property(property="label", type="string", description="Category label", example="Casual"),
+     *             @OA\Property(property="gender", type="string", description="Category gender", example="Male"),
+     *             @OA\Property(property="image", type="string", description="Category image URL", example="http://example.com/image.jpg"),
+     *             @OA\Property(property="is_suggested", type="boolean", description="Whether the category is suggested", example=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Category Updated Successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Category Updated Successfully"),
+     *             @OA\Property(property="data", type="object", @OA\Property(property="id", type="integer", example=1))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Category does not exist",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Category does not exist.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Category Validation Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Category Validation Error"),
+     *             @OA\Property(property="data", type="object", example={"name": {"The name field is required."}})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Category Updation Failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Category Updation Failed")
+     *         )
+     *     )
+     * )
+     */
     public function update(Request $request, $id)
     {
         $rules = [
             'name' => 'required',
-            'label' => '',
-            'gender' => '',
+            'label' => 'required',
+            'gender' => 'required',
             'image' => '',
             'is_suggested' => '',
-            'status' => '',
         ];
 
         $validation = Validator::make($request->all(), $rules);
@@ -317,13 +378,17 @@ class TailorCategoryController extends Controller
             $tailor_category = TailorCategory::where([['tailor_id', $tailor_id], ['id', $id]])->first();
             if (empty($tailor_category)) {
                 return response()->json(['success' => false, 'message' => 'Category does not exist.'], 404);
-            } else {
+            }
                 $tailor_category->name = $request->name;
                 $tailor_category->label = $request->label;
                 $tailor_category->gender = $request->gender;
                 $tailor_category->image = $request->image;
                 $tailor_category->is_suggested = $request->is_suggested;
-                $tailor_category->status = $request->status;;
+
+            if ($tailor_category->save()) {
+                return response()->json(['success' => true, 'message' => 'Category Updated Successfully', 'data' => ['id' => $tailor_category->id]], 200);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Category Updation Failed'], 500);
             }
         }
     }
