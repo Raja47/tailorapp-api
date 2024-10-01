@@ -299,9 +299,9 @@ class TailorCustomerController extends Controller
 
             if (empty($text)) {
                 if (empty($page) or empty($perpage)) {
-                    $customer = TailorCustomer::where('tailor_id', $tailor_id)->get();
+                    $customer = TailorCustomer::where('tailor_id', $tailor_id)->orderBy('created_at', 'desc')->get();
                 } else {
-                    $customer = TailorCustomer::where('tailor_id', $tailor_id)->forpage($page, $perpage)->get();
+                    $customer = TailorCustomer::where('tailor_id', $tailor_id)->forpage($page, $perpage)->orderBy('created_at', 'desc')->get();
                 }
                 if (count($customer) === 0) {
                     return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 404);
@@ -310,9 +310,9 @@ class TailorCustomerController extends Controller
                 }
             } else {
                 if (empty($page) or empty($perpage)) {
-                    $customer = TailorCustomer::where([['tailor_id', $tailor_id], ['number', 'LIKE', '%' . $text . '%']])->orwhere([['tailor_id', $tailor_id], ['name', 'LIKE', '%' . $text . '%']])->get();
+                    $customer = TailorCustomer::where([['tailor_id', $tailor_id], ['number', 'LIKE', '%' . $text . '%']])->orwhere([['tailor_id', $tailor_id], ['name', 'LIKE', '%' . $text . '%']])->orderBy('created_at', 'desc')->get();
                 } else {
-                    $customer = TailorCustomer::where([['tailor_id', $tailor_id], ['number', 'LIKE', '%' . $text . '%']])->orwhere([['tailor_id', $tailor_id], ['name', 'LIKE', '%' . $text . '%']])->forpage($page, $perpage)->get();
+                    $customer = TailorCustomer::where([['tailor_id', $tailor_id], ['number', 'LIKE', '%' . $text . '%']])->orwhere([['tailor_id', $tailor_id], ['name', 'LIKE', '%' . $text . '%']])->forpage($page, $perpage)->orderBy('created_at', 'desc')->get();
                 }
                 if (count($customer) === 0) {
                     return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 404);
