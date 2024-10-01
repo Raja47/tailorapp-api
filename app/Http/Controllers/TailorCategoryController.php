@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\TailorCategoryParameter as TalCatParameter;
 use App\Models\TailorCategory;
 use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
@@ -130,11 +131,12 @@ class TailorCategoryController extends Controller
         if (empty($category)) {
             return response()->json(['success' => false, 'message' => 'Category Not Found'], 404);
         } else {
-            if ($category->status == 1) {
-                $category->status = 0;
-            } elseif ($category->status == 0) {
-                $category->status = 1;
+            $category->status = $category->status == 1 ? 0 : 1;
+            $tal_cat_params = TalCatParameter::where('category_id', $category->id)->get();
+            foreach ($tal_cat_params as $tal_cat_param) {
+                $tal_cat_param->status = $tal_cat_param->status == 1 ? 0 : 1;
             }
+
             if ($category->save()) {
                 return response()->json(['success' => true, 'message' => 'Status updated.'], 200);
             } else {
@@ -142,7 +144,7 @@ class TailorCategoryController extends Controller
             }
         }
     }
-        /**
+    /**
      * @OA\Get(
      *     path="/tailors/categories/exists",
      *     summary="Get all categories for a tailor with existing status",
@@ -379,11 +381,11 @@ class TailorCategoryController extends Controller
             if (empty($tailor_category)) {
                 return response()->json(['success' => false, 'message' => 'Category does not exist.'], 404);
             }
-                $tailor_category->name = $request->name;
-                $tailor_category->label = $request->label;
-                $tailor_category->gender = $request->gender;
-                $tailor_category->image = $request->image;
-                $tailor_category->is_suggested = $request->is_suggested;
+            $tailor_category->name = $request->name;
+            $tailor_category->label = $request->label;
+            $tailor_category->gender = $request->gender;
+            $tailor_category->image = $request->image;
+            $tailor_category->is_suggested = $request->is_suggested;
 
             if ($tailor_category->save()) {
                 return response()->json(['success' => true, 'message' => 'Category Updated Successfully', 'data' => ['id' => $tailor_category->id]], 200);
@@ -448,6 +450,7 @@ class TailorCategoryController extends Controller
         $tailor_category = TailorCategory::where([['tailor_id', $tailor_id], ['id', $id]])->first();
 
         if ($tailor_category) {
+            $tal_cat_params = TalCatParameter::where('category_id', $tailor_category->id)->delete();
             $tailor_category->delete();
             return response()->json(['status' => 'success', 'message' => 'Category Deleted successfully', 'data' => []], 200);
         } else {
