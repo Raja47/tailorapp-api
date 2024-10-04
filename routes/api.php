@@ -99,6 +99,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories
     $router->post('/', [TailorCategoryController::class, 'default']);
     $router->get('/exists', [TailorCategoryController::class, 'allCategoriesWithExistStatus']);
     $router->post('/store', [TailorCategoryController::class, 'store']);
+    $router->post('/{category_id}/update', [TailorCategoryController::class, 'update']);
     $router->get('/{category_id}', [TailorCategoryController::class, 'show']);
     $router->post('/{category_id}/status', [TailorCategoryController::class, 'updateStatus']);
     $router->post('/{category_id}/delete', [TailorCategoryController::class, 'destroy']);

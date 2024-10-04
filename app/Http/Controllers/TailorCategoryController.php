@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\TailorCategoryParameter as TalCatParameter;
 use App\Models\TailorCategory;
 use App\Models\Category;
+use App\Models\Dress;
 use Illuminate\Support\Facades\Validator;
 use OpenApi\Annotations as OA;
 
@@ -418,27 +419,22 @@ class TailorCategoryController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Category Deleted successfully",
+     *         description="Category deleted successfully or Category deactivated successfully",
      *         @OA\JsonContent(
+     *             type="object",
      *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="Category Deleted successfully"),
-     *             @OA\Property(property="data", type="object", example={})
+     *             @OA\Property(property="message", type="string", example="Category deleted successfully"),
+     *             @OA\Property(property="data", type="array", @OA\Items())
      *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Category does not exist",
+     *         description="Category not found",
      *         @OA\JsonContent(
+     *             type="object",
      *             @OA\Property(property="status", type="string", example="error"),
      *             @OA\Property(property="message", type="string", example="Category does not exist"),
-     *             @OA\Property(property="data", type="object", example={})
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthenticated",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *             @OA\Property(property="data", type="array", @OA\Items())
      *         )
      *     )
      * )
@@ -449,12 +445,25 @@ class TailorCategoryController extends Controller
         $tailor_id = auth('sanctum')->user()->id;
         $tailor_category = TailorCategory::where([['tailor_id', $tailor_id], ['id', $id]])->first();
 
-        if ($tailor_category) {
-            $tal_cat_params = TalCatParameter::where('category_id', $tailor_category->id)->delete();
-            $tailor_category->delete();
-            return response()->json(['status' => 'success', 'message' => 'Category Deleted successfully', 'data' => []], 200);
-        } else {
+        if (empty($tailor_category)) {
             return response()->json(['status' => 'error', 'message' => 'Category does not exist', 'data' => []], 404);
         }
+
+        $tal_cat_params = TalCatParameter::where('category_id', $tailor_category->id);
+        $category_dress = Dress::where('category_id', $id)->first();
+
+        // If there are no Dress records, delete the TailorCategory and its parameters
+        if (empty($category_dress)) {
+            $tal_cat_params->delete();
+            $tailor_category->delete();
+            return response()->json(['status' => 'success', 'message' => 'Category deleted successfully', 'data' => []], 200);
+        }
+
+        // If Dress records exist, deactivate the category and its parameters
+        $tal_cat_params->update(['status' => 0]);
+        $tailor_category->status = 0;
+        $tailor_category->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Category deactivated successfully', 'data' => []], 200);
     }
 }
