@@ -605,12 +605,9 @@ class TailorCustomerController extends Controller
                 $tailorcustomer->gender = $request->gender;
                 $tailorcustomer->city_name = $request->city_name;
 
-                if ($request->picture == null) {
-                    $tailorcustomer->picture = $tailorcustomer->picture;
-                } else {
+                if ($request->picture != null) {
                     $tailorcustomer->picture = $path;
                 }
-
                 if ($tailorcustomer->save()) {
                     return response()->json(['success' => true, 'message' => 'Your Customer Updated Successfully', 'data' => ['id' => $tailorcustomer->id]], 200);
                 } else {
