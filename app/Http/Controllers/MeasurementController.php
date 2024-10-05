@@ -86,8 +86,7 @@ class MeasurementController extends Controller
      *                 description="Array of measurement values",
      *                 @OA\Items(
      *                     type="object",
-     *                     required={"measurement_id", "parameter_id", "value"},
-     *                     @OA\Property(property="measurement_id", type="integer", description="Measurement ID", example=1),
+     *                     required={ "parameter_id", "value"},
      *                     @OA\Property(property="parameter_id", type="integer", description="Parameter ID", example=2),
      *                     @OA\Property(property="value", type="string", description="Measurement value", example="34")
      *                 )
