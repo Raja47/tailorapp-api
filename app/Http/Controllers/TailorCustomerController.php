@@ -203,7 +203,7 @@ class TailorCustomerController extends Controller
     public function getCustomerById($customer_id)
     {
         $tailor_id = auth('sanctum')->user()->id;
-        $customer = TailorCustomer::where([['customer_id', $customer_id], ['tailor_id', $tailor_id]])->first();
+        $customer = TailorCustomer::where([['id', $customer_id], ['tailor_id', $tailor_id]])->first();
         if (empty($customer)) {
             return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 404);
         } else {
