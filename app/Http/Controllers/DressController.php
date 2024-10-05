@@ -268,6 +268,65 @@ class DressController extends Controller
         }
     }
 
+    //swagger annotations
+    /**
+     * @OA\Post(
+     *     path="/tailors/dresses/store",
+     *     summary="Create a new dress",
+     *     description="Creates a new dress for a specific order and shop.",
+     *     tags={"Dresses"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"order_id", "shop_id", "category_id", "type", "quantity", "price"},
+     *             @OA\Property(property="order_id", type="integer", description="Order ID", example=1),
+     *             @OA\Property(property="shop_id", type="integer", description="Shop ID", example=1),
+     *             @OA\Property(property="category_id", type="integer", description="Category ID", example=1),
+     *             @OA\Property(property="type", type="string", description="Type of dress", example="casual"),
+     *             @OA\Property(property="quantity", type="integer", description="Quantity of dresses", example=2),
+     *             @OA\Property(property="price", type="number", format="float", description="Price of the dress", example=1500.50),
+     *             @OA\Property(property="name", type="string", description="Dress name", example="Dress A"),
+     *             @OA\Property(property="delivery_date", type="string", format="date", description="Delivery date", example="2024-10-01"),
+     *             @OA\Property(property="trial_date", type="string", format="date", description="Trial date", example="2024-09-25"),
+     *             @OA\Property(property="is_urgent", type="boolean", description="Is the dress urgent", example=true),
+     *             @OA\Property(property="notes", type="string", description="Additional notes for the dress", example="Add lace at the sleeves")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Dress Created Successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Dress Created Successfully"),
+     *             @OA\Property(property="data", type="object", @OA\Property(property="Dress id", type="integer", example=1))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Dress data validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Dress data validation error"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Dress could not be created",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Dress could not be created"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
+
     public function addDress(Request $request)
     {
         $rules = [
@@ -277,6 +336,10 @@ class DressController extends Controller
             'type' => 'required',
             'quantity' => 'required',
             'price' => 'required',
+            'name' => '',
+            'delivery_date' => '',
+            'trial_date' => '',
+            'is_urgent' => '',
         ];
         $validation = Validator::make($request->all(), $rules);
 

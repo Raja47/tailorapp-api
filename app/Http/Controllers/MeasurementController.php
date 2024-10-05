@@ -69,73 +69,59 @@ class MeasurementController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/measurements/dresses/{dress_id}/store",
-     *     summary="Create a new measurement with values",
+     *     path="/measurements/dresses/store",
+     *     summary="Add new measurement with values",
+     *     description="Adds new measurements with the specified values for a dress.",
      *     tags={"Measurements"},
      *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="dress_id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer"),
-     *         description="The ID of the dress"
-     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
+     *             type="object",
+     *             required={"dress_id", "measurementBoxes"},
+     *             @OA\Property(property="dress_id", type="integer", description="Dress ID", example=1),
      *             @OA\Property(
      *                 property="measurementBoxes",
      *                 type="array",
      *                 description="Array of measurement values",
      *                 @OA\Items(
-     *                     @OA\Property(
-     *                         property="measurement_id",
-     *                         type="integer",
-     *                         description="ID of the measurement",
-     *                         example=2
-     *                     ),
-     *                     @OA\Property(
-     *                         property="parameter_id",
-     *                         type="integer",
-     *                         description="ID of the parameter",
-     *                         example=3
-     *                     ),
-     *                     @OA\Property(
-     *                         property="value",
-     *                         type="number",
-     *                         description="Measurement value",
-     *                         example=56
-     *                     )
+     *                     type="object",
+     *                     required={"measurement_id", "parameter_id", "value"},
+     *                     @OA\Property(property="measurement_id", type="integer", description="Measurement ID", example=1),
+     *                     @OA\Property(property="parameter_id", type="integer", description="Parameter ID", example=2),
+     *                     @OA\Property(property="value", type="string", description="Measurement value", example="34")
      *                 )
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Measurement created successfully",
+     *         description="Measurement Created Successfully",
      *         @OA\JsonContent(
-     *             @OA\Property(property="measurement_id", type="integer", example=1)
+     *             type="integer",
+     *             description="The ID of the new measurement",
+     *             example=1
      *         )
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Validation error",
+     *         description="Measurement data validation error",
      *         @OA\JsonContent(
+     *             type="object",
      *             @OA\Property(property="success", type="boolean", example=false),
      *             @OA\Property(property="message", type="string", example="Measurement data validation error"),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 description="Details about the validation errors",
-     *             )
+     *             @OA\Property(property="data", type="object")
      *         )
      *     )
      * )
      */
-    public function newMeasurementWithValues($dress_id, Request $request)
+
+    public function newMeasurementWithValues(Request $request)
     {
         $rules = [
+            'dress_id' => 'required',
             'measurementBoxes' => 'required|array',
+
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -143,7 +129,7 @@ class MeasurementController extends Controller
         } else {
             $data = [
                 'model' => 'dress',
-                'model_id' => $dress_id,
+                'model_id' => $request->dress_id,
             ];
             $measurement_id = $this->newMeasurement($data);
             $responses = [];

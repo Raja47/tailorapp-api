@@ -61,7 +61,59 @@ class OrderController extends Controller
             return response()->json(['success' => true, 'message' => 'Customer Found', 'data' => ['Order' => $order_id, 'Customer' => $customer]], 200);
         }
     }
-    
+
+    //swagger annotations
+    /**
+     * @OA\Post(
+     *     path="/tailors/orders/store",
+     *     summary="Create an empty order",
+     *     description="Creates an empty order for a specific customer",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"customer_id", "shop_id"},
+     *             @OA\Property(property="customer_id", type="integer", description="Customer ID", example=1),
+     *             @OA\Property(property="name", type="string", description="Order name", example="Custom Order"),
+     *             @OA\Property(property="shop_id", type="integer", description="Shop ID", example=1),
+     *             @OA\Property(property="status", type="integer", description="Order status", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order Created Successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order Created Successfully"),
+     *             @OA\Property(property="data", type="object", @OA\Property(property="id", type="integer", example=1))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Order data validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order data validation error"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Order Creation Failed",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order Creation Failed"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
+
     public function emptyOrder(Request $request)
     {
         $rules = [
