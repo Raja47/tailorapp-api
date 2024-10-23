@@ -15,7 +15,7 @@ use App\Models\Place;
 */
 
 Route::get('/' , function (){
-    return view("site-down");
+    return view("index");
 });
 
 
