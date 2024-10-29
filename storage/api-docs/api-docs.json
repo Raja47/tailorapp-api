@@ -333,6 +333,100 @@
                 ]
             }
         },
+        "/tailors/orders/recent": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve recent orders for a tailor",
+                "description": "Fetches orders for the authenticated tailor with statuses 'new' or 'inprogress'.",
+                "operationId": "8c5d531f2026b68094abd18d8a9cf0e3",
+                "responses": {
+                    "200": {
+                        "description": "List of recent orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "description": "Order ID",
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "customer_id": {
+                                                "description": "Customer ID",
+                                                "type": "integer",
+                                                "example": 2
+                                            },
+                                            "tailor_id": {
+                                                "description": "Tailor ID",
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "shop_id": {
+                                                "description": "Shop ID",
+                                                "type": "integer",
+                                                "example": 3
+                                            },
+                                            "name": {
+                                                "description": "Order name",
+                                                "type": "string",
+                                                "example": "Order-1"
+                                            },
+                                            "status": {
+                                                "description": "Order status",
+                                                "type": "string",
+                                                "example": "inprogress"
+                                            },
+                                            "created_at": {
+                                                "description": "Order creation date",
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2023-10-20T15:30:00Z"
+                                            },
+                                            "updated_at": {
+                                                "description": "Order update date",
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2023-10-21T10:20:00Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/orders/store": {
             "post": {
                 "tags": [
