@@ -119,12 +119,12 @@ class OrderController extends Controller
                     ->orwhere('status', 1);
             })
             ->forpage($page, $perpage)
-            ->orderBy('created_at', 'desc')->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        if (empty($orders)) {
+        if (count($orders)===0) {
             return response()->json(['success' => false, 'message' => 'No orders to show'], 404);
         } else {
-
             return response()->json(['success' => true, 'data' => $orders], 200);
         }
     }
