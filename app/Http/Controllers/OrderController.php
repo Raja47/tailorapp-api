@@ -44,26 +44,54 @@ class OrderController extends Controller
     /**
      * @OA\Get(
      *     path="/tailors/orders/recent",
-     *     summary="Retrieve recent orders for a tailor",
-     *     description="Fetches orders for the authenticated tailor with statuses 'new' or 'inprogress'.",
+     *     summary="Retrieve paginated recent orders for a tailor",
+     *     description="Fetches paginated recent orders for the authenticated tailor with statuses 0 or 1, sorted by creation date in descending order.",
      *     tags={"Orders"},
      *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=false,
+     *         description="Page number for pagination",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="perpage",
+     *         in="query",
+     *         required=false,
+     *         description="Number of orders per page",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="List of recent orders",
+     *         description="List of paginated recent orders",
      *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(
-     *                 type="object",
-     *                 @OA\Property(property="id", type="integer", description="Order ID", example=1),
-     *                 @OA\Property(property="customer_id", type="integer", description="Customer ID", example=2),
-     *                 @OA\Property(property="tailor_id", type="integer", description="Tailor ID", example=1),
-     *                 @OA\Property(property="shop_id", type="integer", description="Shop ID", example=3),
-     *                 @OA\Property(property="name", type="string", description="Order name", example="Order-1"),
-     *                 @OA\Property(property="status", type="string", description="Order status", example="inprogress"),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", description="Order creation date", example="2023-10-20T15:30:00Z"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Order update date", example="2023-10-21T10:20:00Z")
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", description="Order ID", example=1),
+     *                     @OA\Property(property="customer_id", type="integer", description="Customer ID", example=2),
+     *                     @OA\Property(property="tailor_id", type="integer", description="Tailor ID", example=1),
+     *                     @OA\Property(property="shop_id", type="integer", description="Shop ID", example=3),
+     *                     @OA\Property(property="name", type="string", description="Order name", example="Order-1"),
+     *                     @OA\Property(property="status", type="integer", description="Order status", example=0),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", description="Order creation date", example="2023-10-20T15:30:00Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", description="Order update date", example="2023-10-21T10:20:00Z")
+     *                 )
      *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No orders to show",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No orders to show")
      *         )
      *     ),
      *     @OA\Response(
@@ -78,19 +106,26 @@ class OrderController extends Controller
      * )
      */
 
-    public function recentOrders()
+
+    public function recentOrders(Request $request)
     {
         $tailor_id = auth('sanctum')->user()->id;
+        $page = $request->input('page');
+        $perpage = $request->input('perpage');
+
         $orders = Order::where('tailor_id', $tailor_id)
             ->where(function ($query) {
                 $query->where('status', 0)
                     ->orwhere('status', 1);
-            })->get();
+            })
+            ->forpage($page, $perpage)
+            ->orderBy('created_at', 'desc')->get();
+
         if (empty($orders)) {
             return response()->json(['success' => false, 'message' => 'No orders to show'], 404);
         } else {
 
-            return response()->json(['success' => false, 'data' => $orders], 200);
+            return response()->json(['success' => true, 'data' => $orders], 200);
         }
     }
 

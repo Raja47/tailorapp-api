@@ -338,63 +338,114 @@
                 "tags": [
                     "Orders"
                 ],
-                "summary": "Retrieve recent orders for a tailor",
-                "description": "Fetches orders for the authenticated tailor with statuses 'new' or 'inprogress'.",
+                "summary": "Retrieve paginated recent orders for a tailor",
+                "description": "Fetches paginated recent orders for the authenticated tailor with statuses 0 or 1, sorted by creation date in descending order.",
                 "operationId": "8c5d531f2026b68094abd18d8a9cf0e3",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "perpage",
+                        "in": "query",
+                        "description": "Number of orders per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "List of recent orders",
+                        "description": "List of paginated recent orders",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "id": {
-                                                "description": "Order ID",
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "customer_id": {
-                                                "description": "Customer ID",
-                                                "type": "integer",
-                                                "example": 2
-                                            },
-                                            "tailor_id": {
-                                                "description": "Tailor ID",
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "shop_id": {
-                                                "description": "Shop ID",
-                                                "type": "integer",
-                                                "example": 3
-                                            },
-                                            "name": {
-                                                "description": "Order name",
-                                                "type": "string",
-                                                "example": "Order-1"
-                                            },
-                                            "status": {
-                                                "description": "Order status",
-                                                "type": "string",
-                                                "example": "inprogress"
-                                            },
-                                            "created_at": {
-                                                "description": "Order creation date",
-                                                "type": "string",
-                                                "format": "date-time",
-                                                "example": "2023-10-20T15:30:00Z"
-                                            },
-                                            "updated_at": {
-                                                "description": "Order update date",
-                                                "type": "string",
-                                                "format": "date-time",
-                                                "example": "2023-10-21T10:20:00Z"
-                                            }
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
                                         },
-                                        "type": "object"
-                                    }
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Order ID",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "customer_id": {
+                                                        "description": "Customer ID",
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "tailor_id": {
+                                                        "description": "Tailor ID",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "shop_id": {
+                                                        "description": "Shop ID",
+                                                        "type": "integer",
+                                                        "example": 3
+                                                    },
+                                                    "name": {
+                                                        "description": "Order name",
+                                                        "type": "string",
+                                                        "example": "Order-1"
+                                                    },
+                                                    "status": {
+                                                        "description": "Order status",
+                                                        "type": "integer",
+                                                        "example": 0
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Order creation date",
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-10-20T15:30:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Order update date",
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-10-21T10:20:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No orders to show",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No orders to show"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
