@@ -41,6 +41,59 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/tailors/orders/recent",
+     *     summary="Retrieve recent orders for a tailor",
+     *     description="Fetches orders for the authenticated tailor with statuses 'new' or 'inprogress'.",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of recent orders",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", description="Order ID", example=1),
+     *                 @OA\Property(property="customer_id", type="integer", description="Customer ID", example=2),
+     *                 @OA\Property(property="tailor_id", type="integer", description="Tailor ID", example=1),
+     *                 @OA\Property(property="shop_id", type="integer", description="Shop ID", example=3),
+     *                 @OA\Property(property="name", type="string", description="Order name", example="Order-1"),
+     *                 @OA\Property(property="status", type="string", description="Order status", example="inprogress"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", description="Order creation date", example="2023-10-20T15:30:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="Order update date", example="2023-10-21T10:20:00Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     )
+     * )
+     */
+
+    public function recentOrders()
+    {
+        $tailor_id = auth('sanctum')->user()->id;
+        $orders = Order::where('tailor_id', $tailor_id)
+            ->where(function ($query) {
+                $query->where('status', 0)
+                    ->orwhere('status', 1);
+            })->get();
+        if (empty($orders)) {
+            return response()->json(['success' => false, 'message' => 'No orders to show'], 404);
+        } else {
+
+            return response()->json(['success' => false, 'data' => $orders], 200);
+        }
+    }
+
     public function countOrders()
     {
         $tailor_id = auth('sanctum')->user()->id;
