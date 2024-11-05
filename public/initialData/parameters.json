@@ -1,0 +1,273 @@
+[
+    {
+        "id": 1,
+        "name": "Ankle",
+        "label": "Ankle",
+        "image": "parameters/ankle.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 2,
+        "name": "Jacket Length",
+        "label": "Jacket Length",
+        "image": "parameters/jacket-length.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 3,
+        "name": "Pants Length",
+        "label": "Pants Length",
+        "image": "parameters/pants-length.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 4,
+        "name": "Neck",
+        "label": "Neck",
+        "image": "parameters/neck.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 5,
+        "name": "Shirt Length",
+        "label": "Shirt Length",
+        "image": "parameters/shirt-length.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 6,
+        "name": "Seat",
+        "label": "Seat",
+        "image": "parameters/seat.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 7,
+        "name": "Shorts Length",
+        "label": "Shorts Length",
+        "image": "parameters/shorts-length.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 8,
+        "name": "Sleeve Length",
+        "label": "Sleeve Length",
+        "image": "parameters/sleeve-length.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 9,
+        "name": "Shoulder Width",
+        "label": "Shoulder Width",
+        "image": "parameters/shoulder-width.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 10,
+        "name": "Sleeve length for full Suite",
+        "label": "Sleeve lentth for full Suite",
+        "image": "parameters/sleeve-length-for-full-suite.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 11,
+        "name": "Waist",
+        "label": "Waist",
+        "image": "parameters/waist.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 12,
+        "name": "Thighs",
+        "label": "Thighs",
+        "image": "parameters/thighs.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 13,
+        "name": "Waist To Ankle",
+        "label": "Waist To Ankle",
+        "image": "parameters/waist-to-ankle.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 14,
+        "name": "Hip",
+        "label": "Hip",
+        "image": "parameters/hip.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 15,
+        "name": "knee to calf",
+        "label": "knee to calf",
+        "image": "parameters/knee-to-calf.png",
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 16,
+        "name": "inseam",
+        "label": "inseam",
+        "image": "parameters/inseam.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 17,
+        "name": "Above Knee",
+        "label": "Above Knee",
+        "image": "parameters/above-knee.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 18,
+        "name": "Arm Length",
+        "label": "Arm Length",
+        "image": "parameters/arm-length.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 19,
+        "name": "Below Knee",
+        "label": "Below Knee",
+        "image": "parameters/below-knee.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 20,
+        "name": "Biceps",
+        "label": "Biceps",
+        "image": "parameters/biceps.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 21,
+        "name": "Calf",
+        "label": "Calf",
+        "image": "parameters/calf.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 22,
+        "name": "Calf to ankle",
+        "label": "Calf to ankle",
+        "image": "parameters/calf-to-ankle.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 23,
+        "name": "Coat sleeve length",
+        "label": "Coat sleeve length",
+        "image": "parameters/coat-sleeve-length.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 24,
+        "name": "Half Shoulder",
+        "label": "Half Shoulder",
+        "image": "parameters/half-shoulder.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 25,
+        "name": "Fly",
+        "label": "Fly",
+        "image": "parameters/fly.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 26,
+        "name": "Wrist",
+        "label": "Wrist",
+        "image": "parameters/wrist.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 27,
+        "name": "Chest",
+        "label": "Chest",
+        "image": "parameters/chest.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 28,
+        "name": "Pant Waist",
+        "label": "Pant Waist",
+        "image": "parameters/pant-waist.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 29,
+        "name": "Shirt Hips",
+        "label": "Shirt Hips",
+        "image": "parameters/shirt-hips.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 30,
+        "name": "Waistcoat Hips",
+        "label": "Waistcoat Hips",
+        "image": "parameters/waistcoat-hips.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 31,
+        "name": "Waistcoat Chest",
+        "label": "Waistcoat Chest",
+        "image": "parameters/waistcoat-chest.png",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 32,
+        "name": "Waistcoat Shoulder Width",
+        "label": "Waistcoat Shoulder Width",
+        "image": "parameters/waistcoat-shoulder-width.png",
+        "status": 1,
+        "createdAt": null
+    }
+]

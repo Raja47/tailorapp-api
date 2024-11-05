@@ -1,0 +1,2644 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "TailorInch API",
+        "description": "A brief description of your API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "Local API Server"
+        }
+    ],
+    "paths": {
+        "/tailors/dresses/store": {
+            "post": {
+                "tags": [
+                    "Dresses"
+                ],
+                "summary": "Create a new dress",
+                "description": "Creates a new dress for a specific order and shop.",
+                "operationId": "13673c1892020c7047fcff925dbe2211",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "order_id",
+                                    "shop_id",
+                                    "category_id",
+                                    "type",
+                                    "quantity",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "order_id": {
+                                        "description": "Order ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "shop_id": {
+                                        "description": "Shop ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_id": {
+                                        "description": "Category ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "type": {
+                                        "description": "Type of dress",
+                                        "type": "string",
+                                        "example": "casual"
+                                    },
+                                    "quantity": {
+                                        "description": "Quantity of dresses",
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "price": {
+                                        "description": "Price of the dress",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1500.5
+                                    },
+                                    "name": {
+                                        "description": "Dress name",
+                                        "type": "string",
+                                        "example": "Dress A"
+                                    },
+                                    "delivery_date": {
+                                        "description": "Delivery date",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-10-01"
+                                    },
+                                    "trial_date": {
+                                        "description": "Trial date",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-09-25"
+                                    },
+                                    "is_urgent": {
+                                        "description": "Is the dress urgent",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "notes": {
+                                        "description": "Additional notes for the dress",
+                                        "type": "string",
+                                        "example": "Add lace at the sleeves"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Dress Created Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress Created Successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "Dress id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dress data validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Dress could not be created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress could not be created"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/measurements/dresses/{dress_id}": {
+            "get": {
+                "tags": [
+                    "Measurements"
+                ],
+                "summary": "Get dress measurements",
+                "operationId": "23e951309ecdf96a8c944b6164e1292c",
+                "parameters": [
+                    {
+                        "name": "dress_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "dress_id": {
+                                                    "type": "integer"
+                                                },
+                                                "measurements": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/measurements/dresses/store": {
+            "post": {
+                "tags": [
+                    "Measurements"
+                ],
+                "summary": "Add new measurement with values",
+                "description": "Adds new measurements with the specified values for a dress.",
+                "operationId": "d60c599a5913ce89c1b596ed90dfe248",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "dress_id",
+                                    "measurementBoxes"
+                                ],
+                                "properties": {
+                                    "dress_id": {
+                                        "description": "Dress ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "measurementBoxes": {
+                                        "description": "Array of measurement values",
+                                        "type": "array",
+                                        "items": {
+                                            "required": [
+                                                "parameter_id",
+                                                "value"
+                                            ],
+                                            "properties": {
+                                                "parameter_id": {
+                                                    "description": "Parameter ID",
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "value": {
+                                                    "description": "Measurement value",
+                                                    "type": "string",
+                                                    "example": "34"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Measurement Created Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "description": "The ID of the new measurement",
+                                    "type": "integer"
+                                },
+                                "example": 1
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Measurement data validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Measurement data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/orders/recent": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve paginated recent orders for a tailor",
+                "description": "Fetches paginated recent orders for the authenticated tailor with statuses 0 or 1, sorted by creation date in descending order.",
+                "operationId": "8c5d531f2026b68094abd18d8a9cf0e3",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "perpage",
+                        "in": "query",
+                        "description": "Number of orders per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of paginated recent orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Order ID",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "customer_id": {
+                                                        "description": "Customer ID",
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "tailor_id": {
+                                                        "description": "Tailor ID",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "shop_id": {
+                                                        "description": "Shop ID",
+                                                        "type": "integer",
+                                                        "example": 3
+                                                    },
+                                                    "name": {
+                                                        "description": "Order name",
+                                                        "type": "string",
+                                                        "example": "Order-1"
+                                                    },
+                                                    "status": {
+                                                        "description": "Order status",
+                                                        "type": "integer",
+                                                        "example": 0
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Order creation date",
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-10-20T15:30:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Order update date",
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-10-21T10:20:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No orders to show",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No orders to show"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/orders/store": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Create an empty order",
+                "description": "Creates an empty order for a specific customer",
+                "operationId": "9427c3d6270ec3244854767e48e77474",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "customer_id",
+                                    "shop_id"
+                                ],
+                                "properties": {
+                                    "customer_id": {
+                                        "description": "Customer ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "description": "Order name",
+                                        "type": "string",
+                                        "example": "Custom Order"
+                                    },
+                                    "shop_id": {
+                                        "description": "Shop ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "status": {
+                                        "description": "Order status",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Order Created Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order Created Successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Order data validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Order Creation Failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order Creation Failed"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/parameters": {
+            "get": {
+                "tags": [
+                    "Parameters"
+                ],
+                "summary": "Get all parameters",
+                "operationId": "edc4a1334c4a48ec76726ee360fe3650",
+                "responses": {
+                    "200": {
+                        "description": "List of parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "parameters": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Parameter 1"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "example": "string"
+                                                    },
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "Some value"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-08-03T12:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-08-03T12:00:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No parameters added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "tailor_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "parameters": {
+                                            "type": "string",
+                                            "example": "No parameters added"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get all categories for a tailor",
+                "operationId": "138c4989c8b6b8c63bec27ccbc4a6a35",
+                "responses": {
+                    "200": {
+                        "description": "List of categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "tailor_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "categories": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Category 1"
+                                                    },
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-05-31T12:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-05-31T12:00:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No categories added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "tailor_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "categories": {
+                                            "type": "string",
+                                            "example": "No categories added"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/categories/{category_id}/status": {
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Update the status of a category",
+                "operationId": "59a34f787b3ae951a64af641107a19b8",
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "path",
+                        "description": "The ID of the category",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Category not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Status updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Status updated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/categories/exists": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get all categories for a tailor with existing status",
+                "operationId": "8d9e301486e3a06449b11e4015829a56",
+                "responses": {
+                    "200": {
+                        "description": "List of categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "tailor_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "categories": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Category 1"
+                                                    },
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-05-31T12:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-05-31T12:00:00Z"
+                                                    },
+                                                    "exists": {
+                                                        "type": "boolean",
+                                                        "example": "false"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No categories added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "tailor_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "categories": {
+                                            "type": "string",
+                                            "example": "No categories added"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/categories/store": {
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Store a new category for a tailor",
+                "operationId": "9779ff53ccd4912a353e04fd68c76842",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of the category",
+                                        "type": "string"
+                                    },
+                                    "label": {
+                                        "description": "Label of the category",
+                                        "type": "string"
+                                    },
+                                    "gender": {
+                                        "description": "Gender for the category",
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "description": "Image for the category",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "is_suggested": {
+                                        "description": "Is the category suggested",
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category Created Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Category Validation Error / Category Creation Failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/tailors/categories/{id}/update": {
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Update a tailor category",
+                "operationId": "ee556923b32545d0b261da2ea423f587",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the category to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "label",
+                                    "gender"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Category name",
+                                        "type": "string",
+                                        "example": "Casual Wear"
+                                    },
+                                    "label": {
+                                        "description": "Category label",
+                                        "type": "string",
+                                        "example": "Casual"
+                                    },
+                                    "gender": {
+                                        "description": "Category gender",
+                                        "type": "string",
+                                        "example": "Male"
+                                    },
+                                    "image": {
+                                        "description": "Category image URL",
+                                        "type": "string",
+                                        "example": "http://example.com/image.jpg"
+                                    },
+                                    "is_suggested": {
+                                        "description": "Whether the category is suggested",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category Updated Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category Updated Successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category does not exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category does not exist."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Category Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category Validation Error"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": {
+                                                "name": [
+                                                    "The name field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Category Updation Failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category Updation Failed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/tailors/categories/{category_id}/delete": {
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Delete a category for a specific tailor",
+                "operationId": "07d7a6a6c1b08d34e2c0c45af8d5ef40",
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "path",
+                        "description": "The ID of the category to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category deleted successfully or Category deactivated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category deleted successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category does not exist"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/categories/{category_id}/parameters/": {
+            "get": {
+                "tags": [
+                    "Parameters"
+                ],
+                "summary": "Get parameters by tailor and category",
+                "operationId": "00d4a079a3657717ce713306de795d1b",
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "path",
+                        "description": "The ID of the category",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Parameters retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "category_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "parameters": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Parameters not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "category_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "parameters": {
+                                            "type": "string",
+                                            "example": "Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/categories/parameters/store": {
+            "post": {
+                "tags": [
+                    "Parameters"
+                ],
+                "summary": "Create new category parameters",
+                "operationId": "d8ca77b7a7958aa87d12adebf2cd2a60",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category_id": {
+                                        "description": "The ID of the category",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "parameter_id": {
+                                        "description": "Array of parameter IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category parameters created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category Parameter Added Successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "ids": {
+                                                    "description": "Array of created parameter IDs",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or creation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category parameter data validation error"
+                                        },
+                                        "data": {
+                                            "description": "Contains validation error messages",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/categories/parameters/destroy": {
+            "post": {
+                "tags": [
+                    "Parameters"
+                ],
+                "summary": "Delete a category parameter",
+                "operationId": "1570c03c752267698141d2f884816cbc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "parameter_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Parameter deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Parameter deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Parameter not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Parameter Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Parameter validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Parameter Validation Error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/username/{username}": {
+            "get": {
+                "tags": [
+                    "Tailors"
+                ],
+                "summary": "Check if username exists",
+                "operationId": "b48073eb8055cfb55826a0b7788c12ee",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "The username to check",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Username check result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "exists": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/store": {
+            "post": {
+                "tags": [
+                    "Tailors"
+                ],
+                "summary": "Create a new tailor",
+                "operationId": "020afb6a9bca8bb34c44ae39505d223a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of the tailor",
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "password": {
+                                        "description": "Password of the tailor",
+                                        "type": "string",
+                                        "maxLength": 12,
+                                        "minLength": 4
+                                    },
+                                    "username": {
+                                        "description": "Unique username of the tailor",
+                                        "type": "string",
+                                        "maxLength": 99
+                                    },
+                                    "number": {
+                                        "description": "Unique mobile number of the tailor",
+                                        "type": "string",
+                                        "maxLength": 15
+                                    },
+                                    "picture": {
+                                        "description": "Picture of the tailor",
+                                        "type": "string"
+                                    },
+                                    "country_code": {
+                                        "description": "Country code of the tailor",
+                                        "type": "string"
+                                    },
+                                    "city_id": {
+                                        "description": "City ID of the tailor",
+                                        "type": "integer"
+                                    },
+                                    "status": {
+                                        "description": "Status of the tailor",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tailor Created Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tailors/login": {
+            "post": {
+                "tags": [
+                    "TailorAuth"
+                ],
+                "summary": "Login a tailor",
+                "operationId": "785c0ca1c1eb2d93924180e59411c7a8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "number": {
+                                        "description": "Tailor's mobile number",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "Tailor's password",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "tailor": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "token": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Failed / Incorrect Mobile number password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tailors/customers": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Retrieve a paginated list of customers for the authenticated tailor",
+                "operationId": "145fe0c4d11836b7c4035baa97e2633f",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number for pagination",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "perpage",
+                        "in": "query",
+                        "description": "Number of customers to retrieve per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customers retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customers Found"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "tailor_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "customers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "John Doe"
+                                                            },
+                                                            "email": {
+                                                                "type": "string",
+                                                                "example": "johndoe@example.com"
+                                                            },
+                                                            "phone": {
+                                                                "type": "string",
+                                                                "example": "1234567890"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer data validation error"
+                                        },
+                                        "data": {
+                                            "description": "Validation error details",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No customers found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No Customer Found"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "tailor_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/customers/{customer_id}": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Show customer by ID",
+                "description": "Retrieve details of a customer by their ID",
+                "operationId": "2b6b09ec9ef474cb32db1452547612ae",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "description": "ID of the customer to retrieve.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customer found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Found"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "customer_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "number": {
+                                                        "type": "string",
+                                                        "example": "1234567890"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "address": {
+                                                        "type": "string",
+                                                        "example": "123 Main Street"
+                                                    },
+                                                    "gender": {
+                                                        "type": "string",
+                                                        "example": "Male"
+                                                    },
+                                                    "city_name": {
+                                                        "type": "string",
+                                                        "example": "Karachi"
+                                                    },
+                                                    "picture": {
+                                                        "type": "string",
+                                                        "example": "storage/customers/filename.jpg"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Not Found"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/customers/search": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Search for customers by name or number",
+                "operationId": "c2a17cde86ebe521212b26d6e3fea99f",
+                "parameters": [
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "Text to search for in customer name or number",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "John Doe"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "perpage",
+                        "in": "query",
+                        "description": "Number of results per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customer(s) found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Found"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "customer": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "John Doe"
+                                                            },
+                                                            "number": {
+                                                                "type": "string",
+                                                                "example": "123456789"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No customer found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Not Found"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer data validation error"
+                                        },
+                                        "data": {
+                                            "description": "Validation error details",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/customers/store": {
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Create a new Tailor Customer",
+                "description": "Store a new customer associated with a tailor. If a customer already exists for the tailor, an error is returned.",
+                "operationId": "1c01c5ee6ab127951efcdb27b493e71d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "number",
+                                    "name",
+                                    "gender"
+                                ],
+                                "properties": {
+                                    "number": {
+                                        "description": "Customer phone number, unique.",
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "name": {
+                                        "description": "Customer name.",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "address": {
+                                        "description": "Customer address, optional.",
+                                        "type": "string",
+                                        "example": "123 Main Street"
+                                    },
+                                    "gender": {
+                                        "description": "Customer gender.",
+                                        "type": "string",
+                                        "example": "Male"
+                                    },
+                                    "city_name": {
+                                        "description": "Customer city name, optional.",
+                                        "type": "string",
+                                        "example": "Karachi"
+                                    },
+                                    "picture": {
+                                        "description": "Picture of the customer (image upload).",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Customer Created Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your Customer Created Successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "Tailor Customer id": {
+                                                    "description": "ID of the created customer",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Customer Creation Failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Creation Failed"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Customer Already Exists",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Already Exists"
+                                        },
+                                        "data": {
+                                            "description": "ID of the existing customer",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/customers/update": {
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Update a customer",
+                "description": "Update an existing customer's details",
+                "operationId": "3c8889223771f4c50f0025fb6100e2d4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "customer_id",
+                                    "number",
+                                    "name",
+                                    "gender"
+                                ],
+                                "properties": {
+                                    "customer_id": {
+                                        "description": "ID of the customer to be updated.",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "number": {
+                                        "description": "Customer phone number.",
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "name": {
+                                        "description": "Customer name.",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "address": {
+                                        "description": "Customer address, optional.",
+                                        "type": "string",
+                                        "example": "123 Main Street"
+                                    },
+                                    "gender": {
+                                        "description": "Customer gender.",
+                                        "type": "string",
+                                        "example": "Male"
+                                    },
+                                    "city_name": {
+                                        "description": "Customer city name, optional.",
+                                        "type": "string",
+                                        "example": "Karachi"
+                                    },
+                                    "picture": {
+                                        "description": "Picture of the customer (image upload).",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Customer updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your Customer Updated Successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Updation Failed"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Customer does not exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer does not exist."
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/customers/destroy": {
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Delete a customer for the authenticated tailor",
+                "operationId": "0c834a5cca4c3520128302f1ac9d165f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "customer_id": {
+                                        "description": "The ID of the customer to delete",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Customer deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Deleted successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer does not exist."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer Validation Error"
+                                        },
+                                        "data": {
+                                            "description": "Validation error details",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Use a Bearer token to authorize requests",
+                "name": "Authorization",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

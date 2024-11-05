@@ -1,0 +1,992 @@
+[
+    {
+        "id": 1,
+        "label": "Length",
+        "categoryId": 1,
+        "parameterId": 5,
+        "part": "shirt",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 2,
+        "label": "Neck",
+        "categoryId": 1,
+        "parameterId": 4,
+        "part": "shirt",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 3,
+        "label": "Shoulder",
+        "categoryId": 1,
+        "parameterId": 9,
+        "part": "shirt",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 4,
+        "label": "Chest",
+        "categoryId": 1,
+        "parameterId": 27,
+        "part": "shirt",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 5,
+        "label": "Waist",
+        "categoryId": 1,
+        "parameterId": 11,
+        "part": "shirt",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 6,
+        "label": "Seat",
+        "categoryId": 1,
+        "parameterId": 6,
+        "part": "shirt",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 7,
+        "label": "Sleeves",
+        "categoryId": 1,
+        "parameterId": 8,
+        "part": "shirt",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 8,
+        "label": " Sleeve Circum",
+        "categoryId": 1,
+        "parameterId": 20,
+        "part": "shirt",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 9,
+        "label": "Wrist",
+        "categoryId": 1,
+        "parameterId": 26,
+        "part": "shirt",
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 10,
+        "label": "Length",
+        "categoryId": 2,
+        "parameterId": 3,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 11,
+        "label": "Waist",
+        "categoryId": 2,
+        "parameterId": 28,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 12,
+        "label": "Seat",
+        "categoryId": 2,
+        "parameterId": 6,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 13,
+        "label": "Calf/knee",
+        "categoryId": 2,
+        "parameterId": 21,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 14,
+        "label": "Fly",
+        "categoryId": 2,
+        "parameterId": 25,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 15,
+        "label": "Thigh",
+        "categoryId": 2,
+        "parameterId": 12,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 16,
+        "label": "Ankle",
+        "categoryId": 2,
+        "parameterId": 1,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 17,
+        "label": "Chest",
+        "categoryId": 3,
+        "parameterId": 27,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 18,
+        "label": "Waist",
+        "categoryId": 3,
+        "parameterId": 11,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 19,
+        "label": "Hips",
+        "categoryId": 3,
+        "parameterId": 6,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 20,
+        "label": "Shoulder Width",
+        "categoryId": 3,
+        "parameterId": 9,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 21,
+        "label": "Sleeve Length",
+        "categoryId": 3,
+        "parameterId": 23,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 22,
+        "label": "Coat Length",
+        "categoryId": 3,
+        "parameterId": 2,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 23,
+        "label": "Biceps",
+        "categoryId": 3,
+        "parameterId": 20,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 24,
+        "label": "Wrist",
+        "categoryId": 3,
+        "parameterId": 26,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 25,
+        "label": "Kameez Length",
+        "categoryId": 4,
+        "parameterId": 5,
+        "status": 1,
+        "createdAt": null,
+        "part": "kameez"
+    },
+    {
+        "id": 26,
+        "label": "Chest",
+        "categoryId": 4,
+        "parameterId": 27,
+        "status": 1,
+        "createdAt": null,
+        "part": "kameez"
+    },
+    {
+        "id": 27,
+        "label": "Shoulder",
+        "categoryId": 4,
+        "parameterId": 9,
+        "status": 1,
+        "createdAt": null,
+        "part": "kameez"
+    },
+    {
+        "id": 28,
+        "label": "Kameez Waist",
+        "categoryId": 4,
+        "parameterId": 11,
+        "status": 1,
+        "createdAt": null,
+        "part": "kameez"
+    },
+    {
+        "id": 29,
+        "label": "Kameez Hips",
+        "categoryId": 4,
+        "parameterId": 6,
+        "status": 1,
+        "createdAt": null,
+        "part": "kameez"
+    },
+    {
+        "id": 30,
+        "label": "Sleeves Length",
+        "categoryId": 4,
+        "parameterId": 8,
+        "status": 1,
+        "createdAt": null,
+        "part": "kameez"
+    },
+    {
+        "id": 31,
+        "label": "Sleeve circum",
+        "categoryId": 4,
+        "parameterId": 20,
+        "status": 1,
+        "createdAt": null,
+        "part": "kameez"
+    },
+    {
+        "id": 32,
+        "label": "Neck",
+        "categoryId": 4,
+        "parameterId": 4,
+        "status": 1,
+        "createdAt": null,
+        "part": "kameez"
+    },
+    {
+        "id": 33,
+        "label": "Wrist",
+        "categoryId": 4,
+        "parameterId": 26,
+        "status": 1,
+        "createdAt": null,
+        "part": "kameez"
+    },
+    {
+        "id": 34,
+        "label": "Salwar Length",
+        "categoryId": 4,
+        "parameterId": 3,
+        "status": 1,
+        "createdAt": null,
+        "part": "shalwar"
+    },
+    {
+        "id": 35,
+        "label": "Salwar Waist",
+        "categoryId": 4,
+        "parameterId": 28,
+        "status": 1,
+        "createdAt": null,
+        "part": "shalwar"
+    },
+    {
+        "id": 36,
+        "label": "Salwar Hips",
+        "categoryId": 4,
+        "parameterId": 14,
+        "status": 1,
+        "createdAt": null,
+        "part": "shalwar"
+    },
+    {
+        "id": 37,
+        "label": "Thigh",
+        "categoryId": 4,
+        "parameterId": 15,
+        "status": 1,
+        "createdAt": null,
+        "part": "shalwar"
+    },
+    {
+        "id": 38,
+        "label": "Knee/Calf",
+        "categoryId": 4,
+        "parameterId": 15,
+        "status": 1,
+        "createdAt": null,
+        "part": "shalwar"
+    },
+    {
+        "id": 39,
+        "label": "Ankle",
+        "categoryId": 4,
+        "parameterId": 1,
+        "status": 1,
+        "createdAt": null,
+        "part": "shalwar"
+    },
+    {
+        "id": 40,
+        "label": "Waist",
+        "categoryId": 5,
+        "parameterId": 28,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 41,
+        "label": "Hips",
+        "categoryId": 5,
+        "parameterId": 14,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 42,
+        "label": "Thigh",
+        "categoryId": 5,
+        "parameterId": 15,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 43,
+        "label": "Knee/Calf",
+        "categoryId": 5,
+        "parameterId": 15,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 44,
+        "label": "Ankle",
+        "categoryId": 5,
+        "parameterId": 1,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 45,
+        "label": "Inseam Length",
+        "categoryId": 5,
+        "parameterId": 16,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 46,
+        "label": "Outseam Length",
+        "categoryId": 5,
+        "parameterId": 3,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 47,
+        "label": "Kurta Length",
+        "categoryId": 6,
+        "parameterId": 5,
+        "status": 1,
+        "createdAt": null,
+        "part": "kurta"
+    },
+    {
+        "id": 48,
+        "label": "Chest",
+        "categoryId": 6,
+        "parameterId": 27,
+        "status": 1,
+        "createdAt": null,
+        "part": "kurta"
+    },
+    {
+        "id": 49,
+        "label": "Shoulder",
+        "categoryId": 6,
+        "parameterId": 9,
+        "status": 1,
+        "createdAt": null,
+        "part": "kurta"
+    },
+    {
+        "id": 50,
+        "label": "Kurta Waist",
+        "categoryId": 6,
+        "parameterId": 11,
+        "status": 1,
+        "createdAt": null,
+        "part": "kurta"
+    },
+    {
+        "id": 51,
+        "label": "Kurta Hips",
+        "categoryId": 6,
+        "parameterId": 6,
+        "status": 1,
+        "createdAt": null,
+        "part": "kurta"
+    },
+    {
+        "id": 52,
+        "label": "Sleeve Length",
+        "categoryId": 6,
+        "parameterId": 8,
+        "status": 1,
+        "createdAt": null,
+        "part": "kurta"
+    },
+    {
+        "id": 53,
+        "label": "Sleeve Circum",
+        "categoryId": 6,
+        "parameterId": 20,
+        "status": 1,
+        "createdAt": null,
+        "part": "kurta"
+    },
+    {
+        "id": 54,
+        "label": "Neck",
+        "categoryId": 6,
+        "parameterId": 4,
+        "status": 1,
+        "createdAt": null,
+        "part": "kurta"
+    },
+    {
+        "id": 55,
+        "label": "Wrist",
+        "categoryId": 6,
+        "parameterId": 26,
+        "status": 1,
+        "createdAt": null,
+        "part": "kurta"
+    },
+    {
+        "id": 56,
+        "label": "Pajama Waist",
+        "categoryId": 6,
+        "parameterId": 28,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 57,
+        "label": "Pajama Hips",
+        "categoryId": 6,
+        "parameterId": 14,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 58,
+        "label": "Thigh",
+        "categoryId": 6,
+        "parameterId": 15,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 59,
+        "label": "Knee/Calf",
+        "categoryId": 6,
+        "parameterId": 15,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 60,
+        "label": "Ankle",
+        "categoryId": 6,
+        "parameterId": 1,
+        "status": 1,
+        "createdAt": null,
+        "part": "pajama"
+    },
+    {
+        "id": 61,
+        "label": "Length",
+        "categoryId": 7,
+        "parameterId": 5,
+        "status": 1,
+        "createdAt": null,
+        "part": "sherwani"
+    },
+    {
+        "id": 62,
+        "label": "Chest",
+        "categoryId": 7,
+        "parameterId": 27,
+        "status": 1,
+        "createdAt": null,
+        "part": "sherwani"
+    },
+    {
+        "id": 63,
+        "label": "Waist",
+        "categoryId": 7,
+        "parameterId": 11,
+        "status": 1,
+        "createdAt": null,
+        "part": "sherwani"
+    },
+    {
+        "id": 64,
+        "label": "Hips",
+        "categoryId": 7,
+        "parameterId": 6,
+        "status": 1,
+        "createdAt": null,
+        "part": "sherwani"
+    },
+    {
+        "id": 65,
+        "label": "Shoulder Width",
+        "categoryId": 7,
+        "parameterId": 9,
+        "status": 1,
+        "createdAt": null,
+        "part": "sherwani"
+    },
+    {
+        "id": 66,
+        "label": "Sleeve Length",
+        "categoryId": 7,
+        "parameterId": 8,
+        "status": 1,
+        "createdAt": null,
+        "part": "sherwani"
+    },
+    {
+        "id": 67,
+        "label": "Biceps",
+        "categoryId": 7,
+        "parameterId": 20,
+        "status": 1,
+        "createdAt": null,
+        "part": "sherwani"
+    },
+    {
+        "id": 68,
+        "label": "Wrist",
+        "categoryId": 7,
+        "parameterId": 26,
+        "status": 1,
+        "createdAt": null,
+        "part": "sherwani"
+    },
+    {
+        "id": 69,
+        "label": "Collar",
+        "categoryId": 7,
+        "parameterId": 4,
+        "status": 1,
+        "createdAt": null,
+        "part": "sherwani"
+    },
+    {
+        "id": 70,
+        "label": "Hips",
+        "categoryId": 8,
+        "parameterId": 6,
+        "status": 1,
+        "createdAt": null,
+        "part": "waistcoat"
+    },
+    {
+        "id": 71,
+        "label": "Shoulder Width",
+        "categoryId": 8,
+        "parameterId": 9,
+        "status": 1,
+        "createdAt": null,
+        "part": "waistcoat"
+    },
+    {
+        "id": 72,
+        "label": "Waistcoat Length",
+        "categoryId": 8,
+        "parameterId": 5,
+        "status": 1,
+        "createdAt": null,
+        "part": "waistcoat"
+    },
+    {
+        "id": 73,
+        "label": "Front Length",
+        "categoryId": 8,
+        "parameterId": 2,
+        "status": 1,
+        "createdAt": null,
+        "part": "waistcoat"
+    },
+    {
+        "id": 74,
+        "label": "Collar",
+        "categoryId": 8,
+        "parameterId": 4,
+        "status": 1,
+        "createdAt": null,
+        "part": "waistcoat"
+    },
+    {
+        "id": 75,
+        "label": "Length",
+        "categoryId": 9,
+        "parameterId": 5,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 76,
+        "label": "Chest",
+        "categoryId": 9,
+        "parameterId": 27,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 77,
+        "label": "Shirt Waist",
+        "categoryId": 9,
+        "parameterId": 11,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 78,
+        "label": "Shirt Hips",
+        "categoryId": 9,
+        "parameterId": 6,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 79,
+        "label": "Shoulder Width",
+        "categoryId": 9,
+        "parameterId": 9,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 80,
+        "label": "Sleeve Length",
+        "categoryId": 9,
+        "parameterId": 8,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 81,
+        "label": "Biceps",
+        "categoryId": 9,
+        "parameterId": 20,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 82,
+        "label": "Wrist",
+        "categoryId": 9,
+        "parameterId": 26,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 83,
+        "label": "Pant Waist",
+        "categoryId": 9,
+        "parameterId": 28,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 84,
+        "label": "Pant Hips",
+        "categoryId": 9,
+        "parameterId": 14,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 85,
+        "label": "Thigh",
+        "categoryId": 9,
+        "parameterId": 15,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 87,
+        "label": "Knee/Calf",
+        "categoryId": 9,
+        "parameterId": 15,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 87,
+        "label": "Ankle",
+        "categoryId": 9,
+        "parameterId": 1,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 88,
+        "label": "Inseam Length",
+        "categoryId": 9,
+        "parameterId": 16,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 89,
+        "label": "Fly",
+        "categoryId": 9,
+        "parameterId": 25,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 90,
+        "label": "Shirt Length",
+        "categoryId": 10,
+        "parameterId": 5,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 91,
+        "label": "Shirt Chest",
+        "categoryId": 10,
+        "parameterId": 27,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 92,
+        "label": "Shirt Waist",
+        "categoryId": 10,
+        "parameterId": 11,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 93,
+        "label": "Shirt Hips",
+        "categoryId": 10,
+        "parameterId": 6,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 94,
+        "label": "Shoulder Width",
+        "categoryId": 10,
+        "parameterId": 9,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 95,
+        "label": "Sleeve Length",
+        "categoryId": 10,
+        "parameterId": 8,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 96,
+        "label": "Biceps",
+        "categoryId": 10,
+        "parameterId": 20,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 97,
+        "label": "Wrist",
+        "categoryId": 10,
+        "parameterId": 26,
+        "status": 1,
+        "createdAt": null,
+        "part": "coat"
+    },
+    {
+        "id": 98,
+        "label": "Pant Waist",
+        "categoryId": 10,
+        "parameterId": 28,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 99,
+        "label": "Pant Hips",
+        "categoryId": 10,
+        "parameterId": 29,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 100,
+        "label": "Thigh",
+        "categoryId": 10,
+        "parameterId": 15,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 101,
+        "label": "Knee/Calf",
+        "categoryId": 10,
+        "parameterId": 15,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 102,
+        "label": "Ankle",
+        "categoryId": 10,
+        "parameterId": 1,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 103,
+        "label": "Inseam Length",
+        "categoryId": 10,
+        "parameterId": 16,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 104,
+        "label": "Fly",
+        "categoryId": 10,
+        "parameterId": 25,
+        "status": 1,
+        "createdAt": null,
+        "part": "pant"
+    },
+    {
+        "id": 105,
+        "label": "Waistcoat Chest",
+        "categoryId": 10,
+        "parameterId": 31,
+        "status": 1,
+        "createdAt": null,
+        "part": "waistcoat"
+    },
+    {
+        "id": 106,
+        "label": "Waistcoat Waist",
+        "categoryId": 10,
+        "parameterId": 14,
+        "status": 1,
+        "createdAt": null,
+        "part": "waistcoat"
+    },
+    {
+        "id": 107,
+        "label": "Waistcoat Hips",
+        "categoryId": 10,
+        "parameterId": 30,
+        "status": 1,
+        "createdAt": null,
+        "part": "waistcoat"
+    },
+    {
+        "id": 108,
+        "label": "Waistcoat Shoulder Width",
+        "categoryId": 10,
+        "parameterId": 32,
+        "status": 1,
+        "createdAt": null,
+        "part": "waistcoat"
+    },
+    {
+        "id": 109,
+        "label": "Waistcoat Length",
+        "categoryId": 10,
+        "parameterId": 2,
+        "status": 1,
+        "createdAt": null,
+        "part": "waistcoat"
+    },
+    {
+        "id": 110,
+        "label": "Collar",
+        "categoryId": 10,
+        "parameterId": 4,
+        "status": 1,
+        "createdAt": null,
+        "part": "waistcoat"
+    }
+]

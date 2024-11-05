@@ -1,0 +1,96 @@
+[
+    {
+        "id": 1,
+        "name": "Shirt",
+        "label": "Shirt",
+        "gender": "B",
+        "image": null,
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 2,
+        "name": "Pant",
+        "label": "Pant",
+        "gender": "B",
+        "image": null,
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 3,
+        "name": "Coat",
+        "label": "Coat",
+        "gender": "M",
+        "image": null,
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 4,
+        "name": "Salwar Kameez",
+        "label": "Salwar Kameez",
+        "gender": "M",
+        "image": null,
+        "isSuggested": 0,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 5,
+        "name": "Pajama",
+        "label": "Pajama",
+        "gender": "M",
+        "image": null,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 6,
+        "name": "Kurta Pajama",
+        "label": "Kurta Pajama",
+        "gender": "M",
+        "image": null,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 7,
+        "name": "Sherwani",
+        "label": "Sherwani",
+        "gender": "M",
+        "image": null,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 8,
+        "name": "Waist Coat",
+        "label": "Waist Coat",
+        "gender": "M",
+        "image": null,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 9,
+        "name": "Two Piece",
+        "label": "Two Piece",
+        "gender": "M",
+        "image": null,
+        "status": 1,
+        "createdAt": null
+    },
+    {
+        "id": 10,
+        "name": "Three Piece",
+        "label": "Three Piece",
+        "gender": "M",
+        "image": null,
+        "status": 1,
+        "createdAt": null
+    }
+]
