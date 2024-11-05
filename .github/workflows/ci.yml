@@ -1,15 +1,17 @@
-name: production
+name: pipelines
 on:
   push:
     branches:
       - master
+      - develop
 jobs:
-  deploy:
+  deploy_dev:
+    if: github.ref == 'refs/heads/develop'  # Only run this job on dev branch
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Run SSH command on server
+      - name: Run SSH command on server for Develop
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
@@ -17,4 +19,19 @@ jobs:
         run: |
           echo "${SSH_KEY}" > ssh_key
           chmod 600 ssh_key
-          ssh -o StrictHostKeyChecking=no -i ssh_key ${SSH_USER}@${SSH_HOST} "ls"
+          ssh -o StrictHostKeyChecking=no -i ssh_key ${SSH_USER}@${SSH_HOST} "echo 'Deploying to Dev Environment' && ls"
+  deploy_prod:
+    if: github.ref == 'refs/heads/master'  # Only run this job on prod branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run SSH command on server for Prod
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          echo "${SSH_KEY}" > ssh_key
+          chmod 600 ssh_key
+          ssh -o StrictHostKeyChecking=no -i ssh_key ${SSH_USER}@${SSH_HOST} "echo 'Deploying to Prod Environment' && ls"
