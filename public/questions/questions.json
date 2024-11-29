@@ -1,0 +1,137 @@
+[
+    {
+        "id": 1,
+        "question": "Is embroidery required for this outfit?",
+        "type": 1,
+        "options": null,
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 2,
+        "question": "Specify the collar style for the garment",
+        "type": 2,
+        "options": "[{\"label\":\"Standard Collar\",\"value\":\"standard\",\"icon\":null},{\"label\":\"Mandarin Collar\",\"value\":\"mandarin\",\"icon\":null},{\"label\":\"Spread Collar\",\"value\":\"spread\",\"icon\":null}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 3,
+        "question": "Mention the type of pocket for this outfit",
+        "type": 3,
+        "options": "[{\"label\":\"Patch Pocket\",\"value\":\"patch\",\"icon\":null},{\"label\":\"Welt Pocket\",\"value\":\"welt\",\"icon\":null},{\"label\":\"Flap Pocket\",\"value\":\"flap\",\"icon\":null}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 4,
+        "question": "Indicate the preferred cuff type",
+        "type": 2,
+        "options": "[{\"label\":\"Single Cuff\",\"value\":\"single\",\"icon\":null},{\"label\":\"Double Cuff\",\"value\":\"double\",\"icon\":null},{\"label\":\"French Cuff\",\"value\":\"french\",\"icon\":null}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 5,
+        "question": "Which type of buttons are needed?",
+        "type": 4,
+        "options": "[{\"label\":\"Plain\",\"value\":\"plain\",\"icon\":\"questions/options.jpg\"},{\"label\":\"Decorative\",\"value\":\"decorative\",\"icon\":\"questions/options.jpg\"},{\"label\":\"Hidden\",\"value\":\"hidden\",\"icon\":\"questions/options.jpg\"}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 6,
+        "question": "Where should the pockets be placed?",
+        "type": 5,
+        "options": "[{\"label\":\"Left Chest\",\"value\":\"left_chest\",\"icon\":\"questions/options.jpg\"},{\"label\":\"Right Chest\",\"value\":\"right_chest\",\"icon\":\"questions/options.jpg\"},{\"label\":\"Lower Sides\",\"value\":\"lower_sides\",\"icon\":\"questions/options.jpg\"}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 7,
+        "question": "Add lining to this garment?",
+        "type": 2,
+        "options": "[{\"label\":\"Yes\",\"value\":\"yes\",\"icon\":null},{\"label\":\"No\",\"value\":\"no\",\"icon\":null}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 8,
+        "question": "Select the material to be used for stitching",
+        "type": 3,
+        "options": "[{\"label\":\"Cotton\",\"value\":\"cotton\",\"icon\":null},{\"label\":\"Silk\",\"value\":\"silk\",\"icon\":null},{\"label\":\"Wool\",\"value\":\"wool\",\"icon\":null}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 9,
+        "question": "Is contrast stitching required?",
+        "type": 1,
+        "options": null,
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 10,
+        "question": "Specify the sleeve style",
+        "type": 4,
+        "options": "[{\"label\":\"Half Sleeve\",\"value\":\"half_sleeve\",\"icon\":\"questions/options.jpg\"},{\"label\":\"Full Sleeve\",\"value\":\"full_sleeve\",\"icon\":\"questions/options.jpg\"},{\"label\":\"Sleeveless\",\"value\":\"sleeveless\",\"icon\":\"questions/options.jpg\"}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 11,
+        "question": "Mention the fitting type for this design",
+        "type": 2,
+        "options": "[{\"label\":\"Regular Fit\",\"value\":\"regular\",\"icon\":null},{\"label\":\"Slim Fit\",\"value\":\"slim\",\"icon\":null},{\"label\":\"Loose Fit\",\"value\":\"loose\",\"icon\":null}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 12,
+        "question": "Choose the trouser style for this suit",
+        "type": 3,
+        "options": "[{\"label\":\"Flat Front\",\"value\":\"flat_front\",\"icon\":null},{\"label\":\"Pleated\",\"value\":\"pleated\",\"icon\":null},{\"label\":\"Tapered\",\"value\":\"tapered\",\"icon\":null}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 13,
+        "question": "Add any additional accessories for this outfit?",
+        "type": 5,
+        "options": "[{\"label\":\"Pocket Square\",\"value\":\"pocket_square\",\"icon\":\"questions/options.jpg\"},{\"label\":\"Cufflinks\",\"value\":\"cufflinks\",\"icon\":\"questions/options.jpg\"},{\"label\":\"Tie\",\"value\":\"tie\",\"icon\":\"questions/options.jpg\"}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 14,
+        "question": "State your pleat preferences",
+        "type": 2,
+        "options": "[{\"label\":\"No Pleats\",\"value\":\"no_pleats\",\"icon\":null},{\"label\":\"Single Pleat\",\"value\":\"single_pleat\",\"icon\":null},{\"label\":\"Double Pleat\",\"value\":\"double_pleat\",\"icon\":null}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    },
+    {
+        "id": 15,
+        "question": "Indicate the kurta length",
+        "type": 4,
+        "options": "[{\"label\":\"Short\",\"value\":\"short\",\"icon\":\"questions/options.jpg\"},{\"label\":\"Medium\",\"value\":\"medium\",\"icon\":\"questions/options.jpg\"},{\"label\":\"Long\",\"value\":\"long\",\"icon\":\"questions/options.jpg\"}]",
+        "status": 1,
+        "created_at": "2024-11-27 10:00:00",
+        "updated_at": "2024-11-27 10:00:00"
+    }
+]

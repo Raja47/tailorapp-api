@@ -12,6 +12,204 @@
         }
     ],
     "paths": {
+        "/tailors/dresses/create": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Create a dress with related entities",
+                "operationId": "8430e9da87e76be81cc5e21e0810722e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "customer_id",
+                                    "shop_id",
+                                    "category_id",
+                                    "type",
+                                    "quantity",
+                                    "price",
+                                    "delivery_date",
+                                    "trial_date",
+                                    "measurementBoxes",
+                                    "questionAnswers"
+                                ],
+                                "properties": {
+                                    "customer_id": {
+                                        "description": "Customer ID",
+                                        "type": "integer"
+                                    },
+                                    "shop_id": {
+                                        "description": "Shop ID",
+                                        "type": "integer"
+                                    },
+                                    "category_id": {
+                                        "description": "Category ID",
+                                        "type": "integer"
+                                    },
+                                    "type": {
+                                        "description": "Dress type",
+                                        "type": "string",
+                                        "enum": [
+                                            "stitching",
+                                            "alteration"
+                                        ]
+                                    },
+                                    "quantity": {
+                                        "description": "Dress quantity",
+                                        "type": "integer",
+                                        "minimum": 1
+                                    },
+                                    "price": {
+                                        "description": "Dress price",
+                                        "type": "number"
+                                    },
+                                    "delivery_date": {
+                                        "description": "Delivery date",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "trial_date": {
+                                        "description": "Trial date",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "notes": {
+                                        "description": "Additional notes",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "measurementBoxes": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "parameter_id": {
+                                                    "type": "integer"
+                                                },
+                                                "value": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "questionAnswers": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "question_id": {
+                                                    "type": "integer"
+                                                },
+                                                "value": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress created"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "order_id": {
+                                                    "type": "integer"
+                                                },
+                                                "dress_id": {
+                                                    "type": "integer"
+                                                },
+                                                "measurement_id": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/dresses/store": {
             "post": {
                 "tags": [
@@ -673,6 +871,112 @@
                                         "parameters": {
                                             "type": "string",
                                             "example": "No parameters added"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/questions": {
+            "get": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Get all active questions",
+                "operationId": "84c136f7e126b76463d4c43452f55c89",
+                "responses": {
+                    "200": {
+                        "description": "List of active questions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "question": {
+                                                        "type": "string",
+                                                        "example": "What is your preferred collar type?"
+                                                    },
+                                                    "type": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "options": {
+                                                        "type": "string",
+                                                        "example": "[\\Short\\, \\Medium\\, \\Long\\]"
+                                                    },
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-11-27T10:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-11-27T10:00:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No questions found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No questions to show"
                                         }
                                     },
                                     "type": "object"
@@ -1550,6 +1854,123 @@
                                         },
                                         "data": {
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/categories/{category_id}/questions/": {
+            "get": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Get questions by tailor and category",
+                "operationId": "01bcac743a41aa9406ab321936271133",
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "path",
+                        "description": "The ID of the category",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Questions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "category_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "questions": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "question": {
+                                                        "type": "string",
+                                                        "example": "Specify the collar style for the garment"
+                                                    },
+                                                    "type": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "options": {
+                                                        "type": "string",
+                                                        "example": "[{'label':'Standard Collar','value':'standard'}]"
+                                                    },
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-11-27 10:00:00"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-11-27 10:00:00"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Questions not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "category_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No Questions to show in this category"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
                                         }
                                     },
                                     "type": "object"
