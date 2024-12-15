@@ -13,6 +13,9 @@ class TailorCategoryQuestion extends Model
         'tailor_id',
         'category_id',
         'question_id',
+        'question',
+        'type',
+        'options',
         'status'
     ];
 }

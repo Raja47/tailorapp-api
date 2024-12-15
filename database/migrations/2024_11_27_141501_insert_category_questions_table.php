@@ -20,11 +20,10 @@ class InsertCategoryQuestionsTable extends Migration
 
         foreach ($cat_questions as $cat_question) {
             CategoryQuestion::create([
-                // 'id' => $cat_question['id'],
                 'category_id' => $cat_question['category_id'],
-                'question_id' => $cat_question['question_id'],
-                'status' => $cat_question['status'],
-                // 'createdAt' => $cat_question['createdAt'],
+                'question' => $cat_question['question'],
+                'type' => $cat_question['type'],
+                'options' => $cat_question['options'],
             ]);
         }
     }

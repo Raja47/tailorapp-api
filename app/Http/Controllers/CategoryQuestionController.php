@@ -15,18 +15,21 @@ class CategoryQuestionController extends Controller
      */
     public function index()
     {
-        $category_questions = CategoryQuestion::where('status',1)->get();
-        if (count($category_questions)===0) {
+        $category_questions = CategoryQuestion::where('status', 1)->get();
+        if (count($category_questions) === 0) {
             return response()->json(['success' => false, 'message' => 'No questions to show'], 404);
         } else {
+            foreach ($category_questions as $category_question) {
+                $category_question->options = json_decode($category_question->options);
+            }
             return response()->json(['success' => true, 'data' => $category_questions], 200);
         }
     }
 
     public function categoryQuestion($category_id)
     {
-        $category_questions = CategoryQuestion::where([['category_id',$category_id],['status',1]])->get();
-        if (count($category_questions)===0) {
+        $category_questions = CategoryQuestion::where([['category_id', $category_id], ['status', 1]])->get();
+        if (count($category_questions) === 0) {
             return response()->json(['success' => false, 'message' => 'No questions to show in this question'], 404);
         } else {
             return response()->json(['success' => true, 'data' => $category_questions], 200);
@@ -56,7 +59,7 @@ class CategoryQuestionController extends Controller
             'question_id' => 'required',
         ];
 
-        $validation = Validator::make($request->all(),$rules);
+        $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Question data validation error', 'data' => $validation->errors()], 422);
         } else {

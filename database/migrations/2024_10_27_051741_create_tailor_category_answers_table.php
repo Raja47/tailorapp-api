@@ -15,8 +15,8 @@ class CreateTailorCategoryAnswersTable extends Migration
     {
         Schema::create('tailor_category_answers', function (Blueprint $table) {
             $table->id();
-            $table->integer('tailor_id'); 
-            $table->integer('dress_id'); 
+            $table->integer('tailor_id');
+            $table->integer('dress_id');
             $table->integer('question_id'); //tailor_catgeory_question ID
             $table->string('value');
             $table->timestamps();

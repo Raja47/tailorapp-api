@@ -89,7 +89,8 @@
                                                     "type": "integer"
                                                 },
                                                 "value": {
-                                                    "type": "string"
+                                                    "type": "number",
+                                                    "format": "float"
                                                 }
                                             },
                                             "type": "object"
@@ -103,7 +104,22 @@
                                                     "type": "integer"
                                                 },
                                                 "value": {
-                                                    "type": "string"
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "value": {
+                                                                "type": "string"
+                                                            },
+                                                            "icon": {
+                                                                "type": "string",
+                                                                "format": "uri"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
                                                 }
                                             },
                                             "type": "object"
@@ -871,112 +887,6 @@
                                         "parameters": {
                                             "type": "string",
                                             "example": "No parameters added"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/questions": {
-            "get": {
-                "tags": [
-                    "Questions"
-                ],
-                "summary": "Get all active questions",
-                "operationId": "84c136f7e126b76463d4c43452f55c89",
-                "responses": {
-                    "200": {
-                        "description": "List of active questions",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "question": {
-                                                        "type": "string",
-                                                        "example": "What is your preferred collar type?"
-                                                    },
-                                                    "type": {
-                                                        "type": "integer",
-                                                        "example": 2
-                                                    },
-                                                    "options": {
-                                                        "type": "string",
-                                                        "example": "[\\Short\\, \\Medium\\, \\Long\\]"
-                                                    },
-                                                    "status": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2024-11-27T10:00:00Z"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2024-11-27T10:00:00Z"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "No questions found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "No questions to show"
                                         }
                                     },
                                     "type": "object"
@@ -1869,6 +1779,112 @@
                 ]
             }
         },
+        "/tailors/questions/": {
+            "get": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Get all questions of tailor",
+                "operationId": "c58834601d16ceca37b2790023f04a69",
+                "responses": {
+                    "200": {
+                        "description": "Questions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "category_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "questions": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "question": {
+                                                        "type": "string",
+                                                        "example": "Specify the collar style for the garment"
+                                                    },
+                                                    "type": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "options": {
+                                                        "type": "string",
+                                                        "example": "[{'label':'Standard Collar','value':'standard'}]"
+                                                    },
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-11-27 10:00:00"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-11-27 10:00:00"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Questions not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No Questions to show in this category"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/categories/{category_id}/questions/": {
             "get": {
                 "tags": [
@@ -2073,10 +2089,6 @@
                                     },
                                     "city_id": {
                                         "description": "City ID of the tailor",
-                                        "type": "integer"
-                                    },
-                                    "status": {
-                                        "description": "Status of the tailor",
                                         "type": "integer"
                                     }
                                 },

@@ -11,7 +11,9 @@ class CategoryQuestion extends Model
 
     protected $fillable = [
         'category_id',
-        'question_id',
+        'question',
+        'type',
+        'options',
         'status'
     ];
 }

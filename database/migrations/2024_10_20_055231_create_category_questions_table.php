@@ -15,8 +15,10 @@ class CreateCategoryQuestionsTable extends Migration
     {
         Schema::create('category_questions', function (Blueprint $table) {
             $table->id();
-            $table->integer('category_id');
-            $table->integer('question_id');
+            $table->integer('category_id'); //default category table
+            $table->string('question');
+            $table->integer('type');
+            $table->text('options')->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();
         });

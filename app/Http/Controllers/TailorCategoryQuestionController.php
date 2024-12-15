@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\CategoryQuestion;
-use App\Models\Question;
 use App\Models\TailorCategory;
 use App\Models\TailorCategoryQuestion;
-use App\Models\TailorQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,6 +15,52 @@ class TailorCategoryQuestionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    /**
+     * @OA\Get(
+     *     path="/tailors/questions/",
+     *     summary="Get all questions of tailor",
+     *     tags={"Questions"},
+     *     security={{"bearerAuth": {}}},
+     *     
+     *     @OA\Response(
+     *         response=200,
+     *         description="Questions retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="category_id", type="integer", example=1),
+     *             @OA\Property(
+     *                 property="questions",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="question", type="string", example="Specify the collar style for the garment"),
+     *                     @OA\Property(property="type", type="integer", example=2),
+     *                     @OA\Property(property="options", type="string", example="[{'label':'Standard Collar','value':'standard'}]"),
+     *                     @OA\Property(property="status", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2024-11-27 10:00:00"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2024-11-27 10:00:00")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Questions not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="bool", example=false),
+     *             @OA\Property(property="message", type="string", example="No Questions to show in this category")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
+     */
+
     public function index()
     {
         $tailor_id = auth('sanctum')->user()->id;
@@ -24,6 +68,9 @@ class TailorCategoryQuestionController extends Controller
         if (count($tal_questions) === 0) {
             return response()->json(['success' => false, 'message' => 'No Questions to show'], 404);
         } else {
+            foreach ($tal_questions as $tal_question) {
+                $tal_question->options = json_decode($tal_question->options);
+            }
             return response()->json(['success' => true, 'data' => $tal_questions], 200);
         }
     }
@@ -84,16 +131,14 @@ class TailorCategoryQuestionController extends Controller
     {
         $tailor_id = auth('sanctum')->user()->id;
         $tal_cat_questions = TailorCategoryQuestion::where([['tailor_id', $tailor_id], ['category_id', $category_id]])->get();
-        $tal_questions = [];
-        foreach ($tal_cat_questions as $tal_cat_question) {
-            $question = TailorQuestion::where([['tailor_id', $tailor_id], ['id', $tal_cat_question->question_id]])->first();
-            $question['options'] = json_decode($question['options']);
-            $tal_questions[] = $question;
-        }
-        if (count($tal_questions) === 0) {
+
+        if (count($tal_cat_questions) === 0) {
             return response()->json(['success' => false, 'message' => 'No Questions to show in this category'], 404);
         } else {
-            return response()->json(['success' => true, 'data' => $tal_questions], 200);
+            foreach ($tal_cat_questions as $tal_cat_question) {
+                $tal_cat_question->options = json_decode($tal_cat_question->options);
+            }
+            return response()->json(['success' => true, 'message' => 'error', 'data' => $tal_cat_questions], 200);
         }
     }
 
@@ -102,11 +147,13 @@ class TailorCategoryQuestionController extends Controller
         $cat_questions = CategoryQuestion::all();
         foreach ($cat_questions as $cat_question) {
             $tailor_category = TailorCategory::where([['tailor_id', $tailor_id], ['category_id', $cat_question->category_id]])->first();
-            $tailor_question = TailorQuestion::where([['tailor_id', $tailor_id], ['question_id', $cat_question->question_id]])->first();
             $tailor_cat_question = TailorCategoryQuestion::create([
                 'tailor_id' => $tailor_id,
                 'category_id' => $tailor_category->id,
-                'question_id' => $tailor_question->id,
+                'question_id' => $cat_question->id,
+                'question' => $cat_question->question,
+                'type' => $cat_question->type,
+                'options' => $cat_question->options,
                 'status' => $cat_question->status,
             ]);
         }

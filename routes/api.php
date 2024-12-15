@@ -8,6 +8,7 @@ use App\Http\Controllers\TailorCustomerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\CategoryParameterController;
+use App\Http\Controllers\CategoryQuestionController;
 use App\Http\Controllers\MeasurementController;
 use App\Http\Controllers\MeasurementValueController;
 use App\Http\Controllers\MediaController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\TailorCategoryQuestionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Tailor;
+use App\Models\TailorCategory;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,8 +118,8 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories
     $router->post('/destroy', [TalCatParameterController::class, 'destroy']);
     $router->post('/store', [TalCatParameterController::class, 'store']);
 });
-Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/questions'], function ($router) {
-    $router->get('/', [QuestionController::class, 'index']);
+Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/questions'], function ($router) {
+    $router->get('/', [TailorCategoryQuestionController::class, 'index']);
 });
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories/{category_id}/questions'], function ($router) {
     $router->get('/', [TailorCategoryQuestionController::class, 'tailorCatQuestions']);

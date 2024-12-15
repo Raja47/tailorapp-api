@@ -32,7 +32,7 @@ class TailorCategoryAnswerController extends Controller
     public function getAnswers($dress_id)
     {
         $tailor_id = auth('sanctum')->user()->id;
-        $tal_cat_answers = TailorCategoryAnswer::where([['tailor_id', $tailor_id],['dress_id', $dress_id]])->get();
+        $tal_cat_answers = TailorCategoryAnswer::where([['tailor_id', $tailor_id], ['dress_id', $dress_id]])->get();
         if (count($tal_cat_answers) === 0) {
             return response()->json(['success' => false, 'message' => 'No answers to show'], 404);
         } else {
@@ -58,11 +58,12 @@ class TailorCategoryAnswerController extends Controller
             return response()->json(['success' => false, 'message' => 'Answer data validation error', 'data' => $validation->errors()], 422);
         } else {
             $tailor_id = auth('sanctum')->user()->id;
-            $tal_cat_question = TailorCategoryQuestion::where([['tailor_id',$tailor_id],['question_id',$request->question_id]])->first();
+            $tal_cat_question = TailorCategoryQuestion::where([['tailor_id', $tailor_id], ['question_id', $request->question_id]])->first();
+            $value = json_decode($request->value);
             $tal_cat_answer = TailorCategoryAnswer::create([
                 'tailor_id' => $tailor_id,
                 'question_id' => $tal_cat_question->id,
-                'value' => $request->value,
+                'value' => $value,
             ]);
             if ($tal_cat_answer->save()) {
                 return response()->json(['success' => true, 'data' => $tal_cat_answer], 200);
