@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTailorParametersTable extends Migration
+class CreateCategoryQuestionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateTailorParametersTable extends Migration
      */
     public function up()
     {
-        Schema::create('tailor_parameters', function (Blueprint $table) {
+        Schema::create('category_questions', function (Blueprint $table) {
             $table->id();
-            $table->integer('tailor_id');
-            $table->integer('parameter_id')->nullable();
-            $table->string('name');
-            $table->string('label')->nullable();
-            $table->string('image')->nullable();
+            $table->integer('category_id'); //default category table
+            $table->string('question');
+            $table->integer('type');
+            $table->text('options')->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();
         });
@@ -32,6 +31,6 @@ class CreateTailorParametersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tailor_parameters');
+        Schema::dropIfExists('category_questions');
     }
 }

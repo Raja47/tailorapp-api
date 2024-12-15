@@ -1,0 +1,182 @@
+[
+    {
+        "category_id": 1,
+        "question": "Specify the collar style for the garment",
+        "type": 2,
+        "options": "[{\"label\":\"Standard Collar\",\"value\":\"standard\",\"icon\":null},{\"label\":\"Mandarin Collar\",\"value\":\"mandarin\",\"icon\":null},{\"label\":\"Spread Collar\",\"value\":\"spread\",\"icon\":null}]"
+    },
+    {
+        "category_id": 1,
+        "question": "Mention the type of pocket for this outfit",
+        "type": 3,
+        "options": "[{\"label\":\"Patch Pocket\",\"value\":\"patch\",\"icon\":null},{\"label\":\"Welt Pocket\",\"value\":\"welt\",\"icon\":null},{\"label\":\"Flap Pocket\",\"value\":\"flap\",\"icon\":null}]"
+    },
+    {
+        "category_id": 2,
+        "question": "Indicate the preferred cuff type",
+        "type": 2,
+        "options": "[{\"label\":\"Single Cuff\",\"value\":\"single\",\"icon\":null},{\"label\":\"Double Cuff\",\"value\":\"double\",\"icon\":null},{\"label\":\"French Cuff\",\"value\":\"french\",\"icon\":null}]"
+    },
+    {
+        "category_id": 2,
+        "question": "What is your choice of sleeve length?",
+        "type": 1,
+        "options": null
+    },
+    {
+        "category_id": 3,
+        "question": "Do you prefer lined or unlined garments?",
+        "type": 2,
+        "options": "[{\"label\":\"Lined\",\"value\":\"lined\",\"icon\":null},{\"label\":\"Unlined\",\"value\":\"unlined\",\"icon\":null}]"
+    },
+    {
+        "category_id": 3,
+        "question": "What is your preferred fabric weight?",
+        "type": 1,
+        "options": null
+    },
+    {
+        "category_id": 4,
+        "question": "State your pleat preferences",
+        "type": 2,
+        "options": "[{\"label\":\"No Pleats\",\"value\":\"no_pleats\",\"icon\":null},{\"label\":\"Single Pleat\",\"value\":\"single_pleat\",\"icon\":null},{\"label\":\"Double Pleat\",\"value\":\"double_pleat\",\"icon\":null}]"
+    },
+    {
+        "category_id": 4,
+        "question": "Specify buttonhole color preferences",
+        "type": 1,
+        "options": null
+    },
+    {
+        "category_id": 5,
+        "question": "Specify the collar style for the garment",
+        "type": 2,
+        "options": "[{\"label\":\"Standard Collar\",\"value\":\"standard\",\"icon\":null},{\"label\":\"Mandarin Collar\",\"value\":\"mandarin\",\"icon\":null},{\"label\":\"Spread Collar\",\"value\":\"spread\",\"icon\":null}]"
+    },
+    {
+        "category_id": 5,
+        "question": "Mention the type of pocket for this outfit",
+        "type": 3,
+        "options": "[{\"label\":\"Patch Pocket\",\"value\":\"patch\",\"icon\":null},{\"label\":\"Welt Pocket\",\"value\":\"welt\",\"icon\":null},{\"label\":\"Flap Pocket\",\"value\":\"flap\",\"icon\":null}]"
+    },
+    {
+        "category_id": 6,
+        "question": "Indicate the preferred cuff type",
+        "type": 2,
+        "options": "[{\"label\":\"Single Cuff\",\"value\":\"single\",\"icon\":null},{\"label\":\"Double Cuff\",\"value\":\"double\",\"icon\":null},{\"label\":\"French Cuff\",\"value\":\"french\",\"icon\":null}]"
+    },
+    {
+        "category_id": 6,
+        "question": "What is your choice of sleeve length?",
+        "type": 1,
+        "options": null
+    },
+    {
+        "category_id": 7,
+        "question": "Do you prefer lined or unlined garments?",
+        "type": 2,
+        "options": "[{\"label\":\"Lined\",\"value\":\"lined\",\"icon\":null},{\"label\":\"Unlined\",\"value\":\"unlined\",\"icon\":null}]"
+    },
+    {
+        "category_id": 7,
+        "question": "What is your preferred fabric weight?",
+        "type": 1,
+        "options": null
+    },
+    {
+        "category_id": 8,
+        "question": "State your pleat preferences",
+        "type": 2,
+        "options": "[{\"label\":\"No Pleats\",\"value\":\"no_pleats\",\"icon\":null},{\"label\":\"Single Pleat\",\"value\":\"single_pleat\",\"icon\":null},{\"label\":\"Double Pleat\",\"value\":\"double_pleat\",\"icon\":null}]"
+    },
+    {
+        "category_id": 8,
+        "question": "Specify buttonhole color preferences",
+        "type": 1,
+        "options": null
+    },
+    {
+        "category_id": 9,
+        "question": "Specify the collar style for the garment",
+        "type": 2,
+        "options": "[{\"label\":\"Standard Collar\",\"value\":\"standard\",\"icon\":null},{\"label\":\"Mandarin Collar\",\"value\":\"mandarin\",\"icon\":null},{\"label\":\"Spread Collar\",\"value\":\"spread\",\"icon\":null}]"
+    },
+    {
+        "category_id": 9,
+        "question": "Mention the type of pocket for this outfit",
+        "type": 3,
+        "options": "[{\"label\":\"Patch Pocket\",\"value\":\"patch\",\"icon\":null},{\"label\":\"Welt Pocket\",\"value\":\"welt\",\"icon\":null},{\"label\":\"Flap Pocket\",\"value\":\"flap\",\"icon\":null}]"
+    },
+    {
+        "category_id": 10,
+        "question": "Indicate the preferred cuff type",
+        "type": 2,
+        "options": "[{\"label\":\"Single Cuff\",\"value\":\"single\",\"icon\":null},{\"label\":\"Double Cuff\",\"value\":\"double\",\"icon\":null},{\"label\":\"French Cuff\",\"value\":\"french\",\"icon\":null}]"
+    },
+    {
+        "category_id": 10,
+        "question": "What is your choice of sleeve length?",
+        "type": 1,
+        "options": null
+    },
+    {
+        "category_id": 1,
+        "question": "Choose the fit style for this shirt",
+        "type": 4,
+        "options": "[{\"label\":\"Slim Fit\",\"value\":\"slim_fit\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Regular Fit\",\"value\":\"regular_fit\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Loose Fit\",\"value\":\"loose_fit\",\"icon\":\"questions\\\\options.jpg\"}]"
+    },
+    {
+        "category_id": 3,
+        "question": "Select the type of lapel for this coat",
+        "type": 4,
+        "options": "[{\"label\":\"Notch Lapel\",\"value\":\"notch_lapel\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Shawl Lapel\",\"value\":\"shawl_lapel\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Peak Lapel\",\"value\":\"peak_lapel\",\"icon\":\"questions\\\\options.jpg\"}]"
+    },
+    {
+        "category_id": 5,
+        "question": "Select the waistband style for the pant",
+        "type": 4,
+        "options": "[{\"label\":\"Flat Front\",\"value\":\"flat_front\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Elastic Waist\",\"value\":\"elastic_waist\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Drawstring\",\"value\":\"drawstring\",\"icon\":\"questions\\\\options.jpg\"}]"
+    },
+    {
+        "category_id": 7,
+        "question": "Choose the preferred hem style",
+        "type": 4,
+        "options": "[{\"label\":\"Straight Hem\",\"value\":\"straight_hem\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Rounded Hem\",\"value\":\"rounded_hem\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Asymmetrical Hem\",\"value\":\"asymmetrical_hem\",\"icon\":\"questions\\\\options.jpg\"}]"
+    },
+    {
+        "category_id": 9,
+        "question": "What type of fabric texture do you prefer?",
+        "type": 4,
+        "options": "[{\"label\":\"Smooth\",\"value\":\"smooth\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Textured\",\"value\":\"textured\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Ribbed\",\"value\":\"ribbed\",\"icon\":\"questions\\\\options.jpg\"}]"
+    },
+    {
+        "category_id": 2,
+        "question": "Select the preferred embellishments for this garment",
+        "type": 5,
+        "options": "[{\"label\":\"Embroidery\",\"value\":\"embroidery\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Beads\",\"value\":\"beads\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Sequins\",\"value\":\"sequins\",\"icon\":\"questions\\\\options.jpg\"}]"
+    },
+    {
+        "category_id": 4,
+        "question": "Select the desired features for the coat",
+        "type": 5,
+        "options": "[{\"label\":\"Vent at the Back\",\"value\":\"vent_back\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Internal Pockets\",\"value\":\"internal_pockets\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Epaulets\",\"value\":\"epaulets\",\"icon\":\"questions\\\\options.jpg\"}]"
+    },
+    {
+        "category_id": 6,
+        "question": "Choose the design details for the kurta",
+        "type": 5,
+        "options": "[{\"label\":\"Side Slits\",\"value\":\"side_slits\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Front Buttons\",\"value\":\"front_buttons\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Contrast Piping\",\"value\":\"contrast_piping\",\"icon\":\"questions\\\\options.jpg\"}]"
+    },
+    {
+        "category_id": 8,
+        "question": "What features do you want for the sherwani?",
+        "type": 5,
+        "options": "[{\"label\":\"Golden Embroidery\",\"value\":\"golden_embroidery\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Silk Lining\",\"value\":\"silk_lining\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Detachable Brooch\",\"value\":\"detachable_brooch\",\"icon\":\"questions\\\\options.jpg\"}]"
+    },
+    {
+        "category_id": 10,
+        "question": "Choose the styling preferences for this garment",
+        "type": 5,
+        "options": "[{\"label\":\"Contrasting Panels\",\"value\":\"contrasting_panels\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"High Collar\",\"value\":\"high_collar\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Extra Buttons\",\"value\":\"extra_buttons\",\"icon\":\"questions\\\\options.jpg\"}]"
+    }
+]

@@ -8,88 +8,79 @@ use App\Models\Dress;
 use App\Models\Order;
 use App\Models\Measurement;
 use App\Models\MeasurementValue;
+use App\Models\TailorCategoryAnswer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DressController extends Controller
 {
-    // ORDER
-    // $table->integer('customer_id');
-    // $table->integer('tailor_id');
-    // $table->integer('shop_id');
-    // $table->string('name');
-    // $table->integer('discount')->default(0);
-    // $table->string('notes')->nullable();
-    // $table->integer('status')->default(1);
-    //
-    // DRESS
-    // $table->integer('order_id');
-    // $table->integer('tailor_id');
-    // $table->integer('shop_id');
-    // $table->integer('category_id');
-    // $table->string('name');
-    // $table->string('gender')->default('male');
-    // $table->string('type')->default('new');
-    // $table->integer('quantity');
-    // $table->integer('price');
-    // $table->timestamp('delivery_date')->nullable();
-    // $table->timestamp('trial_date')->nullable();
-    // $table->integer('is_urgent')->default(0);
-    // $table->string('notes')->nullable();
-    // $table->integer('status')->default(1);
-    //
-    // MEASUREMENT
-    // $table->string('model')->default('dress');
-    // $table->integer('model_id');
-    // $table->string('notes')->nullable();
-    // $table->integer('status')->default(1);
+    //swagger annotations
+    /**
+     * @OA\Post(
+     *     path="/tailors/dresses/create",
+     *     summary="Create a dress with related entities",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"customer_id", "shop_id", "category_id", "type", "quantity", "price", "delivery_date", "trial_date", "measurementBoxes", "questionAnswers"},
+     *             @OA\Property(property="customer_id", type="integer", description="Customer ID"),
+     *             @OA\Property(property="shop_id", type="integer", description="Shop ID"),
+     *             @OA\Property(property="category_id", type="integer", description="Category ID"),
+     *             @OA\Property(property="type", type="string", enum={"stitching", "alteration"}, description="Dress type"),
+     *             @OA\Property(property="quantity", type="integer", minimum=1, description="Dress quantity"),
+     *             @OA\Property(property="price", type="number", description="Dress price"),
+     *             @OA\Property(property="delivery_date", type="string", format="date", description="Delivery date"),
+     *             @OA\Property(property="trial_date", type="string", format="date", description="Trial date"),
+     *             @OA\Property(property="notes", type="string", nullable=true, description="Additional notes"),
+     *             @OA\Property(property="measurementBoxes", type="array", @OA\Items(type="object", @OA\Property(property="parameter_id", type="integer"), @OA\Property(property="value", type="number", format="float"))),
+     *             @OA\Property(property="questionAnswers", type="array", @OA\Items(type="object", @OA\Property(property="question_id", type="integer"), @OA\Property(property="value", type="array", @OA\Items(type="object", @OA\Property(property="label", type="string"), @OA\Property(property="value", type="string"), @OA\Property(property="icon", type="string", format="uri")))))
+     *          )    
+     *      ),
+     *     @OA\Response(response=200, description="Success", @OA\JsonContent(type="object", @OA\Property(property="success", type="boolean", example=true), @OA\Property(property="message", type="string", example="Dress created"), @OA\Property(property="data", type="object", @OA\Property(property="order_id", type="integer"), @OA\Property(property="dress_id", type="integer"), @OA\Property(property="measurement_id", type="integer")))),
+     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(type="object", @OA\Property(property="success", type="boolean", example=false), @OA\Property(property="message", type="string", example="Validation error"), @OA\Property(property="errors", type="object", additionalProperties={"type": "array", "items": {"type": "string"}}))),
+     *     @OA\Response(response=500, description="Server error", @OA\JsonContent(type="object", @OA\Property(property="success", type="boolean", example=false), @OA\Property(property="message", type="string", example="Server error"), @OA\Property(property="error", type="string")))
+     * )
+     */
 
     public function create(Request $request)
     {
         $rules = [
-            'order_id' => '',
-
-            'customer_id' => 'required',
-            'shop_id' => 'required',
-            'name' => '',
-            'discount' => '',
-            'notes' => '',
-
-            'category_id' => 'required',
-            'name' => '',
-            'type' => 'required',
-            'quantity' => 'required',
+            'order_id' => 'nullable|exists:orders,id',
+            'customer_id' => 'required|exists:tailor_customers,id',
+            'shop_id' => 'required|exists:shops,id',
+            'category_id' => 'required|exists:tailor_categories,id',
+            'type' => 'required|in:stitching,alteration',
+            'quantity' => 'required|integer|min:1',
             'price' => 'required',
-            'delivery_date' => '',
-            'trial_date' => '',
-            'is_urgent' => '',
-            'notes' => '',
-
-            'model' => '',  // @todo we need to remove this structure of model from measurements as well model 
-            'model_id' => '',   // and model_id would be remove and we will add dress_id column only 
+            'delivery_date' => 'required|date',
+            'trial_date' => 'required|date',
             'notes' => '',
             'measurementBoxes' => 'required|array',
+            'questionAnswers' => 'required|array',
         ];
         $validation = Validator::make($request->all(), $rules);
-
         if ($validation->fails()) {
-            return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
-        } else {
+            return response()->json(['success' => false, 'message' => 'Data validation error', 'error' => $validation->errors()], 422);
+        }
+
+        DB::beginTransaction();
+        try {
             $tailor_id = auth('sanctum')->user()->id;
+
             // if order id is not provided then it mean order is new with first dress being so create order
             if ($request->has('order_id')) {
                 $order_id = $request->order_id;
             } else {
-                $order = Order::create([
+                $order_id = Order::create([
                     'customer_id' => $request->customer_id,
                     'tailor_id' => $tailor_id,
                     'shop_id' => $request->shop_id,
                     'name' => 'order-1',
-                    // 'discount' => $request->discount,
-                    'notes' => $request->notes,
                     'status' => 0,
-                ]);
-                $order_id = $order->id;
+                ])->id;
             }
 
             $dress = Dress::create([
@@ -103,36 +94,46 @@ class DressController extends Controller
                 'price' => $request->price,
                 'delivery_date' => $request->delivery_date,
                 'trial_date' => $request->trial_date,
-                // 'is_urgent' => $request->is_urgent,
-                'status' => 0,
                 'notes' => $request->notes,
+                'status' => 0,
             ]);
-            $dress_id = $dress->id;
-            $dress->name = '#D-' . $request->category_id . '-' . $dress_id;
+            $dress->update(['name' => '#D-' . $request->category_id . '-' . $dress->id]);
 
             $measurement = Measurement::create([
                 'model' => 'dress',
-                'model_id' => $dress_id,
+                'model_id' => $dress->id,
                 'status' => 1,
-                'notes' => $request->notes,
             ]);
-            $measurement_id = $measurement->id;
-            $responses = [];
             foreach ($request->measurementBoxes as $measurementBox) {
-                $measurementBox['measurement_id'] = $measurement_id;
-                $responses[] = MeasurementValue::newMeasurementValue($measurementBox);
+                $measurementBox['measurement_id'] = $measurement->id;
+                MeasurementValue::newMeasurementValue($measurementBox);
             }
-            return response()->json(['data' => [
-                'order_id' => $order_id,
-                'dress_id' => $dress_id,
-                'measurement_id' => $measurement_id
-            ]]);
+
+            foreach ($request->questionAnswers as $questionAnswer) {
+                TailorCategoryAnswer::create([
+                    'tailor_id' => $tailor_id,
+                    'dress_id' => $dress->id,
+                    'question_id' => $questionAnswer['question_id'],
+                    'value' => json_encode($questionAnswer['value']),
+                ]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Dress and associated data created successfully',
+                'data' => [
+                    'order_id' => $order_id,
+                    'dress_id' => $dress->id,
+                    'measurement_id' => $measurement->id,
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'An error occurred', 'error' => $e->getMessage()], 500);
         }
     }
 
-    /**
-     * 
-     */
     public function getOrderDressMeasurement($dress_id)
     {
         $measurement = Measurement::where([['model', 'dress'], ['model_id', $dress_id]])->first();
