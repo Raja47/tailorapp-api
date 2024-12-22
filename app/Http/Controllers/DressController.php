@@ -140,6 +140,55 @@ class DressController extends Controller
         return response()->json(['success' => true, 'message' => 'Dress Measurement', 'data' => ['Dress id' => $dress_id, 'Measurement' => $measurement]], 200);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/tailors/dresses/image",
+     *     summary="Upload a dress image",
+     *     description="Stores an image in 'public/dress'.",
+     *     operationId="uploadDressImage",
+     *     tags={"Dresses"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(mediaType="multipart/form-data",
+     *             @OA\Schema(type="object", required={"image"},
+     *                 @OA\Property(property="image", type="string", format="binary", description="Image file")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Image uploaded",
+     *         @OA\JsonContent(type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Image uploaded"),
+     *             @OA\Property(property="data", type="string", example="storage/dress/image.jpg")
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Validation error",
+     *         @OA\JsonContent(type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Data validation error"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
+
+    public function uploadImage(Request $request)
+    {
+        $validation = Validator::make([$request->image], ['required|image|mimes:jpeg,png,jpg,gif,svg']);
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
+        }
+        $file = $request->file('image');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('public/dress', $filename);
+
+        $base_url = url('');
+        $path = $base_url . '/storage/dress/' . $filename;
+
+        return response()->json(['success' => true, 'message' => 'Image uploaded', 'data' => $path], 200);
+    }
+
     public function getTabDresses(Request $request)
     {
         $rules = [

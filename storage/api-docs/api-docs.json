@@ -226,6 +226,90 @@
                 ]
             }
         },
+        "/tailors/dresses/image": {
+            "post": {
+                "tags": [
+                    "Dresses"
+                ],
+                "summary": "Upload a dress image",
+                "description": "Stores an image in 'public/dress'.",
+                "operationId": "uploadDressImage",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "image"
+                                ],
+                                "properties": {
+                                    "image": {
+                                        "description": "Image file",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Image uploaded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Image uploaded"
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "example": "storage/dress/image.jpg"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/dresses/store": {
             "post": {
                 "tags": [
@@ -1810,8 +1894,8 @@
                                                         "example": "Specify the collar style for the garment"
                                                     },
                                                     "type": {
-                                                        "type": "integer",
-                                                        "example": 2
+                                                        "type": "string",
+                                                        "example": "multi-icon"
                                                     },
                                                     "options": {
                                                         "type": "string",
@@ -1927,8 +2011,8 @@
                                                         "example": "Specify the collar style for the garment"
                                                     },
                                                     "type": {
-                                                        "type": "integer",
-                                                        "example": 2
+                                                        "type": "string",
+                                                        "example": "multi-icon"
                                                     },
                                                     "options": {
                                                         "type": "string",
