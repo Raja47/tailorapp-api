@@ -48,7 +48,8 @@ class TailorCategoryQuestionController extends Controller
      *         description="Questions not found",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="bool", example=false),
-     *             @OA\Property(property="message", type="string", example="No Questions to show in this category")
+     *             @OA\Property(property="message", type="string", example="No Questions to show in this category"),
+     *             @OA\Property(property="icon", type="string", example="questions\options.jpg", format="uri")
      *         )
      *     ),
      *     @OA\Response(
@@ -102,7 +103,7 @@ class TailorCategoryQuestionController extends Controller
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="question", type="string", example="Specify the collar style for the garment"),
      *                     @OA\Property(property="type", type="string", example="multi-icon"),
-     *                     @OA\Property(property="options", type="string", example="[{'label':'Standard Collar','value':'standard'}]"),
+     *                     @OA\Property(property="options", type="string", example="[{'label':'Standard Collar','value':'standard','icon':'questions\\options.jpg'}]"),
      *                     @OA\Property(property="status", type="integer", example=1),
      *                     @OA\Property(property="created_at", type="string", format="date-time", example="2024-11-27 10:00:00"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2024-11-27 10:00:00")

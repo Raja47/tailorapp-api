@@ -115,11 +115,54 @@
                                                             },
                                                             "icon": {
                                                                 "type": "string",
-                                                                "format": "uri"
+                                                                "format": "uri",
+                                                                "example": "questions\\options.jpg"
                                                             }
                                                         },
                                                         "type": "object"
                                                     }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "designImages": {
+                                        "description": "Array of design image paths",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "public\\dress\\image1.png"
+                                        }
+                                    },
+                                    "clothImages": {
+                                        "description": "Array of cloth image objects",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "path": {
+                                                    "description": "Path of the cloth image",
+                                                    "type": "string",
+                                                    "example": "public\\dress\\image4.png"
+                                                },
+                                                "title": {
+                                                    "description": "Title of the cloth",
+                                                    "type": "string",
+                                                    "example": "cloth1"
+                                                },
+                                                "length": {
+                                                    "description": "Length of the cloth",
+                                                    "type": "number",
+                                                    "example": 56
+                                                },
+                                                "provided_by": {
+                                                    "description": "Provider of the cloth",
+                                                    "type": "string",
+                                                    "example": "tailor"
+                                                },
+                                                "price": {
+                                                    "description": "Price of the cloth",
+                                                    "type": "number",
+                                                    "example": 1790
                                                 }
                                             },
                                             "type": "object"
@@ -1938,6 +1981,11 @@
                                         "message": {
                                             "type": "string",
                                             "example": "No Questions to show in this category"
+                                        },
+                                        "icon": {
+                                            "type": "string",
+                                            "format": "uri",
+                                            "example": "questions\\options.jpg"
                                         }
                                     },
                                     "type": "object"
@@ -2016,7 +2064,7 @@
                                                     },
                                                     "options": {
                                                         "type": "string",
-                                                        "example": "[{'label':'Standard Collar','value':'standard'}]"
+                                                        "example": "[{'label':'Standard Collar','value':'standard','icon':'questions\\\\options.jpg'}]"
                                                     },
                                                     "status": {
                                                         "type": "integer",

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Dress;
+use App\Models\Cloth;
+use App\Models\DressImage;
 use App\Models\Order;
 use App\Models\Measurement;
 use App\Models\MeasurementValue;
@@ -20,7 +22,7 @@ class DressController extends Controller
      *     path="/tailors/dresses/create",
      *     summary="Create a dress with related entities",
      *     tags={"Orders"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -35,16 +37,92 @@ class DressController extends Controller
      *             @OA\Property(property="delivery_date", type="string", format="date", description="Delivery date"),
      *             @OA\Property(property="trial_date", type="string", format="date", description="Trial date"),
      *             @OA\Property(property="notes", type="string", nullable=true, description="Additional notes"),
-     *             @OA\Property(property="measurementBoxes", type="array", @OA\Items(type="object", @OA\Property(property="parameter_id", type="integer"), @OA\Property(property="value", type="number", format="float"))),
-     *             @OA\Property(property="questionAnswers", type="array", @OA\Items(type="object", @OA\Property(property="question_id", type="integer"), @OA\Property(property="value", type="array", @OA\Items(type="object", @OA\Property(property="label", type="string"), @OA\Property(property="value", type="string"), @OA\Property(property="icon", type="string", format="uri")))))
-     *          )    
-     *      ),
-     *     @OA\Response(response=200, description="Success", @OA\JsonContent(type="object", @OA\Property(property="success", type="boolean", example=true), @OA\Property(property="message", type="string", example="Dress created"), @OA\Property(property="data", type="object", @OA\Property(property="order_id", type="integer"), @OA\Property(property="dress_id", type="integer"), @OA\Property(property="measurement_id", type="integer")))),
-     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(type="object", @OA\Property(property="success", type="boolean", example=false), @OA\Property(property="message", type="string", example="Validation error"), @OA\Property(property="errors", type="object", additionalProperties={"type": "array", "items": {"type": "string"}}))),
-     *     @OA\Response(response=500, description="Server error", @OA\JsonContent(type="object", @OA\Property(property="success", type="boolean", example=false), @OA\Property(property="message", type="string", example="Server error"), @OA\Property(property="error", type="string")))
+     *             @OA\Property(
+     *                 property="measurementBoxes",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="parameter_id", type="integer"),
+     *                     @OA\Property(property="value", type="number", format="float")
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="questionAnswers",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="question_id", type="integer"),
+     *                     @OA\Property(
+     *                         property="value",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="label", type="string"),
+     *                             @OA\Property(property="value", type="string"),
+     *                             @OA\Property(property="icon", type="string", example="questions\options.jpg", format="uri")
+     *                         )
+     *                     )
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="designImages",
+     *                 type="array",
+     *                 description="Array of design image paths",
+     *                 @OA\Items(type="string", example="public\dress\image1.png")
+     *             ),
+     *             @OA\Property(
+     *                 property="clothImages",
+     *                 type="array",
+     *                 description="Array of cloth image objects",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="path", type="string", example="public\dress\image4.png", description="Path of the cloth image"),
+     *                     @OA\Property(property="title", type="string", example="cloth1", description="Title of the cloth"),
+     *                     @OA\Property(property="length", type="number", example=56, description="Length of the cloth"),
+     *                     @OA\Property(property="provided_by", type="string", example="tailor", description="Provider of the cloth"),
+     *                     @OA\Property(property="price", type="number", example=1790, description="Price of the cloth")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Dress created"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="order_id", type="integer"),
+     *                 @OA\Property(property="dress_id", type="integer"),
+     *                 @OA\Property(property="measurement_id", type="integer")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation error"),
+     *             @OA\Property(property="errors", type="object", additionalProperties={"type": "array", "items": {"type": "string"}})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Server error"),
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
      * )
      */
-
     public function create(Request $request)
     {
         $rules = [
@@ -60,6 +138,8 @@ class DressController extends Controller
             'notes' => '',
             'measurementBoxes' => 'required|array',
             'questionAnswers' => 'required|array',
+            'designImages' => 'required|array',
+            'clothImages' => 'required|array'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -115,6 +195,34 @@ class DressController extends Controller
                     'dress_id' => $dress->id,
                     'question_id' => $questionAnswer['question_id'],
                     'value' => json_encode($questionAnswer['value']),
+                ]);
+            }
+
+            foreach ($request->designImages as $designImage) {
+                DressImage::create([
+                    'tailor_id' => $tailor_id,
+                    'dress_id' => $dress->id,
+                    'order_id' => $order_id,
+                    'type' => 'design',
+                    'path' => $designImage
+                ]);
+            }
+
+            foreach ($request->clothImages as $clothImage) {
+                $dress_image = DressImage::create([
+                    'tailor_id' => $tailor_id,
+                    'dress_id' => $dress->id,
+                    'order_id' => $order_id,
+                    'type' => 'cloth',
+                    'path' => $clothImage['path']
+                ]);
+                Cloth::create([
+                    'title' => $clothImage['title'],
+                    'dress_image_id' => $dress_image->id,
+                    'length' => $clothImage['length'],
+                    'provided_by' => $clothImage['provided_by'],
+                    'price' => $clothImage['price']
+
                 ]);
             }
 
