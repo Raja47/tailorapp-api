@@ -8,6 +8,7 @@ use App\Models\Dress;
 use App\Models\Cloth;
 use App\Models\DressImage;
 use App\Models\Order;
+use App\Models\Recording;
 use App\Models\Measurement;
 use App\Models\MeasurementValue;
 use App\Models\TailorCategoryAnswer;
@@ -82,7 +83,8 @@ class DressController extends Controller
      *                     @OA\Property(property="provided_by", type="string", example="tailor", description="Provider of the cloth"),
      *                     @OA\Property(property="price", type="number", example=1790, description="Price of the cloth")
      *                 )
-     *             )
+     *             ),
+     *            @OA\Property(property="audio", type="string", description="Path of audio recording")
      *         )
      *     ),
      *     @OA\Response(
@@ -139,7 +141,8 @@ class DressController extends Controller
             'measurementBoxes' => 'required|array',
             'questionAnswers' => 'required|array',
             'designImages' => 'required|array',
-            'clothImages' => 'required|array'
+            'clothImages' => 'required|array',
+            'audio' => ''
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -226,6 +229,12 @@ class DressController extends Controller
                 ]);
             }
 
+            Recording::create([
+                'dress_id' => $dress->id,
+                'duration' => 0,
+                'path' => $request->audio
+            ]);
+
             DB::commit();
             return response()->json([
                 'success' => true,
@@ -295,6 +304,61 @@ class DressController extends Controller
         $path = $base_url . '/storage/dress/' . $filename;
 
         return response()->json(['success' => true, 'message' => 'Image uploaded', 'data' => $path], 200);
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/tailors/dresses/audio",
+     *     summary="Upload audio file for a dress",
+     *     description="Uploads an audio file, calculates its duration, and stores it.",
+     *     operationId="uploadAudio",
+     *     tags={"Dresses"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(required=true,
+     *         @OA\MediaType(mediaType="multipart/form-data",
+     *             @OA\Schema(required={"audio"},
+     *                 @OA\Property(property="audio", type="string", format="binary", description="MP3 audio file to upload")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Audio uploaded successfully",
+     *         @OA\JsonContent(type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Audio uploaded"),
+     *             @OA\Property(property="data", type="string", example="00:03:45", description="Duration of the uploaded audio in HH:mm:ss format")
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Validation error",
+     *         @OA\JsonContent(type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Data validation error"),
+     *             @OA\Property(property="data", type="object", example={"audio": {"The audio field is required."}})
+     *         )
+     *     ),
+     *     @OA\Response(response=500, description="Internal server error",
+     *         @OA\JsonContent(type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="An error occurred"),
+     *             @OA\Property(property="error", type="string", example="Exception message")
+     *         )
+     *     )
+     * )
+     */
+    public function uploadAudio(Request $request)
+    {
+        $validation = Validator::make($request->all(), ['audio' => 'required|mimes:mp3,mp4']);
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
+        }
+        $audio = $request->file('audio');
+        $audioname = time() . '.' . $audio->getClientOriginalExtension();
+        $audio->storeAs('public/dress', $audioname);
+
+        $base_url = url('');
+        $path = $base_url . '/storage/dress/' . $audioname;
+
+        return response()->json(['success' => true, 'message' => 'Audio uploaded', 'data' => $path], 200);
     }
 
     public function getTabDresses(Request $request)

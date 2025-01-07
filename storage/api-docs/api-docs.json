@@ -167,6 +167,10 @@
                                             },
                                             "type": "object"
                                         }
+                                    },
+                                    "audio": {
+                                        "description": "Path of audio recording",
+                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
@@ -338,6 +342,120 @@
                                         },
                                         "data": {
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/dresses/audio": {
+            "post": {
+                "tags": [
+                    "Dresses"
+                ],
+                "summary": "Upload audio file for a dress",
+                "description": "Uploads an audio file, calculates its duration, and stores it.",
+                "operationId": "uploadAudio",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "audio"
+                                ],
+                                "properties": {
+                                    "audio": {
+                                        "description": "MP3 audio file to upload",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Audio uploaded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Audio uploaded"
+                                        },
+                                        "data": {
+                                            "description": "Duration of the uploaded audio in HH:mm:ss format",
+                                            "type": "string",
+                                            "example": "00:03:45"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": {
+                                                "audio": [
+                                                    "The audio field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Exception message"
                                         }
                                     },
                                     "type": "object"
