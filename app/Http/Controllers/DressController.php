@@ -318,7 +318,7 @@ class DressController extends Controller
      *     @OA\RequestBody(required=true,
      *         @OA\MediaType(mediaType="multipart/form-data",
      *             @OA\Schema(required={"audio"},
-     *                 @OA\Property(property="audio", type="string", format="binary", description="MP3 audio file to upload")
+     *                 @OA\Property(property="audio", type="string", format="binary", description="Audio file to upload")
      *             )
      *         )
      *     ),
@@ -347,7 +347,7 @@ class DressController extends Controller
      */
     public function uploadAudio(Request $request)
     {
-        $validation = Validator::make($request->all(), ['audio' => 'required|mimes:mp3,mp4']);
+        $validation = Validator::make($request->all(), ['audio' => 'required|mimes:aac,midi,mid,mp3,ogg,opus,wav,weba,aif,aiff,m4a,wma,au,snd,flac,adts,amr,ra,ram,asf']);
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
         }
