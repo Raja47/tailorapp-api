@@ -57,10 +57,8 @@ class DressController extends Controller
      *                         property="value",
      *                         type="array",
      *                         @OA\Items(
-     *                             type="object",
-     *                             @OA\Property(property="label", type="string"),
-     *                             @OA\Property(property="value", type="string"),
-     *                             @OA\Property(property="icon", type="string", example="questions\options.jpg", format="uri")
+     *                             type="string",
+     *                             example="value1"
      *                         )
      *                     )
      *                 )
@@ -193,12 +191,14 @@ class DressController extends Controller
             }
 
             foreach ($request->questionAnswers as $questionAnswer) {
-                TailorCategoryAnswer::create([
-                    'tailor_id' => $tailor_id,
-                    'dress_id' => $dress->id,
-                    'question_id' => $questionAnswer['question_id'],
-                    'value' => json_encode($questionAnswer['value']),
-                ]);
+                foreach ($questionAnswer['value'] as $value) {
+                    TailorCategoryAnswer::create([
+                        'tailor_id' => $tailor_id,
+                        'dress_id' => $dress->id,
+                        'question_id' => $questionAnswer['question_id'],
+                        'value' => $value,
+                    ]);
+                }
             }
 
             foreach ($request->designImages as $designImage) {
@@ -351,16 +351,16 @@ class DressController extends Controller
 
         $uploadedImages = [];
 
-        $files = is_array($request->file('images')) 
-        ? $request->file('images') 
-        : [$request->file('images')];
+        $files = is_array($request->file('images'))
+            ? $request->file('images')
+            : [$request->file('images')];
 
         foreach ($files as $file) {
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/dress', $filename);
 
             $base_url = url('');
-            $uploadedImages[] = $base_url.'/storage/dress/' . $filename;
+            $uploadedImages[] = $base_url . '/storage/dress/' . $filename;
         }
 
         return response()->json(['success' => true, 'message' => 'Images uploaded succesfully', 'data' => $uploadedImages], 200);

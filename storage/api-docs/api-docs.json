@@ -106,20 +106,8 @@
                                                 "value": {
                                                     "type": "array",
                                                     "items": {
-                                                        "properties": {
-                                                            "label": {
-                                                                "type": "string"
-                                                            },
-                                                            "value": {
-                                                                "type": "string"
-                                                            },
-                                                            "icon": {
-                                                                "type": "string",
-                                                                "format": "uri",
-                                                                "example": "questions\\options.jpg"
-                                                            }
-                                                        },
-                                                        "type": "object"
+                                                        "type": "string",
+                                                        "example": "value1"
                                                     }
                                                 }
                                             },
