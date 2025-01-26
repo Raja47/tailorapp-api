@@ -306,6 +306,66 @@ class DressController extends Controller
         return response()->json(['success' => true, 'message' => 'Image uploaded', 'data' => $path], 200);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/tailors/dresses/images",
+     *     summary="Upload dress images",
+     *     description="Stores images in 'public/dress'.",
+     *     operationId="uploadDressImages",
+     *     tags={"Dresses"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(mediaType="multipart/form-data",
+     *             @OA\Schema(type="object", required={"images[]"},
+     *                 @OA\Property(property="images[]", type="array", 
+     *                      @OA\Items(type="string", format="binary"),
+     *                      description="Array of image files")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Images uploaded",
+     *         @OA\JsonContent(type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Image uploaded"),
+     *             @OA\Property(property="data", type="string", example="storage/dress/image.jpg")
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Validation error",
+     *         @OA\JsonContent(type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Data validation error"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
+    public function uploadImages(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg'
+        ]);
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
+        }
+
+        $uploadedImages = [];
+
+        $files = is_array($request->file('images')) 
+        ? $request->file('images') 
+        : [$request->file('images')];
+
+        foreach ($files as $file) {
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/dress', $filename);
+
+            $base_url = url('');
+            $uploadedImages[] = $base_url.'/storage/dress/' . $filename;
+        }
+
+        return response()->json(['success' => true, 'message' => 'Images uploaded succesfully', 'data' => $uploadedImages], 200);
+    }
+
 
     /**
      * @OA\Post(

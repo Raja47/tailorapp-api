@@ -357,6 +357,93 @@
                 ]
             }
         },
+        "/tailors/dresses/images": {
+            "post": {
+                "tags": [
+                    "Dresses"
+                ],
+                "summary": "Upload dress images",
+                "description": "Stores images in 'public/dress'.",
+                "operationId": "uploadDressImages",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "images[]"
+                                ],
+                                "properties": {
+                                    "images[]": {
+                                        "description": "Array of image files",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Images uploaded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Image uploaded"
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "example": "storage/dress/image.jpg"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/dresses/audio": {
             "post": {
                 "tags": [
@@ -375,7 +462,7 @@
                                 ],
                                 "properties": {
                                     "audio": {
-                                        "description": "MP3 audio file to upload",
+                                        "description": "Audio file to upload",
                                         "type": "string",
                                         "format": "binary"
                                     }
