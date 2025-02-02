@@ -292,6 +292,14 @@ class DressController extends Controller
 
     public function uploadImage(Request $request)
     {
+        if (!$request->hasFile('image')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No file uploaded',
+                'data' => $request->all() // Debugging: Check what is actually sent
+            ], 400);
+        }
+        
         $validation = Validator::make([$request->image], ['required|image|mimes:jpeg,png,jpg,gif,svg']);
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
