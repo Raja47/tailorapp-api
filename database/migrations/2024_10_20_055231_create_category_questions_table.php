@@ -17,7 +17,7 @@ class CreateCategoryQuestionsTable extends Migration
             $table->id();
             $table->integer('category_id'); //default category table
             $table->string('question');
-            $table->integer('type');
+            $table->string('type');
             $table->text('options')->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();
