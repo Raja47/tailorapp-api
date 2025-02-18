@@ -19,7 +19,7 @@ class CreateTailorCategoryQuestionsTable extends Migration
             $table->integer('category_id'); //tailor category table
             $table->integer('question_id')->nullable(); //category question table
             $table->string('question');
-            $table->integer('type');
+            $table->string('type');
             $table->text('options')->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();
