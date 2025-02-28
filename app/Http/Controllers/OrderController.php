@@ -19,6 +19,57 @@ class OrderController extends Controller
         //
     }
 
+
+    /**
+     * @OA\Post(
+     *     path="/tailors/orders/updatestatus",
+     *     summary="Update the status of an order",
+     *     description="Allows a tailor to update the status of an order based on order ID.",
+     *     operationId="updateOrderStatus",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"order_id", "status"},
+     *             @OA\Property(property="order_id", type="integer", example=123, description="ID of the order to update"),
+     *             @OA\Property(property="status", type="integer", example=2, description="New status of the order")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order status updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order Status Updated"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=12, description="Updated order ID")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order data validation error"),
+     *             @OA\Property(property="data", type="object", example={"order_id": {"The order_id field is required."}})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Status not updated"),
+     *             @OA\Property(property="data", type="object", example={})
+     *         )
+     *     )
+     * )
+     */
     public function updateStatus(Request $request)
     {
         $rules = [
@@ -122,7 +173,7 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        if (count($orders)===0) {
+        if (count($orders) === 0) {
             return response()->json(['success' => false, 'message' => 'No orders to show'], 404);
         } else {
             return response()->json(['success' => true, 'data' => $orders], 200);
@@ -233,14 +284,111 @@ class OrderController extends Controller
         }
     }
 
-    public function getOrders()
+    /**
+     * @OA\Get(
+     *     path="/tailors/orders/tab",
+     *     summary="Fetch orders based on tab selection",
+     *     description="Retrieves orders based on the specified tab. Possible tab values: all, new, inProgress, completed, delivered, canceled.",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth": {}}},
+     * 
+     *     @OA\Parameter(
+     *         name="tabName",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="string", enum={"all", "new", "inProgress", "completed", "delivered", "canceled"}),
+     *         description="The tab name to filter orders"
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Orders Found"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="customer_name", type="string", example="John Doe"),
+     *                     @OA\Property(property="status", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2024-02-27T12:34:56Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2024-02-27T14:00:00Z")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order data validation error"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Order Search Failed",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order Search Failed"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
+
+    public function getTabOrders(Request $request)
     {
-        $tailor_id = auth('sanctum')->user()->id;
-        $tailor_orders = Order::where('tailor_id', $tailor_id)->get();
-        if (count($tailor_orders) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Order Found'], 200);
+        $rules = [
+            'tabName' => 'required',
+        ];
+        $validation = Validator::make($request->all(), $rules);
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Order data validation error', 'data' => $validation->errors()], 422);
         } else {
-            return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
+
+            $tailor_id = auth('sanctum')->user()->id;
+            $tabName = $request->input('tabName');
+            $tailor_orders = collect([]);
+
+            switch ($tabName) {
+                case 'all':
+                    $tailor_orders = Order::where('tailor_id', $tailor_id)->get();
+                    break;
+
+                case 'new':
+                    $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 0]])->get();
+                    break;
+
+                case 'inProgress':
+                    $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 1]])->get();
+                    break;
+
+                case 'completed':
+                    $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 2]])->get();
+                    break;
+
+                case 'delivered':
+                    $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 3]])->get();
+                    break;
+
+                case 'canceled';
+                    $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 4]])->get();
+                    break;
+            }
+
+            if (count($tailor_orders) === 0) {
+                return response()->json(['success' => false, 'message' => 'No Order Found'], 200);
+            } else {
+                return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
+            }
         }
     }
     /**

@@ -299,7 +299,7 @@ class DressController extends Controller
                 'data' => $request->all() // Debugging: Check what is actually sent
             ], 400);
         }
-        
+
         $validation = Validator::make([$request->image], ['required|image|mimes:jpeg,png,jpg,gif,svg']);
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
@@ -782,11 +782,62 @@ class DressController extends Controller
         return $dresses;
     }
 
+
+    /**
+     * @OA\Post(
+     *     path="/tailors/dresses/updatestatus",
+     *     summary="Update the status of a dress",
+     *     description="Allows a tailor to update the status of a dress based on dress ID.",
+     *     operationId="updateDressStatus",
+     *     tags={"Dresses"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"dress_id", "status"},
+     *             @OA\Property(property="dress_id", type="integer", example=101, description="ID of the dress to update"),
+     *             @OA\Property(property="status", type="integer", example=2, description="New status of the dress")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Dress status updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Dress Status Updated Successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="Dress id", type="integer", example=101, description="Updated dress ID")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Dress data validation error"),
+     *             @OA\Property(property="data", type="object", example={"dress_id": {"The dress_id field is required."}})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Dress Status could not be updated")
+     *         )
+     *     )
+     * )
+     */
+
     public function updateStatus(Request $request)
     {
         $rules = [
             'dress_id' => 'required',
-            'status_id' => 'required'
+            'status' => 'required'
         ];
 
         $validation = Validator::make($request->all(), $rules);
@@ -796,7 +847,7 @@ class DressController extends Controller
         } else {
             $tailor_id = auth('sanctum')->user()->id;
             $dress = Dress::where([['id', $request->dress_id], ['tailor_id', $tailor_id]])->first();
-            $dress->status = $request->status_id;
+            $dress->status = $request->status;
 
             if ($dress->save()) {
                 return response()->json(['success' => true, 'message' => 'Dress Status Updated Successfully', 'data' => ['Dress id' => $request->dress_id]], 200);
