@@ -716,6 +716,127 @@
                 ]
             }
         },
+        "/tailors/dresses/updatestatus": {
+            "post": {
+                "tags": [
+                    "Dresses"
+                ],
+                "summary": "Update the status of a dress",
+                "description": "Allows a tailor to update the status of a dress based on dress ID.",
+                "operationId": "updateDressStatus",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "dress_id",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "dress_id": {
+                                        "description": "ID of the dress to update",
+                                        "type": "integer",
+                                        "example": 101
+                                    },
+                                    "status": {
+                                        "description": "New status of the dress",
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Dress status updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress Status Updated Successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "Dress id": {
+                                                    "description": "Updated dress ID",
+                                                    "type": "integer",
+                                                    "example": 101
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": {
+                                                "dress_id": [
+                                                    "The dress_id field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress Status could not be updated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/measurements/dresses/{dress_id}": {
             "get": {
                 "tags": [
