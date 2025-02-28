@@ -19,6 +19,57 @@ class OrderController extends Controller
         //
     }
 
+
+    /**
+     * @OA\Post(
+     *     path="/tailors/orders/updatestatus",
+     *     summary="Update the status of an order",
+     *     description="Allows a tailor to update the status of an order based on order ID.",
+     *     operationId="updateOrderStatus",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"order_id", "status"},
+     *             @OA\Property(property="order_id", type="integer", example=123, description="ID of the order to update"),
+     *             @OA\Property(property="status", type="integer", example=2, description="New status of the order")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order status updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order Status Updated"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=12, description="Updated order ID")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order data validation error"),
+     *             @OA\Property(property="data", type="object", example={"order_id": {"The order_id field is required."}})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Status not updated"),
+     *             @OA\Property(property="data", type="object", example={})
+     *         )
+     *     )
+     * )
+     */
     public function updateStatus(Request $request)
     {
         $rules = [
@@ -303,13 +354,13 @@ class OrderController extends Controller
             return response()->json(['success' => false, 'message' => 'Order data validation error', 'data' => $validation->errors()], 422);
         } else {
 
-        $tailor_id = auth('sanctum')->user()->id;
+            $tailor_id = auth('sanctum')->user()->id;
             $tabName = $request->input('tabName');
             $tailor_orders = collect([]);
 
             switch ($tabName) {
                 case 'all':
-        $tailor_orders = Order::where('tailor_id', $tailor_id)->get();
+                    $tailor_orders = Order::where('tailor_id', $tailor_id)->get();
                     break;
 
                 case 'new':
@@ -333,10 +384,10 @@ class OrderController extends Controller
                     break;
             }
 
-        if (count($tailor_orders) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Order Found'], 200);
-        } else {
-            return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
+            if (count($tailor_orders) === 0) {
+                return response()->json(['success' => false, 'message' => 'No Order Found'], 200);
+            } else {
+                return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
             }
         }
     }
