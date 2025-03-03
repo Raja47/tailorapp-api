@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Customer;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
@@ -288,18 +289,41 @@ class OrderController extends Controller
      * @OA\Get(
      *     path="/tailors/orders/tab",
      *     summary="Fetch orders based on tab selection",
-     *     description="Retrieves orders based on the specified tab. Possible tab values: all, new, inProgress, completed, delivered, canceled.",
+     *     description="Retrieves orders based on the specified tab.",
      *     tags={"Orders"},
      *     security={{"bearerAuth": {}}},
      * 
      *     @OA\Parameter(
-     *         name="tabName",
+     *         name="timeFilter",
      *         in="query",
      *         required=true,
-     *         @OA\Schema(type="string", enum={"all", "new", "inProgress", "completed", "delivered", "canceled"}),
-     *         description="The tab name to filter orders"
+     *         @OA\Schema(type="string", enum={"today", "last7days", "last30days"}),
+     *         description="The time to filter orders"
      *     ),
-     * 
+     *     @OA\Parameter(
+     *         name="statusFilter",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="integer", enum={0, 1, 2, 3, 4}),
+     *         description="The status to filter orders",
+     *         example=1
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The page number for pagination",
+     *         example=1
+     *     ),
+     *     @OA\Parameter(
+     *         name="perpage",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="Number of orders to retrieve per page",
+     *         example=10
+     *     ),     
      *     @OA\Response(
      *         response=200,
      *         description="Successful response",
@@ -347,7 +371,10 @@ class OrderController extends Controller
     public function getTabOrders(Request $request)
     {
         $rules = [
-            'tabName' => 'required',
+            'timeFilter' => 'required',
+            'statusFilter' => '',
+            'page' => 'required',
+            'perpage' => 'required'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -355,34 +382,66 @@ class OrderController extends Controller
         } else {
 
             $tailor_id = auth('sanctum')->user()->id;
-            $tabName = $request->input('tabName');
+            $timeFilter = $request->input('timeFilter');
+            $statusFilter = $request->input('statusFilter');
+            $page = $request->input('page');
+            $perpage = $request->input('perpage');
             $tailor_orders = collect([]);
+            $today = Carbon::today();
 
-            switch ($tabName) {
-                case 'all':
-                    $tailor_orders = Order::where('tailor_id', $tailor_id)->get();
-                    break;
+            switch ($timeFilter) {
+                case 'today':
+                    if (!$request->input('statusFilter')) {
+                        $tailor_orders = Order::where('tailor_id', $tailor_id)->whereDate('created_at', $today)->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
+                        break;
+                    } else {
+                        $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', $statusFilter]])->whereDate('created_at', $today)->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
+                        break;
+                    }
 
-                case 'new':
-                    $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 0]])->get();
-                    break;
+                case 'last7days':
+                    if (!$request->input('statusFilter')) {
+                        $tailor_orders = Order::where('tailor_id', $tailor_id)->whereDate('created_at', '>=', $today->subDays(7))->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
+                        break;
+                    } else {
+                        $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', $statusFilter]])->whereDate('created_at', '>=', $today->subDays(7))->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
+                        break;
+                    }
 
-                case 'inProgress':
-                    $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 1]])->get();
-                    break;
-
-                case 'completed':
-                    $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 2]])->get();
-                    break;
-
-                case 'delivered':
-                    $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 3]])->get();
-                    break;
-
-                case 'canceled';
-                    $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 4]])->get();
-                    break;
+                case 'last30days':
+                    if (!$request->input('statusFilter')) {
+                        $tailor_orders = Order::where('tailor_id', $tailor_id)->whereDate('created_at', '>=', $today->subDays(30))->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
+                        break;
+                    } else {
+                        $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', $statusFilter]])->whereDate('created_at', '>=', $today->subDays(30))->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
+                        break;
+                    }
             }
+            // switch ($tabName) {
+            //     case 'all':
+            //         $tailor_orders = Order::where('tailor_id', $tailor_id)->orderBy('created_at','desc')->forpage($page, $perpage)->get();
+            //         break;
+
+            //     case 'new':
+            //         $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 0]])->orderBy('created_at','desc')->forpage($page, $perpage)->get();
+            //         break;
+
+            //     case 'inProgress':
+            //         $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 1]])->orderBy('created_at','desc')->forpage($page, $perpage)->get();
+            //         break;
+
+            //     case 'completed':
+            //         $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 2]])->orderBy('created_at','desc')->forpage($page, $perpage)->get();
+            //         break;
+
+            //     case 'delivered':
+            //         $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 3]])->orderBy('created_at','desc')->forpage($page, $perpage)->get();
+            //         break;
+
+            //     case 'canceled';
+            //         $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 4]])->orderBy('created_at','desc')->forpage($page, $perpage)->get();
+            //         break;
+            // }
 
             if (count($tailor_orders) === 0) {
                 return response()->json(['success' => false, 'message' => 'No Order Found'], 200);
