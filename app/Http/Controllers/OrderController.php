@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Customer;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -269,16 +270,19 @@ class OrderController extends Controller
             return response()->json(['success' => false, 'message' => 'Order data validation error', 'data' => $validation->errors()], 422);
         } else {
             $tailor_id = auth('sanctum')->user()->id;
+            $shop_id = $request->shop_id;
             $order = Order::create([
                 'customer_id' => $request->customer_id,
                 'tailor_id' => $tailor_id,
-                'shop_id' => $request->shop_id,
+                'shop_id' => $shop_id,
                 'name' => 'order-1',
                 'status' => 0,
             ]);
+            $order_id = $order->id;
+            $order->name = 't' . $tailor_id . 's0' . $order_id;
 
             if ($order->save()) {
-                return response()->json(['success' => true, 'message' => 'Order Created Successfully', 'data' => ['id' => $order->id]], 200);
+                return response()->json(['success' => true, 'message' => 'Order Created Successfully', 'data' => ['id' => $order_id]], 200);
             } else {
                 return response()->json(['success' => false, 'message' => 'Order Creation Failed', 'data' => []], 500);
             }
@@ -297,7 +301,7 @@ class OrderController extends Controller
      *         name="timeFilter",
      *         in="query",
      *         required=true,
-     *         @OA\Schema(type="string", enum={"today", "last7days", "last30days"}),
+     *         @OA\Schema(type="string", enum={"all","today", "last15days", "thismonth", "lastmonth", "thisyear", "lastyear"}),
      *         description="The time to filter orders"
      *     ),
      *     @OA\Parameter(
@@ -305,8 +309,15 @@ class OrderController extends Controller
      *         in="query",
      *         required=false,
      *         @OA\Schema(type="integer", enum={0, 1, 2, 3, 4}),
-     *         description="The status to filter orders",
-     *         example=1
+     *         description="The status to filter orders"
+     *     ),
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="string"),
+     *         description="Text to search orders",
+     *         example="S02"
      *     ),
      *     @OA\Parameter(
      *         name="page",
@@ -371,83 +382,98 @@ class OrderController extends Controller
     public function getTabOrders(Request $request)
     {
         $rules = [
-            'timeFilter' => 'required',
-            'statusFilter' => '',
-            'page' => 'required',
-            'perpage' => 'required'
+            'timeFilter' => 'required|string',
+            'statusFilter' => 'nullable|integer',
+            'searchText' => 'nullable|string',
+            'page' => 'required|numeric|min:1',
+            'perpage' => 'required|numeric|min:1'
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Order data validation error', 'data' => $validation->errors()], 422);
+        }
+
+        $tailor_id = auth('sanctum')->user()->id;
+        $timeFilter = $request->input('timeFilter');
+        $statusFilter = $request->input('statusFilter');
+        $searchText = $request->input('searchText');
+        $page = $request->input('page');
+        $perpage = $request->input('perpage');
+        $tailor_orders = collect([]);
+        $today = Carbon::today();
+
+        $query = Order::where('tailor_id', $tailor_id);
+
+        switch ($timeFilter) {
+            case 'all':
+                if ($request->filled('statusFilter')) {
+                    $query->where('status', $statusFilter);
+                }
+                break;
+
+            case 'today':
+                if ($request->filled('statusFilter')) {
+                    $query->where('status', $statusFilter)->whereDate('created_at', $today);
+                } else {
+                    $query->whereDate('created_at', $today);
+                }
+                break;
+
+            case 'last15days':
+                if ($request->filled('statusFilter')) {
+                    $query->where('status', $statusFilter)->where('created_at', '>=', Carbon::now()->subDays(15));
+                } else {
+                    $query->where('created_at', '>=', Carbon::now()->subDays(15));
+                }
+                break;
+
+            case 'thismonth':
+                if ($request->filled('statusFilter')) {
+                    $query->where('status', $statusFilter)->whereMonth('created_at', $today->month)->whereYear('created_at', $today->year);
+                } else {
+                    $query->whereMonth('created_at', $today->month)->whereYear('created_at', $today->year);
+                }
+                break;
+
+            case 'lastmonth':
+                $last_month = Carbon::today()->subMonth();
+                if ($request->filled('statusFilter')) {
+                    $query->where('status', $statusFilter)->whereMonth('created_at', $last_month->month)->whereYear('created_at', $last_month->year);
+                } else {
+                    $query->whereMonth('created_at', $last_month->month)->whereYear('created_at', $last_month->year);
+                }
+                break;
+
+            case 'thisyear':
+                if ($request->filled('statusFilter')) {
+                    $query->where('status', $statusFilter)->whereYear('created_at', $today->year);
+                } else {
+                    $query->whereYear('created_at', $today->year);
+                }
+                break;
+
+            case 'lastyear':
+                $last_year = Carbon::today()->subYear();
+                if ($request->filled('statusFilter')) {
+                    $query->where('status', $statusFilter)->whereYear('created_at', $last_year->year);
+                } else {
+                    $query->whereYear('created_at', $last_year->year);
+                }
+                break;
+
+            default:
+                return response()->json(['success' => false, 'message' => 'Invalid time filter'], 500);
+        }
+
+        if ($request->filled('searchText')) {
+            $query->where('name', 'like', '%' . $searchText . '%');
+        }
+        $tailor_orders = $query->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
+
+        if (count($tailor_orders) === 0) {
+            return response()->json(['success' => false, 'message' => 'No Order Found'], 200);
         } else {
-
-            $tailor_id = auth('sanctum')->user()->id;
-            $timeFilter = $request->input('timeFilter');
-            $statusFilter = $request->input('statusFilter');
-            $page = $request->input('page');
-            $perpage = $request->input('perpage');
-            $tailor_orders = collect([]);
-            $today = Carbon::today();
-
-            switch ($timeFilter) {
-                case 'today':
-                    if (!$request->input('statusFilter')) {
-                        $tailor_orders = Order::where('tailor_id', $tailor_id)->whereDate('created_at', $today)->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
-                        break;
-                    } else {
-                        $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', $statusFilter]])->whereDate('created_at', $today)->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
-                        break;
-                    }
-
-                case 'last7days':
-                    if (!$request->input('statusFilter')) {
-                        $tailor_orders = Order::where('tailor_id', $tailor_id)->whereDate('created_at', '>=', $today->subDays(7))->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
-                        break;
-                    } else {
-                        $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', $statusFilter]])->whereDate('created_at', '>=', $today->subDays(7))->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
-                        break;
-                    }
-
-                case 'last30days':
-                    if (!$request->input('statusFilter')) {
-                        $tailor_orders = Order::where('tailor_id', $tailor_id)->whereDate('created_at', '>=', $today->subDays(30))->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
-                        break;
-                    } else {
-                        $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', $statusFilter]])->whereDate('created_at', '>=', $today->subDays(30))->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
-                        break;
-                    }
-            }
-            // switch ($tabName) {
-            //     case 'all':
-            //         $tailor_orders = Order::where('tailor_id', $tailor_id)->orderBy('created_at','desc')->forpage($page, $perpage)->get();
-            //         break;
-
-            //     case 'new':
-            //         $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 0]])->orderBy('created_at','desc')->forpage($page, $perpage)->get();
-            //         break;
-
-            //     case 'inProgress':
-            //         $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 1]])->orderBy('created_at','desc')->forpage($page, $perpage)->get();
-            //         break;
-
-            //     case 'completed':
-            //         $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 2]])->orderBy('created_at','desc')->forpage($page, $perpage)->get();
-            //         break;
-
-            //     case 'delivered':
-            //         $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 3]])->orderBy('created_at','desc')->forpage($page, $perpage)->get();
-            //         break;
-
-            //     case 'canceled';
-            //         $tailor_orders = Order::where([['tailor_id', $tailor_id], ['status', 4]])->orderBy('created_at','desc')->forpage($page, $perpage)->get();
-            //         break;
-            // }
-
-            if (count($tailor_orders) === 0) {
-                return response()->json(['success' => false, 'message' => 'No Order Found'], 200);
-            } else {
-                return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
-            }
+            return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
         }
     }
     /**

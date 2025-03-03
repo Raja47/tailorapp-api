@@ -1403,9 +1403,13 @@
                         "schema": {
                             "type": "string",
                             "enum": [
+                                "all",
                                 "today",
-                                "last7days",
-                                "last30days"
+                                "last15days",
+                                "thismonth",
+                                "lastmonth",
+                                "thisyear",
+                                "lastyear"
                             ]
                         }
                     },
@@ -1423,8 +1427,17 @@
                                 3,
                                 4
                             ]
+                        }
+                    },
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "Text to search orders",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
                         },
-                        "example": 1
+                        "example": "S02"
                     },
                     {
                         "name": "page",
