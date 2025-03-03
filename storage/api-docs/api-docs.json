@@ -1392,25 +1392,59 @@
                     "Orders"
                 ],
                 "summary": "Fetch orders based on tab selection",
-                "description": "Retrieves orders based on the specified tab. Possible tab values: all, new, inProgress, completed, delivered, canceled.",
+                "description": "Retrieves orders based on the specified tab.",
                 "operationId": "58a66e30fdc693533aed822aa9524eb8",
                 "parameters": [
                     {
-                        "name": "tabName",
+                        "name": "timeFilter",
                         "in": "query",
-                        "description": "The tab name to filter orders",
+                        "description": "The time to filter orders",
                         "required": true,
                         "schema": {
                             "type": "string",
                             "enum": [
-                                "all",
-                                "new",
-                                "inProgress",
-                                "completed",
-                                "delivered",
-                                "canceled"
+                                "today",
+                                "last7days",
+                                "last30days"
                             ]
                         }
+                    },
+                    {
+                        "name": "statusFilter",
+                        "in": "query",
+                        "description": "The status to filter orders",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4
+                            ]
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number for pagination",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "perpage",
+                        "in": "query",
+                        "description": "Number of orders to retrieve per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
                     }
                 ],
                 "responses": {
