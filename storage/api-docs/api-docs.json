@@ -546,6 +546,200 @@
                 ]
             }
         },
+        "/tailors/dresses/tab": {
+            "get": {
+                "tags": [
+                    "Dresses"
+                ],
+                "summary": "Get a list of tailor dresses based on filters",
+                "operationId": "d4124606fa2fef8aedc11f3ae106c8fe",
+                "parameters": [
+                    {
+                        "name": "timeFilter",
+                        "in": "query",
+                        "description": "Filter dresses based on time (e.g., all, today, due, late, last15days, thismonth, lastmonth, thisyear, lastyear)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "all",
+                                "today",
+                                "due",
+                                "late",
+                                "last15days",
+                                "thismonth",
+                                "lastmonth",
+                                "thisyear",
+                                "lastyear"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "statusFilter",
+                        "in": "query",
+                        "description": "Filter dresses by status (nullable)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4
+                            ]
+                        }
+                    },
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "Search by dress name",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 255
+                        }
+                    },
+                    {
+                        "name": "shop_id",
+                        "in": "query",
+                        "description": "Shop ID to filter dresses",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number for pagination",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "perpage",
+                        "in": "query",
+                        "description": "Number of orders to retrieve per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dresses found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dresses Found"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "Dresses": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Bridal Dress"
+                                                            },
+                                                            "status": {
+                                                                "type": "integer",
+                                                                "example": 2
+                                                            },
+                                                            "delivery_date": {
+                                                                "type": "string",
+                                                                "format": "date",
+                                                                "example": "2025-03-10"
+                                                            },
+                                                            "picture": {
+                                                                "type": "string",
+                                                                "example": "uploads/dress1.jpg"
+                                                            },
+                                                            "customername": {
+                                                                "type": "string",
+                                                                "example": "Ayesha Khan"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Invalid time filter",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid time filter"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/dresses/store": {
             "post": {
                 "tags": [
