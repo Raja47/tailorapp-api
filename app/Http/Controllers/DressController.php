@@ -429,132 +429,222 @@ class DressController extends Controller
         return response()->json(['success' => true, 'message' => 'Audio uploaded', 'data' => $path], 200);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/tailors/dresses/tab",
+     *     summary="Get a list of tailor dresses based on filters",
+     *     tags={"Dresses"},
+     *     security={{"bearerAuth":{}}},
+     * 
+     *     @OA\Parameter(
+     *         name="timeFilter",
+     *         in="query",
+     *         required=true,
+     *         description="Filter dresses based on time (e.g., all, today, due, late, last15days, thismonth, lastmonth, thisyear, lastyear)",
+     *         @OA\Schema(type="string", enum={"all", "today", "due", "late", "last15days", "thismonth", "lastmonth", "thisyear", "lastyear"})
+     *     ),
+     *     @OA\Parameter(
+     *         name="statusFilter",
+     *         in="query",
+     *         required=false,
+     *         description="Filter dresses by status (nullable)",
+     *         @OA\Schema(type="integer", enum={0, 1, 2, 3, 4}),
+     *     ),
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         required=false,
+     *         description="Search by dress name",
+     *         @OA\Schema(type="string", maxLength=255)
+     *     ),
+     *     @OA\Parameter(
+     *         name="shop_id",
+     *         in="query",
+     *         required=true,
+     *         description="Shop ID to filter dresses",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The page number for pagination",
+     *         example=1
+     *     ),
+     *     @OA\Parameter(
+     *         name="perpage",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="Number of orders to retrieve per page",
+     *         example=10
+     *     ), 
+     *     @OA\Response(
+     *         response=200,
+     *         description="Dresses found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Dresses Found"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="Dresses",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="name", type="string", example="Bridal Dress"),
+     *                         @OA\Property(property="status", type="integer", example=2),
+     *                         @OA\Property(property="delivery_date", type="string", format="date", example="2025-03-10"),
+     *                         @OA\Property(property="picture", type="string", example="uploads/dress1.jpg"),
+     *                         @OA\Property(property="customername", type="string", example="Ayesha Khan")
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order data validation error"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Invalid time filter",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid time filter")
+     *         )
+     *     )
+     * )
+     */
+
     public function getTabDresses(Request $request)
     {
         $rules = [
+            'timeFilter' => 'required',
+            'statusFilter' => 'nullable|integer',
+            'searchText' => 'nullable',
             'shop_id' => 'required',
-            'tabName' => 'required',
-            'search' => '',
+            'page' => 'required|numeric|min:1',
+            'perpage' => 'required|numeric|min:1'
         ];
-        $now = Carbon::now();
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
-            return response()->json(['success' => false, 'message' => 'Dress data validation error', 'data' => $validation->errors()], 422);
+            return response()->json(['success' => false, 'message' => 'Order data validation error', 'data' => $validation->errors()], 422);
+        }
+
+        $tailor_id = auth('sanctum')->user()->id;
+        $timeFilter = $request->input('timeFilter');
+        $statusFilter = $request->input('statusFilter');
+        $searchText = $request->input('searchText');
+        $shop_id = $request->input('shop_id');
+        $page = $request->input('page');
+        $perpage = $request->input('perpage');
+        $tailor_dresses = collect([]);
+        $today = Carbon::today();
+
+        $query = DB::table('dresses')
+            ->select('dresses.*', 'orders.status', 'dress_images.path AS image', 'tailor_customers.name AS customername')
+            ->leftjoin('orders', 'orders.id', '=', 'dresses.order_id')
+            ->leftjoin('tailor_customers', 'tailor_customers.id', '=', 'orders.customer_id')
+            ->leftjoin('dress_images', function ($join) {
+                $join->on('dress_images.dress_id', '=', 'dresses.id');
+                $join->where('dress_images.type', '=', 'design');
+            })
+            ->where('dresses.tailor_id', $tailor_id)
+            ->where('dresses.shop_id', $shop_id);
+
+        switch ($timeFilter) {
+            case 'all':
+                if ($request->filled('statusFilter')) {
+                    $query->where('orders.status', $statusFilter);
+                }
+                break;
+
+            case 'today':
+                if ($request->filled('statusFilter')) {
+                    $query->where('orders.status', $statusFilter)->whereDate('dresses.created_at', $today);
+                } else {
+                    $query->whereDate('dresses.created_at', $today);
+                }
+                break;
+
+            case 'due':
+                $due_time_list = [$today->format('y-m-d'), $today->copy()->addDays(1)->format('y-m-d'), $today->copy()->addDays(2)->format('y-m-d')];
+                $query->whereIn('dresses.delivery_date', $due_time_list);
+                break;
+
+            case 'late':
+                $query->where('dresses.delivery_date', '<', $today)->whereNotIn('orders.status', [2, 3]);
+                break;
+
+            case 'last15days':
+                if ($request->filled('statusFilter')) {
+                    $query->where('orders.status', $statusFilter)->where('dresses.created_at', '>=', Carbon::now()->subDays(15));
+                } else {
+                    $query->where('dresses.created_at', '>=', Carbon::now()->subDays(15));
+                }
+                break;
+
+            case 'thismonth':
+                if ($request->filled('statusFilter')) {
+                    $query->where('orders.status', $statusFilter)->whereMonth('dresses.created_at', $today->month)->whereYear('dresses.created_at', $today->year);
+                } else {
+                    $query->whereMonth('dresses.created_at', $today->month)->whereYear('dresses.created_at', $today->year);
+                }
+                break;
+
+            case 'lastmonth':
+                $last_month = Carbon::today()->subMonth();
+                if ($request->filled('statusFilter')) {
+                    $query->where('orders.status', $statusFilter)->whereMonth('dresses.created_at', $last_month->month)->whereYear('dresses.created_at', $last_month->year);
+                } else {
+                    $query->whereMonth('dresses.created_at', $last_month->month)->whereYear('dresses.created_at', $last_month->year);
+                }
+                break;
+
+            case 'thisyear':
+                if ($request->filled('statusFilter')) {
+                    $query->where('orders.status', $statusFilter)->whereYear('dresses.created_at', $today->year);
+                } else {
+                    $query->whereYear('dresses.created_at', $today->year);
+                }
+                break;
+
+            case 'lastyear':
+                $last_year = Carbon::today()->subYear();
+                if ($request->filled('statusFilter')) {
+                    $query->where('orders.status', $statusFilter)->whereYear('dresses.created_at', $last_year->year);
+                } else {
+                    $query->whereYear('dresses.created_at', $last_year->year);
+                }
+                break;
+
+            default:
+                return response()->json(['success' => false, 'message' => 'Invalid time filter'], 500);
+                break;
+        }
+
+        if ($request->filled('searchText')) {
+            $query->where('dresses.name', 'like', '%' . $searchText . '%');
+        }
+        $tailor_dresses = $query->orderBy('dresses.updated_at', 'desc')->forpage($page, $perpage)->get();
+
+        if (count($tailor_dresses) === 0) {
+            return response()->json(['success' => false, 'message' => 'No Dresses Found'], 200);
         } else {
-            $shop_id = $request->shop_id;
-            $tabName = $request->tabName;
-            $search = $request->search;
-            $query = DB::table('dresses')
-                ->select('dresses.*', 'categories.name AS catName', 'pictures.path AS picture', 'customers.name AS customername')
-                ->leftjoin('categories', 'categories.id', '=', 'dresses.category_id')
-                ->leftjoin('orders', 'orders.id', '=', 'dresses.order_id')
-                ->leftjoin('customers', 'customers.id', '=', 'orders.customer_id')
-                ->leftjoin('pictures', function ($join) {
-                    $join->on('pictures.model_id', '=', 'dresses.id');
-                    $join->where('pictures.model', '=', 'dress');
-                });
-
-            switch ($tabName) {
-                case 'new':
-                    if (empty($search)) {
-                        $dresses = $query->where('dresses.status', '=', 0)->where('dresses.shop_id', '=', $shop_id)->get();
-                    } else {
-                        $dresses = $query->where('dresses.status', '=', 0)
-                            ->where('dresses.shop_id', '=', $shop_id)
-                            ->where(function ($query) use ($search) {
-                                $query->where('dresses.name', 'like', '%' . $search . '%')
-                                    ->orWhere('categories.name', 'like', '%' . $search . '%');
-                            })
-                            ->get();
-                    }
-                    // return $dresses;
-                    break;
-
-                case 'urgent':
-                    if (empty($search)) {
-                        $dresses = $query->where('dresses.is_urgent', '=', 0)->whereNotIn('dresses.status', [2, 3, 4, 5])->where('dresses.shop_id', '=', $shop_id)->get();
-                    } else {
-                        $dresses = $query->where('dresses.is_urgent', '=', 0)
-                            ->whereNotIn('dresses.status', [2, 3, 4, 5])
-                            ->where('dresses.shop_id', '=', $shop_id)
-                            ->where(function ($query) use ($search) {
-                                $query->where('dresses.name', 'like', '%' . $search . '%')
-                                    ->orWhere('categories.name', 'like', '%' . $search . '%');
-                            })
-                            ->get();
-                    }
-                    // return $dresses;
-                    break;
-
-                case 'dueDresses':
-                    $due_time_list = [$now->format('y-m-d'), $now->copy()->addDays(1)->format('y-m-d'), $now->copy()->addDays(2)->format('y-m-d')];
-                    if (empty($search)) {
-                        $dresses = $query->whereIn('dresses.delivery_date', $due_time_list)->whereNotIn('dresses.status', [2, 3, 4, 5])->where('dresses.shop_id', '=', $shop_id)->get();
-                    } else {
-                        $dresses = $query->whereIn('dresses.delivery_date', $due_time_list)
-                            ->whereNotIn('dresses.status', [2, 3, 4, 5])
-                            ->where('dresses.shop_id', '=', $shop_id)
-                            ->where(function ($query) use ($search) {
-                                $query->where('dresses.name', 'like', '%' . $search . '%')
-                                    ->orWhere('categories.name', 'like', '%' . $search . '%');
-                            })
-                            ->get();
-                    }
-                    // return $dresses;
-                    break;
-
-                case 'lateDresses':
-                    $currentDate = Carbon::now();
-                    if (empty($search)) {
-                        $dresses = $query->whereNotIn('dresses.status', [1, 2, 5])
-                            ->where('dresses.shop_id', '=', $shop_id)
-                            ->where('dresses.delivery_date', '<', $currentDate)
-                            ->get();
-                    } else {
-                        $dresses = $query->whereNotIn('dresses.status', [1, 2, 5])
-                            ->where('dresses.shop_id', '=', $shop_id)
-                            ->where('delivery_date', '<', $currentDate)
-                            ->where(function ($query) use ($search) {
-                                $query->where('dresses.name', 'like', '%' . $search . '%')
-                                    ->orWhere('categories.name', 'like', '%' . $search . '%');
-                            })
-                            ->get();
-                    }
-                    // return $dresses;
-                    break;
-
-                case 'inProgress':
-                    if (empty($search)) {
-                        $dresses = $query->where('dresses.status', 1)->where('dresses.shop_id', '=', $shop_id)->get();
-                    } else {
-                        $dresses = $query->where('dresses.status', 1)
-                            ->where('dresses.shop_id', '=', $shop_id)
-                            ->where(function ($query) use ($search) {
-                                $query->where('dresses.name', 'like', '%' . $search . '%')
-                                    ->orWhere('categories.name', 'like', '%' . $search . '%');
-                            })
-                            ->get();
-                    }
-                    // return $dresses;
-                    break;
-
-                case 'completed/delivered':
-                    if (empty($search)) {
-                        $dresses = $query->whereIn('dresses.status', [2, 3])->where('dresses.shop_id', '=', $shop_id)->get();
-                    } else {
-                        $dresses = $query->whereIn('dresses.status', [2, 3])
-                            ->where('dresses.shop_id', '=', $shop_id)
-                            ->where(function ($query) use ($search) {
-                                $query->where('dresses.name', 'like', '%' . $search . '%')
-                                    ->orWhere('categories.name', 'like', '%' . $search . '%');
-                            })
-                            ->get();
-                    }
-                    // return $dresses;
-                    break;
-            }
-
-            return $dresses;
+            return response()->json(['success' => true, 'message' => 'Dresses Found', 'data' => ['Dresses' => $tailor_dresses]], 200);
         }
     }
 
