@@ -18,5 +18,9 @@ class Order extends Model
         'discount',
         'notes',
         'status',
+        'total_dress_amount',
+        'total_expenses',
+        'total_discount',
+        'total_payment'
     ];
 }
