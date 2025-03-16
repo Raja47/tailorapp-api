@@ -21,7 +21,6 @@ class OrderController extends Controller
         //
     }
 
-
     /**
      * @OA\Post(
      *     path="/tailors/orders/updatestatus",
@@ -320,6 +319,13 @@ class OrderController extends Controller
      *         example="S02"
      *     ),
      *     @OA\Parameter(
+     *         name="shop_id",
+     *         in="query",
+     *         required=true,
+     *         description="Shop ID to filter dresses",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
      *         name="page",
      *         in="query",
      *         required=true,
@@ -385,6 +391,7 @@ class OrderController extends Controller
             'timeFilter' => 'required|string',
             'statusFilter' => 'nullable|integer',
             'searchText' => 'nullable|string',
+            'shop_id' => 'required|integer|exists:shops,id',
             'page' => 'required|numeric|min:1',
             'perpage' => 'required|numeric|min:1'
         ];
@@ -397,12 +404,17 @@ class OrderController extends Controller
         $timeFilter = $request->input('timeFilter');
         $statusFilter = $request->input('statusFilter');
         $searchText = $request->input('searchText');
+        $shop_id = $request->input('shop_id');
         $page = $request->input('page');
         $perpage = $request->input('perpage');
         $tailor_orders = collect([]);
         $today = Carbon::today();
 
-        $query = Order::where('tailor_id', $tailor_id);
+        $query = DB::table('orders')
+            ->select('orders.id', 'orders.name', 'orders.status', 'orders.created_at', 'orders.total_dress_amount', 'orders.total_payment', DB::raw('COUNT(dresses.id) as dress_count'))
+            ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
+            ->where([['orders.tailor_id', $tailor_id], ['orders.shop_id', $shop_id]])
+            ->groupBy('orders.id', 'orders.name', 'orders.status', 'orders.created_at', 'orders.total_dress_amount', 'orders.total_payment');
 
         switch ($timeFilter) {
             case 'all':
@@ -468,10 +480,14 @@ class OrderController extends Controller
         if ($request->filled('searchText')) {
             $query->where('name', 'like', '%' . $searchText . '%');
         }
-        $tailor_orders = $query->orderBy('updated_at', 'desc')->forpage($page, $perpage)->get();
+        $tailor_orders = $query->orderBy('orders.updated_at', 'desc')->forpage($page, $perpage)->get()
+            ->map(function ($order) {
+                $order->created_at = Carbon::parse($order->created_at)->toIso8601String();
+                return $order;
+            });
 
         if (count($tailor_orders) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Order Found'], 200);
+            return response()->json(['success' => true, 'message' => 'No Orders Found'], 200);
         } else {
             return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
         }

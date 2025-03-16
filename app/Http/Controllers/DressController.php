@@ -374,7 +374,6 @@ class DressController extends Controller
         return response()->json(['success' => true, 'message' => 'Images uploaded succesfully', 'data' => $uploadedImages], 200);
     }
 
-
     /**
      * @OA\Post(
      *     path="/tailors/dresses/audio",
@@ -428,7 +427,6 @@ class DressController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Audio uploaded', 'data' => $path], 200);
     }
-
 
     /**
      * @OA\Get(
@@ -639,10 +637,16 @@ class DressController extends Controller
         if ($request->filled('searchText')) {
             $query->where('dresses.name', 'like', '%' . $searchText . '%');
         }
-        $tailor_dresses = $query->orderBy('dresses.updated_at', 'desc')->forpage($page, $perpage)->get();
+        $tailor_dresses = $query->orderBy('dresses.updated_at', 'desc')->forpage($page, $perpage)->get()
+            ->map(function ($dress) {
+                $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601String();
+                $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601String();
+                $dress->created_at = Carbon::parse($dress->created_at)->toIso8601String();
+                return $dress;
+            });
 
         if (count($tailor_dresses) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Dresses Found'], 200);
+            return response()->json(['success' => true, 'message' => 'No Dresses Found'], 200);
         } else {
             return response()->json(['success' => true, 'message' => 'Dresses Found', 'data' => ['Dresses' => $tailor_dresses]], 200);
         }
@@ -754,7 +758,6 @@ class DressController extends Controller
         }
     }
 
-
     public function updateDress(Request $request)
     {
         $rules = [
@@ -858,18 +861,82 @@ class DressController extends Controller
         return response()->json(['success' => true, 'message' => 'Dress Deleted', 'data' => ['countDeletes' => $dress->count()]], 200);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/tailors/dresses/orders/{order_id}",
+     *     summary="Get dresses for a specific order",
+     *     description="Retrieves a list of dresses associated with a specific order, based on the tailor's authentication.",
+     *     operationId="getOrderDresses",
+     *     tags={"Dresses"},
+     *     security={{ "bearerAuth": {} }},
+     *     @OA\Parameter(
+     *         name="order_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the order",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of dresses retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Elegant Dress"),
+     *                 @OA\Property(property="category_id", type="integer", example=3),
+     *                 @OA\Property(property="catName", type="string", example="Party Wear"),
+     *                 @OA\Property(property="image", type="string", example="path/to/image.jpg"),
+     *                 @OA\Property(property="order_id", type="integer", example=5),
+     *                 @OA\Property(property="tailor_id", type="integer", example=2),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-03T12:00:00Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order not found.")
+     *         )
+     *     )
+     * )
+     */
     public function getOrderDresses($order_id)
     {
         $tailor_id = auth('sanctum')->user()->id;
-        $query = DB::table('dresses')
-            ->select('dresses.*', 'categories.name AS catName', 'pictures.path AS picture')
-            ->leftjoin('categories', 'categories.id', '=', 'dresses.category_id')
-            ->leftjoin('pictures', function ($join) {
-                $join->on('pictures.model_id', '=', 'dresses.id');
-                $join->where('pictures.model', '=', 'dress');
+
+        $order_dresses = DB::table('dresses')
+            ->select('dresses.*', 'tailor_categories.name AS catName', 'dress_images.path AS image')
+            ->leftjoin('tailor_categories', 'tailor_categories.id', '=', 'dresses.category_id')
+            ->leftjoin('dress_images', function ($join) {
+                $join->on('dress_images.dress_id', '=', 'dresses.id');
+                $join->where('dress_images.type', '=', 'design');
+            })
+            ->where('dresses.tailor_id', $tailor_id)->where('dresses.order_id', $order_id)->get()
+            ->map(function ($dress) {
+                $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601String();
+                $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601String();
+                return $dress;
             });
-        $dresses = $query->where('tailor_id', $tailor_id)->where('order_id', $order_id)->get();
-        return $dresses;
+
+        if (count($order_dresses) === 0) {
+            return response()->json(['success' => false, 'message' => 'No Dresses Found'], 200);
+        } else {
+            return response()->json(['success' => true, 'message' => 'Dresses Found', 'data' => ['Dresses' => $order_dresses]], 200);
+        }
     }
 
 

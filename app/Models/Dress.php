@@ -25,4 +25,8 @@ class Dress extends Model
             'notes',
             'status',
     ];
+
+    protected $casts = [
+        'delivery_date' => 'datetime:Y-m-d\TH:i:sP',
+    ];
 }
