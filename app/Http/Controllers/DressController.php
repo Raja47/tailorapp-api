@@ -639,9 +639,9 @@ class DressController extends Controller
         }
         $tailor_dresses = $query->orderBy('dresses.updated_at', 'desc')->forpage($page, $perpage)->get()
             ->map(function ($dress) {
-                $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601String();
-                $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601String();
-                $dress->created_at = Carbon::parse($dress->created_at)->toIso8601String();
+                $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
+                $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
+                $dress->created_at = Carbon::parse($dress->created_at)->toIso8601ZuluString();
                 return $dress;
             });
 
@@ -927,8 +927,8 @@ class DressController extends Controller
             })
             ->where('dresses.tailor_id', $tailor_id)->where('dresses.order_id', $order_id)->get()
             ->map(function ($dress) {
-                $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601String();
-                $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601String();
+                $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
+                $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
                 return $dress;
             });
 
