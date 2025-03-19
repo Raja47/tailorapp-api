@@ -23,4 +23,10 @@ class Order extends Model
         'total_discount',
         'total_payment'
     ];
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d\TH:i:s.v\Z',
+        'updated_at' => 'datetime:Y-m-d\TH:i:s.v\Z',
+    ];
+
 }

@@ -123,7 +123,7 @@
         "category_id": 1,
         "question": "Choose the fit style for this shirt",
         "type": "single-icon",
-        "options": "[{\"label\":\"Slim Fit\",\"value\":\"slim_fit\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Regular Fit\",\"value\":\"regular_fit\",\"icon\":\"questions\\\\options.jpg\"},{\"label\":\"Loose Fit\",\"value\":\"loose_fit\",\"icon\":\"questions\\\\options.jpg\"}]"
+        "options": "[{\"label\":\"Slim Fit\",\"value\":\"slim_fit\",\"icon\":\"https://develop.tailorinch.com/questions/slim-fit.svg\"},{\"label\":\"Regular Fit\",\"value\":\"regular_fit\",\"icon\":\"https://develop.tailorinch.com/questions/regular-fit.svg\"},{\"label\":\"Loose Fit\",\"value\":\"loose_fit\",\"icon\":\"https://develop.tailorinch.com/questions/loose-fit.svg\"}]"
     },
     {
         "category_id": 3,

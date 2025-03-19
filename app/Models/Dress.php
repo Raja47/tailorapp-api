@@ -27,6 +27,9 @@ class Dress extends Model
     ];
 
     protected $casts = [
-        'delivery_date' => 'datetime:Y-m-d\TH:i:sP',
+        'delivery_date' => 'datetime:Y-m-d\TH:i:s.v\Z',
+        'trial_date' => 'datetime:Y-m-d\TH:i:s.v\Z',
+        'created_at' => 'datetime:Y-m-d\TH:i:s.v\Z',
+        'updated_at' => 'datetime:Y-m-d\TH:i:s.v\Z',
     ];
 }

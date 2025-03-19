@@ -482,7 +482,7 @@ class OrderController extends Controller
         }
         $tailor_orders = $query->orderBy('orders.updated_at', 'desc')->forpage($page, $perpage)->get()
             ->map(function ($order) {
-                $order->created_at = Carbon::parse($order->created_at)->toIso8601String();
+                $order->created_at = Carbon::parse($order->created_at)->toIso8601ZuluString();
                 return $order;
             });
 
