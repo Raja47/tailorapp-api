@@ -478,7 +478,7 @@ class OrderController extends Controller
         }
 
         if ($request->filled('searchText')) {
-            $query->where('name', 'like', '%' . $searchText . '%');
+            $query->where('orders.name', 'like', '%' . $searchText . '%');
         }
         $tailor_orders = $query->orderBy('orders.updated_at', 'desc')->forpage($page, $perpage)->get()
             ->map(function ($order) {
