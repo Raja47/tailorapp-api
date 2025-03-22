@@ -487,7 +487,7 @@ class OrderController extends Controller
             });
 
         if (count($tailor_orders) === 0) {
-            return response()->json(['success' => true, 'message' => 'No Orders Found'], 200);
+            return response()->json(['success' => true, 'message' => 'No Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
         } else {
             return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
         }

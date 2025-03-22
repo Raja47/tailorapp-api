@@ -646,7 +646,7 @@ class DressController extends Controller
             });
 
         if (count($tailor_dresses) === 0) {
-            return response()->json(['success' => true, 'message' => 'No Dresses Found'], 200);
+            return response()->json(['success' => true, 'message' => 'No Dresses Found', 'data' => ['Dresses' => $tailor_dresses]], 200);
         } else {
             return response()->json(['success' => true, 'message' => 'Dresses Found', 'data' => ['Dresses' => $tailor_dresses]], 200);
         }
