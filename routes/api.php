@@ -9,10 +9,13 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\CategoryParameterController;
 use App\Http\Controllers\CategoryQuestionController;
+use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\MeasurementController;
 use App\Http\Controllers\MeasurementValueController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TailorCategoryController;
 use App\Http\Controllers\TailorParameterController;
@@ -148,6 +151,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/orders'], 
     $router->get('/count', [OrderController::class, 'countOrders']);
     $router->get('/{order_id}/customer', [OrderController::class, 'getCustomerByOrderid']);
     $router->post('/store', [OrderController::class, 'emptyOrder']);
+    $router->get('/{order_id}/summary', [OrderController::class, 'orderAmounts']);
 });
 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/measurements'], function ($router) {
@@ -155,6 +159,23 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/measurements'], fu
     $router->get('/dresses/{dress_id}', [MeasurementController::class, 'getDressMeasurementWithValues']);
 });
 
+Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/expenses'], function ($router) {
+    $router->get('/orders/{order_id}', [ExpenseController::class, 'index']);
+    $router->post('/orders', [ExpenseController::class, 'store']);
+    $router->post('/{expense_id}/destroy', [ExpenseController::class, 'destroy']);
+});
+
+Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/discounts'], function ($router) {
+    $router->get('/orders/{order_id}', [DiscountController::class, 'index']);
+    $router->post('/orders', [DiscountController::class, 'store']);
+    $router->post('/{discount_id}/destroy', [DiscountController::class, 'destroy']);
+});
+
+Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/payments'], function ($router) {
+    $router->get('/orders/{order_id}', [PaymentController::class, 'index']);
+    $router->post('/orders', [PaymentController::class, 'store']);
+    $router->post('/{payment_id}/destroy', [PaymentController::class, 'destroy']);
+});
 
 // Route::group(['prefix' => '/media'], function ($router) {
 //     $router->get('/order/{order_id}', [MediaController::class, 'getOrderMedia']);
@@ -163,7 +184,6 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/measurements'], fu
 //     $router->post('/{media_id}/update', [MediaController::class, 'update']);
 //     $router->post('/{media_id}/delete', [MediaController::class, 'delete']);
 // });
-
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Customer;
+use App\Models\Discount;
+use App\Models\Dress;
+use App\Models\Expense;
+use App\Models\Payment;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -492,6 +496,113 @@ class OrderController extends Controller
             return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/tailors/orders/{order_id}/summary",
+     *     summary="Get order amounts summary",
+     *     description="Retrieves a summary of total dress amount, expenses, discounts, and payments for a given order.",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="order_id",
+     *         in="path",
+     *         required=true,
+     *         description="The ID of the order",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response with order amount summary",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order Amount Summary"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="total_dress_amount", type="integer", example=5000),
+     *                 @OA\Property(property="total_expense_amount", type="integer", example=1500),
+     *                 @OA\Property(
+     *                     property="expense_summary",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="name", type="string", example="Fabric Purchase"),
+     *                         @OA\Property(property="amount", type="integer", example=1000)
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="total_discount_amount", type="integer", example=500),
+     *                 @OA\Property(
+     *                     property="discount_summary",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="name", type="string", example="Seasonal Discount"),
+     *                         @OA\Property(property="amount", type="integer", example=200)
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="total_payment_amount", type="integer", example=4000),
+     *                 @OA\Property(
+     *                     property="payment_summary",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="paymentmethod", type="string", example="Credit Card"),
+     *                         @OA\Property(property="amount", type="integer", example=3000)
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function orderAmounts($order_id)
+    {
+        $tailor_id = auth('sanctum')->user()->id;
+        $order = Order::where([['id', $order_id], ['tailor_id', $tailor_id]])->first();
+        if (!$order) {
+            return response()->json(['success' => true, 'message' => 'Invalid Order ID'], 200);
+        }
+
+        //dress_amounts
+        $total_dress_amount = Dress::where('order_id', $order_id)->sum('price');
+
+        //expense_amounts
+        $total_expense_amount = Expense::where('order_id', $order_id)->sum('amount');
+        $expense_summary = Expense::where('order_id', $order_id)->select('title', 'amount')->get();
+
+        //discount_amounts
+        $total_discount_amount = Discount::where('order_id', $order_id)->sum('amount');
+        $discount_summary = Discount::where('order_id', $order_id)->select('title', 'amount')->get();
+
+        //payment_amounts
+        $total_payment_amount = Payment::where('order_id', $order_id)->sum('amount');
+        $paymet_summary = Payment::where('order_id', $order_id)->select('title', 'method', 'amount')->get();
+
+        $order->update([
+            'total_dress_amount' => $total_dress_amount,
+            'total_expenses' => $total_expense_amount,
+            'total_discount' => $total_discount_amount,
+            'total_payment' => $total_payment_amount,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order Amount Summary',
+            'data' => [
+                'total_dress_amount' => $total_dress_amount,
+                'total_expense_amount' => $total_expense_amount,
+                'expense_summary' => $expense_summary,
+                'total_discount_amount' => $total_discount_amount,
+                'discount_summary' => $discount_summary,
+                'total_payment_amount' => $total_payment_amount,
+                'payment_summary' => $paymet_summary
+            ]
+        ], 200);
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -514,7 +625,7 @@ class OrderController extends Controller
         $tailor_id = auth('sanctum')->user()->id;
         $order = Order::where([['id', $order_id], ['tailor_id', $tailor_id]])->first();
         if (empty($order)) {
-            return response()->json(['success' => false, 'message' => 'Order Not Found'], 200);
+            return response()->json(['success' => true, 'message' => 'Order Not Found'], 200);
         } else {
             return response()->json(['success' => true, 'message' => 'Order Found', 'data' => ['Order' => $order]], 200);
         }

@@ -138,8 +138,8 @@ class DressController extends Controller
             'notes' => '',
             'measurementBoxes' => 'required|array',
             'questionAnswers' => 'required|array',
-            'designImages' => 'required|array',
-            'clothImages' => 'required|array',
+            'designImages' => 'nullable|array',
+            'clothImages' => 'nullable|array',
             'audio' => ''
         ];
         $validation = Validator::make($request->all(), $rules);
