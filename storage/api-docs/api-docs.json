@@ -1889,6 +1889,123 @@
                 ]
             }
         },
+        "/tailors/orders/{order_id}/summary": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get order amounts summary",
+                "description": "Retrieves a summary of total dress amount, expenses, discounts, and payments for a given order.",
+                "operationId": "c57f51e7a290e7f84a82a66f1405d881",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "description": "The ID of the order",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with order amount summary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order Amount Summary"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "total_dress_amount": {
+                                                    "type": "integer",
+                                                    "example": 5000
+                                                },
+                                                "total_expense_amount": {
+                                                    "type": "integer",
+                                                    "example": 1500
+                                                },
+                                                "expense_summary": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Fabric Purchase"
+                                                            },
+                                                            "amount": {
+                                                                "type": "integer",
+                                                                "example": 1000
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "total_discount_amount": {
+                                                    "type": "integer",
+                                                    "example": 500
+                                                },
+                                                "discount_summary": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Seasonal Discount"
+                                                            },
+                                                            "amount": {
+                                                                "type": "integer",
+                                                                "example": 200
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "total_payment_amount": {
+                                                    "type": "integer",
+                                                    "example": 4000
+                                                },
+                                                "payment_summary": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "paymentmethod": {
+                                                                "type": "string",
+                                                                "example": "Credit Card"
+                                                            },
+                                                            "amount": {
+                                                                "type": "integer",
+                                                                "example": 3000
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/parameters": {
             "get": {
                 "tags": [

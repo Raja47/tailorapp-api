@@ -148,6 +148,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/orders'], 
     $router->get('/count', [OrderController::class, 'countOrders']);
     $router->get('/{order_id}/customer', [OrderController::class, 'getCustomerByOrderid']);
     $router->post('/store', [OrderController::class, 'emptyOrder']);
+    $router->get('/{order_id}/summary', [OrderController::class, 'orderAmounts']);
 });
 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/measurements'], function ($router) {
