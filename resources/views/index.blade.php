@@ -220,8 +220,8 @@
               </div>
             </div>
             <div class="col-md-3">
-              <div class="team-detail wow bounce" data-wow-delay="0.7s"> <img src="images/ahmed.jpg" class="img-fluid"/>
-                <h4>Waris Waheed</h4>
+              <div class="team-detail wow bounce" data-wow-delay="0.7s"> <img src="images/ahmeds.jpg" class="img-fluid"/>
+                <h4>Ahmed Ansari</h4>
                 <p>Developer</p>
               </div>
             </div>
