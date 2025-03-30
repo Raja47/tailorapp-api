@@ -201,16 +201,28 @@
                 <p>Marketing Specialist</p>
               </div>
             </div> -->
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="team-detail wow bounce" data-wow-delay="0.4s"> <img src="images/user2.png" class="img-fluid"/>
                 <h4>Raja Ram</h4>
+                <p>CEO & Co-Founder</p>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="team-detail wow bounce" data-wow-delay="0.5s"> <img src="images/muteeba.jpg" class="img-fluid"/>
+                <h4>Muteeba Ahmed</h4>
                 <p>Co-Founder & Developer</p>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="team-detail wow bounce" data-wow-delay="0.6s"> <img src="images/user3.jpg" class="img-fluid"/>
                 <h4>Waris Waheed</h4>
-                <p>Co-Founder & Developer</p>
+                <p>Developer</p>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="team-detail wow bounce" data-wow-delay="0.7s"> <img src="images/ahmed.jpg" class="img-fluid"/>
+                <h4>Waris Waheed</h4>
+                <p>Developer</p>
               </div>
             </div>
           </div>
