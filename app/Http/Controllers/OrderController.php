@@ -623,12 +623,69 @@ class OrderController extends Controller
     public function show($order_id)
     {
         $tailor_id = auth('sanctum')->user()->id;
+
         $order = Order::where([['id', $order_id], ['tailor_id', $tailor_id]])->first();
-        if (empty($order)) {
-            return response()->json(['success' => true, 'message' => 'Order Not Found'], 200);
-        } else {
-            return response()->json(['success' => true, 'message' => 'Order Found', 'data' => ['Order' => $order]], 200);
+
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => 'Invalid Order ID'], 200);
         }
+
+        $order_dresses = DB::table('dresses')
+            ->select('dresses.*', 'tailor_categories.name AS catName', 'dress_images.path AS image')
+            ->leftjoin('tailor_categories', 'tailor_categories.id', '=', 'dresses.category_id')
+            ->leftjoin('dress_images', function ($join) {
+                $join->on('dress_images.dress_id', '=', 'dresses.id');
+                $join->where('dress_images.type', '=', 'design');
+            })
+            ->where('dresses.tailor_id', $tailor_id)->where('dresses.order_id', $order_id)->get()
+            ->map(function ($dress) {
+                $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
+                $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
+                return $dress;
+            });
+
+        if (count($order_dresses) === 0) {
+            return response()->json(['success' => false, 'message' => 'No Dresses Found'], 200);
+        }
+
+
+        $dress_total = Dress::where('order_id', $order_id)->sum('price');
+
+        //expense_amounts
+        $expense_total = Expense::where('order_id', $order_id)->sum('amount');
+        $expenses = Expense::where('order_id', $order_id)->select('title', 'amount')->get();
+
+        //discount_amounts
+        $discount_total = Discount::where('order_id', $order_id)->sum('amount');
+        $discounts = Discount::where('order_id', $order_id)->select('title', 'amount')->get();
+
+        //payment_amounts
+        $payment_total = Payment::where('order_id', $order_id)->sum('amount');
+        $payments = Payment::where('order_id', $order_id)->select('title', 'method', 'amount')->get();
+
+
+        $order->update([
+            'total_dress_amount' => $dress_total,
+            'total_expenses' => $expense_total,
+            'total_discount' => $discount_total,
+            'total_payment' => $payment_total,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order Found',
+            'data' => [
+                'order' => $order,
+                'dresses' => $order_dresses,
+                'dress_total' => $dress_total,
+                'expenses' => $expenses,
+                'expense_total' => $expense_total,
+                'discounts' => $discounts,
+                'discount_total' => $discount_total,
+                'payments' => $payments,
+                'payment_total' => $payment_total,
+            ]
+        ], 200);
     }
 
     public function countCustomerOrders(Request $request)
