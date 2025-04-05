@@ -570,15 +570,15 @@ class OrderController extends Controller
 
         //expense_amounts
         $total_expense_amount = Expense::where('order_id', $order_id)->sum('amount');
-        $expense_summary = Expense::where('order_id', $order_id)->select('title', 'amount')->get();
+        $expense_summary = Expense::where('order_id', $order_id)->select('id','title', 'amount')->get();
 
         //discount_amounts
         $total_discount_amount = Discount::where('order_id', $order_id)->sum('amount');
-        $discount_summary = Discount::where('order_id', $order_id)->select('title', 'amount')->get();
+        $discount_summary = Discount::where('order_id', $order_id)->select('id','title', 'amount')->get();
 
         //payment_amounts
         $total_payment_amount = Payment::where('order_id', $order_id)->sum('amount');
-        $paymet_summary = Payment::where('order_id', $order_id)->select('title', 'method', 'amount')->get();
+        $paymet_summary = Payment::where('order_id', $order_id)->select('id', 'title', 'method', 'amount')->get();
 
         $order->update([
             'total_dress_amount' => $total_dress_amount,
