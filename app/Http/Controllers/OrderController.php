@@ -614,11 +614,57 @@ class OrderController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+        /**
+     * @OA\Get(
+     *     path="/tailors/orders/{order_id}",
+     *     summary="Get Order Detals",
+     *     description="Retrieves a list of dresses associated with a specific order, based on the tailor's authentication.",
+     *     operationId="Order Details",
+     *     tags={"Orders"},
+     *     security={{ "bearerAuth": {} }},
+     *     @OA\Parameter(
+     *         name="order_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the order",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order Details retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Elegant Dress"),
+     *                 @OA\Property(property="category_id", type="integer", example=3),
+     *                 @OA\Property(property="catName", type="string", example="Party Wear"),
+     *                 @OA\Property(property="image", type="string", example="path/to/image.jpg"),
+     *                 @OA\Property(property="order_id", type="integer", example=5),
+     *                 @OA\Property(property="tailor_id", type="integer", example=2),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-03T12:00:00Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order not found.")
+     *         )
+     *     )
+     * )
      */
     public function show($order_id)
     {
@@ -663,7 +709,7 @@ class OrderController extends Controller
         $payment_total = Payment::where('order_id', $order_id)->sum('amount');
         $payments = Payment::where('order_id', $order_id)->select('title', 'method', 'amount')->get();
 
-
+        //@todo we dont need to update here the totals we should upate it while any transaction being added or deleted.
         $order->update([
             'total_dress_amount' => $dress_total,
             'total_expenses' => $expense_total,

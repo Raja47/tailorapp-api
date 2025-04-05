@@ -151,7 +151,9 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/orders'], 
     $router->get('/count', [OrderController::class, 'countOrders']);
     $router->get('/{order_id}/customer', [OrderController::class, 'getCustomerByOrderid']);
     $router->post('/store', [OrderController::class, 'emptyOrder']);
-    $router->get('/{order_id}/summary', [OrderController::class, 'orderAmounts']);
+    $router->get('/{order_id}/customer', [OrderController::class, 'getCustomerByOrderid']);
+    $router->get('/{order_id}', [OrderController::class, 'show']);
+
 });
 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/measurements'], function ($router) {
