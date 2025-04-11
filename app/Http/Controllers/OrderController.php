@@ -166,17 +166,22 @@ class OrderController extends Controller
     public function recentOrders(Request $request)
     {
         $tailor_id = auth('sanctum')->user()->id;
-        $page = $request->input('page');
-        $perpage = $request->input('perpage');
+        $page = $request->input('page',1);
+        $perpage = $request->input('perpage',10);
 
-        $orders = Order::where('tailor_id', $tailor_id)
-            ->where(function ($query) {
-                $query->where('status', 0)
-                    ->orwhere('status', 1);
-            })
-            ->forpage($page, $perpage)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = DB::table('orders')
+        ->select('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount','tailor_customers.name as customer_name', DB::raw('COUNT(dresses.id) as dress_count'))
+        ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
+        ->leftjoin('customers', 'orders.customer_id','=','tailor_customers.id')
+        ->where('orders.tailor_id', $tailor_id)
+        ->whereIn('orders.status', [0, 1])
+        ->groupBy('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount', 'tailor_customers.name');
+
+        $orders = $query
+        ->forpage($page, $perpage)
+        ->orderBy('orders.status', 'asc') 
+        ->orderBy('orders.updated_at', 'desc')
+        ->get();
 
         if (count($orders) === 0) {
             return response()->json(['success' => false, 'message' => 'No orders to show'], 404);
