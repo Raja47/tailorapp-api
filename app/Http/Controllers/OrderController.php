@@ -172,7 +172,7 @@ class OrderController extends Controller
         $query = DB::table('orders')
         ->select('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount','tailor_customers.name as customer_name', DB::raw('COUNT(dresses.id) as dress_count'))
         ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
-        ->leftjoin('customers', 'orders.customer_id','=','tailor_customers.id')
+        ->leftjoin('tailor_customers', 'orders.customer_id','=','tailor_customers.id')
         ->where('orders.tailor_id', $tailor_id)
         ->whereIn('orders.status', [0, 1])
         ->groupBy('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount', 'tailor_customers.name');
