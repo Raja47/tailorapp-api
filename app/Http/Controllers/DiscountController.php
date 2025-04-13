@@ -99,10 +99,11 @@ class DiscountController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"amount", "order_id"},
+     *             required={"amount", "order_id", "tailor_id"},
      *             @OA\Property(property="title", type="string", example="Holiday Discount"),
      *             @OA\Property(property="amount", type="number", example=500),
-     *             @OA\Property(property="order_id", type="integer", example=10)
+     *             @OA\Property(property="order_id", type="integer", example=1),
+     *             @OA\Property(property="tailor_id", type="integer", example=1)
      *         )
      *     ),
      *     @OA\Response(
@@ -142,6 +143,7 @@ class DiscountController extends Controller
             'title' => 'string',
             'amount' => 'required',
             'order_id' => 'required',
+            'tailor_id' => 'required',
         ];
 
         $validation = Validator::make($request->all(), $rules);
@@ -153,6 +155,7 @@ class DiscountController extends Controller
             'title' => $request->title,
             'amount' => $request->amount,
             'order_id' => $request->order_id,
+            'tailor_id' => $request->tailor_id,
         ]);
 
         if ($discount->save()) {

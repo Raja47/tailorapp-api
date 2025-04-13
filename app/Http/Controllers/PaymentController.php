@@ -89,12 +89,13 @@ class PaymentController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"amount", "date", "order_id", "customer_id"},
+     *             required={"amount", "date", "order_id", "tailor_id", "customer_id"},
      *             @OA\Property(property="title", type="string", example="Advance Payment"),
      *             @OA\Property(property="method", type="string", example="Bank Transfer"),
      *             @OA\Property(property="amount", type="number", format="float", example=5000),
      *             @OA\Property(property="date", type="string", format="date", example="2025-04-01"),
-     *             @OA\Property(property="order_id", type="integer", example=12),
+     *             @OA\Property(property="order_id", type="integer", example=1),
+     *             @OA\Property(property="tailor_id", type="integer", example=1),
      *             @OA\Property(property="customer_id", type="integer", example=3)
      *         )
      *     ),
@@ -136,6 +137,7 @@ class PaymentController extends Controller
             'amount' => 'required',
             'date' => 'required',
             'order_id' => 'required',
+            'tailor_id' => 'required',
             'customer_id' => 'required',
         ];
 
@@ -150,6 +152,7 @@ class PaymentController extends Controller
             'amount' => $request->amount,
             'date' => $request->date,
             'order_id' => $request->order_id,
+            'tailor_id' => $request->tailor_id,
             'customer_id' => $request->customer_id,
         ]);
 

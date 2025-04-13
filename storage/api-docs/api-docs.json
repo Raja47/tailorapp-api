@@ -116,7 +116,8 @@
                             "schema": {
                                 "required": [
                                     "amount",
-                                    "order_id"
+                                    "order_id",
+                                    "tailor_id"
                                 ],
                                 "properties": {
                                     "title": {
@@ -129,7 +130,11 @@
                                     },
                                     "order_id": {
                                         "type": "integer",
-                                        "example": 10
+                                        "example": 1
+                                    },
+                                    "tailor_id": {
+                                        "type": "integer",
+                                        "example": 1
                                     }
                                 },
                                 "type": "object"
@@ -1535,7 +1540,8 @@
                             "schema": {
                                 "required": [
                                     "amount",
-                                    "order_id"
+                                    "order_id",
+                                    "tailor_id"
                                 ],
                                 "properties": {
                                     "title": {
@@ -1547,6 +1553,10 @@
                                         "example": 500
                                     },
                                     "order_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "tailor_id": {
                                         "type": "integer",
                                         "example": 1
                                     },
@@ -2880,6 +2890,7 @@
                                     "amount",
                                     "date",
                                     "order_id",
+                                    "tailor_id",
                                     "customer_id"
                                 ],
                                 "properties": {
@@ -2903,7 +2914,11 @@
                                     },
                                     "order_id": {
                                         "type": "integer",
-                                        "example": 12
+                                        "example": 1
+                                    },
+                                    "tailor_id": {
+                                        "type": "integer",
+                                        "example": 1
                                     },
                                     "customer_id": {
                                         "type": "integer",
@@ -5216,55 +5231,5 @@
                 "scheme": "bearer"
             }
         }
-    },
-    "tags": [
-        {
-            "name": "Discounts",
-            "description": "Discounts"
-        },
-        {
-            "name": "Orders",
-            "description": "Orders"
-        },
-        {
-            "name": "Dresses",
-            "description": "Dresses"
-        },
-        {
-            "name": "Expenses",
-            "description": "Expenses"
-        },
-        {
-            "name": "Measurements",
-            "description": "Measurements"
-        },
-        {
-            "name": "Parameters",
-            "description": "Parameters"
-        },
-        {
-            "name": "Payments",
-            "description": "Payments"
-        },
-        {
-            "name": "Categories",
-            "description": "Categories"
-        },
-        {
-            "name": "Questions",
-            "description": "Questions"
-        },
-        {
-            "name": "Tailors",
-            "description": "Tailors"
-        },
-        {
-            "name": "TailorAuth",
-            "description": "TailorAuth"
-        },
-        {
-            "name": "Customers",
-            "description": "Customers"
-        }
-    ]
+    }
 }
