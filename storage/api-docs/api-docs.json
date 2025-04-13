@@ -4519,6 +4519,208 @@
                 ]
             }
         },
+        "/tailors/customers/{customer_id}/orders": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get orders for a specific customer by the authenticated tailor",
+                "description": "Returns a list of orders placed by the specified customer for the currently authenticated tailor",
+                "operationId": "getCustomerOrders",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "description": "ID of the customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Orders Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Orders Found"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "Order ID",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "customer_id": {
+                                                        "description": "Customer ID",
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "tailor_id": {
+                                                        "description": "Tailor ID",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "shop_id": {
+                                                        "description": "Shop ID",
+                                                        "type": "integer",
+                                                        "example": 3
+                                                    },
+                                                    "name": {
+                                                        "description": "Order name",
+                                                        "type": "string",
+                                                        "example": "Order-1"
+                                                    },
+                                                    "status": {
+                                                        "description": "Order status",
+                                                        "type": "integer",
+                                                        "example": 0
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Order creation date",
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-10-20T15:30:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Order update date",
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-10-21T10:20:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No Orders Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No Orders Found"
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "example": ""
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/customers/{customer_id}/payments": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get payments for a specific customer by the authenticated tailor",
+                "description": "Returns a list of payments made by the specified customer to the currently authenticated tailor",
+                "operationId": "getCustomerPayments",
+                "parameters": [
+                    {
+                        "name": "customer_id",
+                        "in": "path",
+                        "description": "ID of the customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Payments Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Payments Found"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No Payments Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No Payments Found"
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "example": ""
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/customers/{customer_id}": {
             "get": {
                 "tags": [
