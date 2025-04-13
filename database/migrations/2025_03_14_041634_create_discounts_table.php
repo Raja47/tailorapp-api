@@ -17,6 +17,7 @@ class CreateDiscountsTable extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->integer('amount');
+            $table->integer('tailor_id');
             $table->integer('order_id');
             $table->timestamps();
         });

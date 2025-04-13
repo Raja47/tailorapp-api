@@ -18,6 +18,7 @@ class CreateExpensesTable extends Migration
             $table->string('title')->nullable();
             $table->integer('amount');
             $table->integer('order_id');
+            $table->integer('tailor_id');
             $table->integer('dress_id')->nullable();
             $table->integer('cloth_id')->nullable();
             $table->timestamps();
