@@ -15,6 +15,7 @@ class Payment extends Model
         'amount',
         'date',
         'order_id',
+        'tailor_id',
         'customer_id'
     ];
 }

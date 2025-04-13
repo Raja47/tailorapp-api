@@ -12,6 +12,7 @@ class Discount extends Model
     protected $fillable = [
         'title',
         'amount',
-        'order_id'
+        'order_id',
+        'tailor_id'
     ];
 }

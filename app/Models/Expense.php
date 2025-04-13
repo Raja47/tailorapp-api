@@ -13,6 +13,7 @@ class Expense extends Model
         'title',
         'amount',
         'order_id',
+        'tailor_id',
         'dress_id',
         'cloth_id'
     ];
