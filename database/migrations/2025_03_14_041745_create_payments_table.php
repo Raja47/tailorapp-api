@@ -20,6 +20,7 @@ class CreatePaymentsTable extends Migration
             $table->integer('amount');
             $table->timestamp('date');
             $table->integer('order_id');
+            $table->integer('tailor_id');
             $table->integer('customer_id');
             $table->timestamps();
         });
