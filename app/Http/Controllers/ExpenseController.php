@@ -101,10 +101,11 @@ class ExpenseController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"amount", "order_id"},
+     *             required={"amount", "order_id", "tailor_id"},
      *             @OA\Property(property="title", type="string", example="Fabric Cost"),
      *             @OA\Property(property="amount", type="integer", example=500),
      *             @OA\Property(property="order_id", type="integer", example=1),
+     *             @OA\Property(property="tailor_id", type="integer", example=1),
      *             @OA\Property(property="dress_id", type="integer", nullable=true, example=null),
      *             @OA\Property(property="cloth_id", type="integer", nullable=true, example=null)
      *         )
@@ -149,6 +150,7 @@ class ExpenseController extends Controller
             'title' => 'string',
             'amount' => 'required',
             'order_id' => 'required',
+            'tailor_id' => 'required',
             'dress_id' => '',
             'cloth_id' => ''
         ];
@@ -162,6 +164,7 @@ class ExpenseController extends Controller
             'title' => $request->title,
             'amount' => $request->amount,
             'order_id' => $request->order_id,
+            'tailor_id' => $request->tailor_id,
             'dress_id' => $request->dress_id,
             'cloth_id' => $request->cloth_id,
         ]);
