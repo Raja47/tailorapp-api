@@ -116,8 +116,7 @@
                             "schema": {
                                 "required": [
                                     "amount",
-                                    "order_id",
-                                    "tailor_id"
+                                    "order_id"
                                 ],
                                 "properties": {
                                     "title": {
@@ -129,10 +128,6 @@
                                         "example": 500
                                     },
                                     "order_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "tailor_id": {
                                         "type": "integer",
                                         "example": 1
                                     }
@@ -1540,8 +1535,7 @@
                             "schema": {
                                 "required": [
                                     "amount",
-                                    "order_id",
-                                    "tailor_id"
+                                    "order_id"
                                 ],
                                 "properties": {
                                     "title": {
@@ -1553,10 +1547,6 @@
                                         "example": 500
                                     },
                                     "order_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "tailor_id": {
                                         "type": "integer",
                                         "example": 1
                                     },
@@ -2890,7 +2880,6 @@
                                     "amount",
                                     "date",
                                     "order_id",
-                                    "tailor_id",
                                     "customer_id"
                                 ],
                                 "properties": {
@@ -2913,10 +2902,6 @@
                                         "example": "2025-04-01"
                                     },
                                     "order_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "tailor_id": {
                                         "type": "integer",
                                         "example": 1
                                     },
