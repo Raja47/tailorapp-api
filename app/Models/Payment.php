@@ -18,4 +18,9 @@ class Payment extends Model
         'tailor_id',
         'customer_id'
     ];
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d\TH:i:s.v\Z',
+        'updated_at' => 'datetime:Y-m-d\TH:i:s.v\Z',
+    ];
 }

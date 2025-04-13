@@ -77,10 +77,11 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/customers'
     $router->get('/', [TailorCustomerController::class, 'index']);
     $router->get('/search', [TailorCustomerController::class, 'search']);
     $router->get('/{customer_id}', [TailorCustomerController::class, 'getCustomerById']);
+    $router->get('/{customer_id}/orders', [TailorCustomerController::class, 'orders']);
+    $router->get('/{customer_id}/payments', [TailorCustomerController::class, 'payments']);
     $router->post('/store', [TailorCustomerController::class, 'store']);
     $router->post('/update', [TailorCustomerController::class, 'update']);
     $router->post('/destroy', [TailorCustomerController::class, 'destroy']);
-    
     $router->get('/count', [TailorCustomerController::class, 'countCustomers']);
     $router->post('/number', [TailorCustomerController::class, 'getCustomer']);
 });
