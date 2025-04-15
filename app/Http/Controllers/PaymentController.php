@@ -87,7 +87,7 @@ class PaymentController extends Controller
         $perpage = $request->input('perpage');
         $today = Carbon::today();
 
-        $query = DB::table('payments')->select('payments.id', 'orders.name AS orderName', 'customers.name AS customerName', 'payments.amount', 'payments.method')
+        $query = DB::table('payments')->select('payments.id', 'orders.name AS orderName', 'customers.name AS customerName', 'payments.amount', 'payments.method', 'payments.created_at')
             ->leftjoin('orders', 'orders.id', 'payments.order_id')
             ->leftjoin('customers', 'customers.id', 'payments.customer_id');
 
@@ -146,7 +146,11 @@ class PaymentController extends Controller
         $tailor_payments = $query->where('payments.tailor_id', $tailor_id)
             ->orderBy('payments.created_at', 'desc')
             ->forpage($page, $perpage)
-            ->get();
+            ->get()
+            ->map(function ($payment) {
+                $payment->created_at = Carbon::parse($payment->created_at)->toIso8601ZuluString();
+                return $payment;
+            });;
 
         if (count($tailor_payments) === 0) {
             return response()->json(['success' => false, 'message' => 'No Payments Found'], 200);
