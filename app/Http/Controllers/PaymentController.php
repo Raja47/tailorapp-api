@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -14,6 +16,145 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    /**
+     * @OA\Get(
+     *     path="/tailors/payments/",
+     *     summary="Get all payments for a tailor",
+     *     description="Retrieves all payments associated with the authenticated tailor.",
+     *     tags={"Payments"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="timeFilter",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="string", enum={"all","today", "yesterday", "thisweek", "lastweek", "thismonth", "lastmonth", "thisyear", "lastyear"}),
+     *         description="The time to filter orders"
+     *     ),
+     *     @OA\Parameter(
+     *         name="searchText",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="string"),
+     *         description="Text to search orders",
+     *         example="cash"
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The page number for pagination",
+     *         example=1
+     *     ),
+     *     @OA\Parameter(
+     *         name="perpage",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="Number of orders to retrieve per page",
+     *         example=10
+     *     ), 
+     *     @OA\Response(
+     *         response=200,
+     *         description="Tailor payments retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Tailor Payments Found"),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
+     */
+    public function index(Request $request)
+    {
+        $rules = [
+            'timeFilter' => 'required',
+            'page' => 'required',
+            'perpage' => 'required',
+            'searchText' => 'nullable'
+        ];
+
+        $validation = Validator::make($request->all(), $rules);
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Payments data validation error', 'data' => $validation->errors()], 422);
+        }
+
+        $tailor_id = auth('sanctum')->user()->id;
+        $timeFilter = $request->input('timeFilter');
+        $searchText = $request->input('searchText');
+        $page = $request->input('page');
+        $perpage = $request->input('perpage');
+        $today = Carbon::today();
+
+        $query = DB::table('payments')->select('payments.id', 'orders.name AS orderName', 'customers.name AS customerName', 'payments.amount', 'payments.method')
+            ->leftjoin('orders', 'orders.id', 'payments.order_id')
+            ->leftjoin('customers', 'customers.id', 'payments.customer_id');
+
+        switch ($timeFilter) {
+            case 'all':
+                break;
+
+            case 'today':
+                $query->whereDate('payments.created_at', $today);
+                break;
+
+            case 'yesterday':
+                $query->where('payments.created_at', Carbon::now()->subDays(1));
+                break;
+
+            case 'thisweek':
+                $startOfWeek = Carbon::now()->startOfWeek();
+                $endOfWeek = Carbon::now()->endOfWeek();
+                $query->whereBetween('payments.created_at', [$startOfWeek, $endOfWeek]);
+                break;
+
+            case 'lastweek':
+                $last_week_start = Carbon::now()->startOfWeek()->subDays(7);
+                $last_week_end = Carbon::now()->endOfWeek()->subDays(7);
+                $query->whereDate('payments.created_at', '>=', $last_week_start)->whereDate('payments.created_at', '<=', $last_week_end);
+                break;
+
+            case 'thismonth':
+                $query->whereMonth('payments.created_at', $today->month)->whereYear('payments.created_at', $today->year);
+                break;
+
+            case 'lastmonth':
+                $last_month = Carbon::today()->subMonth();
+                $query->whereMonth('payments.created_at', $last_month->month)->whereYear('payments.created_at', $last_month->year);
+                break;
+
+            case 'thisyear':
+                $query->whereYear('payments.created_at', $today->year);
+                break;
+
+            case 'lastyear':
+                $last_year = Carbon::today()->subYear();
+                $query->whereYear('payments.created_at', $last_year->year);
+                break;
+
+            default:
+                return response()->json(['success' => false, 'message' => 'Invalid time filter'], 500);
+        }
+
+        if ($request->filled('searchText')) {
+            $query->where('customers.name', 'like', '%' . $searchText . '%')
+                ->orWhere('payments.method', 'like', '%' . $searchText . '%')
+                ->orWhere('orders.name', 'like', '%' . $searchText . '%');
+        }
+
+        $tailor_payments = $query->where('payments.tailor_id', $tailor_id)
+            ->orderBy('payments.created_at', 'desc')
+            ->forpage($page, $perpage)
+            ->get();
+
+        if (count($tailor_payments) === 0) {
+            return response()->json(['success' => false, 'message' => 'No Payments Found'], 200);
+        } else {
+            return response()->json(['success' => true, 'message' => 'Tailor Payments Found', 'data' => [$tailor_payments]], 200);
+        }
+    }
+
 
     /**
      * @OA\Get(
@@ -35,12 +176,12 @@ class PaymentController extends Controller
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Order Payments"),
+     *             @OA\Property(property="message", type="string", example="Order Payments Found"),
      *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
      *         )
      *     ),
      *     @OA\Response(
-     *         response=404,
+     *         response=500,
      *         description="Invalid Order ID",
      *         @OA\JsonContent(
      *             type="object",
@@ -50,16 +191,20 @@ class PaymentController extends Controller
      *     )
      * )
      */
-
-    public function index($order_id)
+    public function orderPayments($order_id)
     {
         $tailor_id = auth('sanctum')->user()->id;
         $order = Order::where([['id', $order_id], ['tailor_id', $tailor_id]])->first();
         if (!$order) {
-            return response()->json(['success' => true, 'message' => 'Invalid Order ID'], 200);
+            return response()->json(['success' => true, 'message' => 'Invalid Order ID'], 500);
         }
-        $payments = Payment::where('order_id', $order_id)->get();
-        return response()->json(['success' => true, 'message' => 'Order Payments', 'data' => [$payments]], 200);
+
+        $order_payments = Payment::where('order_id', $order_id)->get();
+        if (count($order_payments) === 0) {
+            return response()->json(['success' => false, 'message' => 'No Payments Found'], 200);
+        } else {
+            return response()->json(['success' => true, 'message' => 'Order Payments Found', 'data' => [$order_payments]], 200);
+        }
     }
 
     /**

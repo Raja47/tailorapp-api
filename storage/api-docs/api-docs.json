@@ -2788,6 +2788,101 @@
                 ]
             }
         },
+        "/tailors/payments/": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Get all payments for a tailor",
+                "description": "Retrieves all payments associated with the authenticated tailor.",
+                "operationId": "91a6406540611f1ee6ee8b38057f3586",
+                "parameters": [
+                    {
+                        "name": "timeFilter",
+                        "in": "query",
+                        "description": "The time to filter orders",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "all",
+                                "today",
+                                "yesterday",
+                                "thisweek",
+                                "lastweek",
+                                "thismonth",
+                                "lastmonth",
+                                "thisyear",
+                                "lastyear"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "searchText",
+                        "in": "query",
+                        "description": "Text to search orders",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cash"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number for pagination",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "perpage",
+                        "in": "query",
+                        "description": "Number of orders to retrieve per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tailor payments retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tailor Payments Found"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/payments/orders/{order_id}": {
             "get": {
                 "tags": [
@@ -2795,7 +2890,7 @@
                 ],
                 "summary": "Get payments for an order",
                 "description": "Retrieves all payments associated with a specific order for the authenticated tailor.",
-                "operationId": "8dbfda22b1445fb7e1821d8431d75792",
+                "operationId": "d0961ee79f3814ee4cdacdf7633c2144",
                 "parameters": [
                     {
                         "name": "order_id",
@@ -2821,7 +2916,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Order Payments"
+                                            "example": "Order Payments Found"
                                         },
                                         "data": {
                                             "type": "array",
@@ -2835,7 +2930,7 @@
                             }
                         }
                     },
-                    "404": {
+                    "500": {
                         "description": "Invalid Order ID",
                         "content": {
                             "application/json": {
