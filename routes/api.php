@@ -175,7 +175,8 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/discounts'
 });
 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/payments'], function ($router) {
-    $router->get('/orders/{order_id}', [PaymentController::class, 'index']);
+    $router->get('/', [PaymentController::class, 'index']);
+    $router->get('/orders/{order_id}', [PaymentController::class, 'orderPayments']);
     $router->post('/orders', [PaymentController::class, 'store']);
     $router->post('/{payment_id}/destroy', [PaymentController::class, 'destroy']);
 });
