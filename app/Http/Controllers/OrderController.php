@@ -700,18 +700,18 @@ class OrderController extends Controller
         }
 
 
-        $dress_total = Dress::where('order_id', $order_id)->sum('price');
+        $dress_total = (Float) Dress::where('order_id', $order_id)->sum('price');
 
         //expense_amounts
-        $expense_total = Expense::where('order_id', $order_id)->sum('amount');
+        $expense_total = (Float) Expense::where('order_id', $order_id)->sum('amount');
         $expenses = Expense::where('order_id', $order_id)->select('title', 'amount')->get();
 
         //discount_amounts
-        $discount_total = Discount::where('order_id', $order_id)->sum('amount');
+        $discount_total = (Float) Discount::where('order_id', $order_id)->sum('amount');
         $discounts = Discount::where('order_id', $order_id)->select('title', 'amount')->get();
 
         //payment_amounts
-        $payment_total = Payment::where('order_id', $order_id)->sum('amount');
+        $payment_total = (Float) Payment::where('order_id', $order_id)->sum('amount');
         $payments = Payment::where('order_id', $order_id)->select('title', 'method', 'amount')->get();
 
         //@todo we dont need to update here the totals we should upate it while any transaction being added or deleted.
