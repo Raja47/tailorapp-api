@@ -89,7 +89,8 @@ class PaymentController extends Controller
 
         $query = DB::table('payments')->select('payments.id', 'orders.name AS orderName', 'customers.name AS customerName', 'payments.amount', 'payments.method', 'payments.created_at')
             ->leftjoin('orders', 'orders.id', 'payments.order_id')
-            ->leftjoin('customers', 'customers.id', 'payments.customer_id');
+            ->leftjoin('customers', 'customers.id', 'payments.customer_id')
+            ->where('payments.tailor_id', $tailor_id);
 
         switch ($timeFilter) {
             case 'all':
@@ -143,8 +144,9 @@ class PaymentController extends Controller
                 ->orWhere('orders.name', 'like', '%' . $searchText . '%');
         }
 
-        $tailor_payments = $query->where('payments.tailor_id', $tailor_id)
-            ->orderBy('payments.created_at', 'desc')
+        $totalAmount = (Float) (clone $query)->sum('payments.amount');
+
+        $tailor_payments = $query->orderBy('payments.created_at', 'desc')
             ->forpage($page, $perpage)
             ->get()
             ->map(function ($payment) {
@@ -155,7 +157,7 @@ class PaymentController extends Controller
         if (count($tailor_payments) === 0) {
             return response()->json(['success' => false, 'message' => 'No Payments Found'], 200);
         } else {
-            return response()->json(['success' => true, 'message' => 'Tailor Payments Found', 'data' => [$tailor_payments]], 200);
+            return response()->json(['success' => true, 'message' => 'Tailor Payments Found', 'data' => [$totalAmount, $tailor_payments]], 200);
         }
     }
 
@@ -207,7 +209,7 @@ class PaymentController extends Controller
         if (count($order_payments) === 0) {
             return response()->json(['success' => false, 'message' => 'No Payments Found'], 200);
         } else {
-            return response()->json(['success' => true, 'message' => 'Order Payments Found', 'data' => [$order_payments]], 200);
+            return response()->json(['success' => true, 'message' => 'Order Payments Found', 'data' => $order_payments], 200);
         }
     }
 
