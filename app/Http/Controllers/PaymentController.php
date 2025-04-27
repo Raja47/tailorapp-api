@@ -155,9 +155,9 @@ class PaymentController extends Controller
             });;
 
         if (count($tailor_payments) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Payments Found'], 200);
+            return response()->json(['success' => false, 'message' => 'No Payments Found', 'data' => []], 200);
         } else {
-            return response()->json(['success' => true, 'message' => 'Tailor Payments Found', 'data' => [$totalAmount, $tailor_payments]], 200);
+            return response()->json(['success' => true, 'message' => 'Tailor Payments Found', 'total' => $totalAmount, 'data' => $tailor_payments], 200);
         }
     }
 
