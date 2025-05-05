@@ -181,7 +181,11 @@ class OrderController extends Controller
         ->forpage($page, $perpage)
         ->orderBy('orders.status', 'asc') 
         ->orderBy('orders.updated_at', 'desc')
-        ->get();
+        ->get()
+        ->transform(function ($order) {
+            $order->created_at = Carbon::parse($order->created_at)->toIso8601ZuluString();
+            return $order;
+        });
 
         if (count($orders) === 0) {
             return response()->json(['success' => false, 'message' => 'No orders to show'], 404);
