@@ -229,11 +229,13 @@ class DressController extends Controller
                 ]);
             }
 
-            Recording::create([
-                'dress_id' => $dress->id,
-                'duration' => 0,
-                'path' => $request->audio
-            ]);
+            if (!empty($request->audio)) {
+                Recording::create([
+                    'dress_id' => $dress->id,
+                    'duration' => 0,
+                    'path' => $request->audio
+                ]);
+            }
 
             DB::commit();
             return response()->json([
