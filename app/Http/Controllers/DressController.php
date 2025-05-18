@@ -212,21 +212,26 @@ class DressController extends Controller
             }
 
             foreach ($request->clothImages as $clothImage) {
-                $dress_image = DressImage::create([
-                    'tailor_id' => $tailor_id,
-                    'dress_id' => $dress->id,
-                    'order_id' => $order_id,
-                    'type' => 'cloth',
-                    'path' => $clothImage['path']
-                ]);
+                
+                if (isset($clothImage['path']) && !empty($clothImage['path'])) {
+                    $dress_image = DressImage::create([
+                        'tailor_id' => $tailor_id,
+                        'dress_id' => $dress->id,
+                        'order_id' => $order_id,
+                        'type' => 'cloth',
+                        'path' => $clothImage['path']
+                    ]);   
+                }    
+                 
                 Cloth::create([
                     'title' => $clothImage['title'],
-                    'dress_image_id' => $dress_image->id,
+                    'dress_image_id' => $dress_image?->id,
                     'length' => $clothImage['length'],
                     'provided_by' => $clothImage['provided_by'],
                     'price' => $clothImage['price']
-
                 ]);
+                    
+                
             }
 
             if (!empty($request->audio)) {
