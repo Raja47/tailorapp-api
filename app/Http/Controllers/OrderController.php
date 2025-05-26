@@ -432,57 +432,57 @@ class OrderController extends Controller
         switch ($timeFilter) {
             case 'all':
                 if ($request->filled('statusFilter')) {
-                    $query->where('status', $statusFilter);
+                    $query->where('orders.status', $statusFilter);
                 }
                 break;
 
             case 'today':
                 if ($request->filled('statusFilter')) {
-                    $query->where('status', $statusFilter)->whereDate('created_at', $today);
+                    $query->where('orders.status', $statusFilter)->whereDate('orders.created_at', $today);
                 } else {
-                    $query->whereDate('created_at', $today);
+                    $query->whereDate('orders.created_at', $today);
                 }
                 break;
 
             case 'last15days':
                 if ($request->filled('statusFilter')) {
-                    $query->where('status', $statusFilter)->where('created_at', '>=', Carbon::now()->subDays(15));
+                    $query->where('orders.status', $statusFilter)->where('created_at', '>=', Carbon::now()->subDays(15));
                 } else {
-                    $query->where('created_at', '>=', Carbon::now()->subDays(15));
+                    $query->where('orders.created_at', '>=', Carbon::now()->subDays(15));
                 }
                 break;
 
             case 'thismonth':
                 if ($request->filled('statusFilter')) {
-                    $query->where('status', $statusFilter)->whereMonth('created_at', $today->month)->whereYear('created_at', $today->year);
+                    $query->where('orders.status', $statusFilter)->whereMonth('orders.created_at', $today->month)->whereYear('orders.created_at', $today->year);
                 } else {
-                    $query->whereMonth('created_at', $today->month)->whereYear('created_at', $today->year);
+                    $query->whereMonth('orders.created_at', $today->month)->whereYear('orders.created_at', $today->year);
                 }
                 break;
 
             case 'lastmonth':
                 $last_month = Carbon::today()->subMonth();
                 if ($request->filled('statusFilter')) {
-                    $query->where('status', $statusFilter)->whereMonth('created_at', $last_month->month)->whereYear('created_at', $last_month->year);
+                    $query->where('orders.status', $statusFilter)->whereMonth('orders.created_at', $last_month->month)->whereYear('created_at', $last_month->year);
                 } else {
-                    $query->whereMonth('created_at', $last_month->month)->whereYear('created_at', $last_month->year);
+                    $query->whereMonth('orders.created_at', $last_month->month)->whereYear('orders.created_at', $last_month->year);
                 }
                 break;
 
             case 'thisyear':
                 if ($request->filled('statusFilter')) {
-                    $query->where('status', $statusFilter)->whereYear('created_at', $today->year);
+                    $query->where('orders.status', $statusFilter)->whereYear('orders.created_at', $today->year);
                 } else {
-                    $query->whereYear('created_at', $today->year);
+                    $query->whereYear('orders.created_at', $today->year);
                 }
                 break;
 
             case 'lastyear':
                 $last_year = Carbon::today()->subYear();
                 if ($request->filled('statusFilter')) {
-                    $query->where('status', $statusFilter)->whereYear('created_at', $last_year->year);
+                    $query->where('orders.status', $statusFilter)->whereYear('orders.created_at', $last_year->year);
                 } else {
-                    $query->whereYear('created_at', $last_year->year);
+                    $query->whereYear('orders.created_at', $last_year->year);
                 }
                 break;
 
