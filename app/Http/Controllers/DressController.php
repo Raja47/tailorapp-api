@@ -190,16 +190,19 @@ class DressController extends Controller
                 MeasurementValue::newMeasurementValue($measurementBox);
             }
 
+            $answersToInsert = [];
             foreach ($request->questionAnswers as $questionAnswer) {
-                foreach ($questionAnswer['value'] as $value) {
-                    TailorCategoryAnswer::create([
+                foreach ((array) $questionAnswer['value'] as $value) {
+                    $answersToInsert[] = [
                         'tailor_id' => $tailor_id,
                         'dress_id' => $dress->id,
                         'question_id' => $questionAnswer['question_id'],
                         'value' => $value,
-                    ]);
+                    ];
                 }
             }
+            // Insert all answers in one go
+            TailorCategoryAnswer::insert($answersToInsert);
 
             foreach ($request->designImages as $designImage) {
                 DressImage::create([
