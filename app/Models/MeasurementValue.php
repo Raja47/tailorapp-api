@@ -18,7 +18,9 @@ class MeasurementValue extends Model
     ];
 
 
-    protected array $frontendMap = [
+    private function  frontendMap () : array {
+
+        return [
         'id' => 'id',
         'tcp_id' => 'tcp_id',
         'path' =>  fn() => $this->paramater ? $this->parameter->image : null,
@@ -27,11 +29,12 @@ class MeasurementValue extends Model
         'label' => fn() => $this->tailorCatParameter ? $this->tailorCatParameter->label : null,
         'part'  => fn() => $this->tailorCatParameter ? $this->tailorCatParameter->part : null,
         'value' => 'value',
-    ];
+        ];
+    }    
 
     public function toFrontend(): array
     {
-        return $this->mapAttributes($this->frontendMap);
+        return $this->mapAttributes($this->frontendMap());
     }
 
     public static function newMeasurementValue(array $data)
