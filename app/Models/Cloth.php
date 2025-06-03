@@ -18,7 +18,7 @@ class Cloth extends Model
     ];
 
 
-    protected array $frontendMap = [
+    protected $frontendMap = [
         'path' => fn($cloth) => $cloth->image ? $cloth->image->path : null,
         'emailAddress' => 'email',
         'isVerified' => fn($user) => (bool) $user->email_verified_at,
