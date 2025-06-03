@@ -18,17 +18,21 @@ class Cloth extends Model
     ];
 
 
-    protected $frontendMap = [
-        'path' => fn($cloth) => $cloth->image ? $cloth->image->path : null,
-        'title' => 'title',
-        'length' => 'length',
-        'provided_by' => 'provided_by',
-        'price' => 'price',
-    ];
+    public function frontendMap(): array
+    {
+        return  [
+            'dress_image_id' => fn($cloth) => $cloth->image ? $cloth->image->path : null,
+            'title' => 'title',
+            'length' => 'length',
+            'provided_by' => 'provided_by',
+            'price' => 'price',
+        ];
+    }
 
+    
     public function toFrontend(): array
     {
-        return $this->mapAttributes($this->frontendMap);
+        return $this->mapAttributes($this->frontendMap());
     }
 
 
