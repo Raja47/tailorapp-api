@@ -145,7 +145,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/dresses'],
     $router->get('/orders/{order_id}', [DressController::class, 'getOrderDresses']);
     $router->post('/updatestatus', [DressController::class, 'updateStatus']);
 
-    $router->prefix('dresses/{id}')->group(function ($router) {
+    $router->prefix('/{id}')->group(function ($router) {
     // Basic Info
         $router->get('/', [DressController::class, 'show']);
         $router->get('measurement', [DressController::class, 'measurement']);
