@@ -20,8 +20,10 @@ class Cloth extends Model
 
     protected $frontendMap = [
         'path' => fn($cloth) => $cloth->image ? $cloth->image->path : null,
-        'emailAddress' => 'email',
-        'isVerified' => fn($user) => (bool) $user->email_verified_at,
+        'title' => 'title',
+        'length' => 'length',
+        'provided_by' => 'provided_by',
+        'price' => 'price',
     ];
 
     public function toFrontend(): array
