@@ -144,7 +144,33 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/dresses'],
     $router->get('/{dress_id}/delete', [DressController::class, 'delete']);
     $router->get('/orders/{order_id}', [DressController::class, 'getOrderDresses']);
     $router->post('/updatestatus', [DressController::class, 'updateStatus']);
+
+    $router->prefix('dresses/{id}')->group(function ($router) {
+    // Basic Info
+        $router->get('/', [DressController::class, 'show']);
+        $router->get('measurement', [DressController::class, 'measurement']);
+        $router->put('measurement', [DressController::class, 'updateMeasurement']);
+
+        // Images
+        $router->get('images', [DressController::class, 'images']);
+        $router->delete('images/{image_id}', [DressController::class, 'deleteImage']);
+
+        // Clothes
+        $router->get('clothes', [DressController::class, 'getClothes']);
+        $router->post('clothes', [DressController::class, 'createCloth']);
+        $router->delete('clothes/{cid}', [DressController::class, 'updateCloth']);
+
+        // Basic Details
+        $router->get('basic-details', [DressController::class, 'getBasicDetails']);
+        $router->put('basic-details', [DressController::class, 'updateBasicDetails']);
+        
+        // Inventory (optional example)
+        $router->get('instructions', [DressController::class, 'instructions']);
+        $router->put('instructions', [DressController::class, 'updateInstructions']);
+        
+    });
 });
+
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/orders'], function ($router) {
     $router->get('/tab', [OrderController::class, 'getTabOrders']);
     $router->get('/recent', [OrderController::class, 'recentOrders']);
@@ -154,7 +180,6 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/orders'], 
     $router->post('/store', [OrderController::class, 'emptyOrder']);
     $router->get('/{order_id}/customer', [OrderController::class, 'getCustomerByOrderid']);
     $router->get('/{order_id}', [OrderController::class, 'show']);
-
 });
 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/measurements'], function ($router) {

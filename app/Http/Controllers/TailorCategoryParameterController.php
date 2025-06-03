@@ -57,13 +57,12 @@ class TailorCategoryParameterController extends Controller
     public function index($category_id)
     {
         $tailor_id = auth('sanctum')->user()->id;
-        $parameters = TalCatParameter::where([['category_id', $category_id], ['tailor_id', $tailor_id]])->get();
+        $parameters = TalCatParameter::with('parameter')->where([['category_id', $category_id], ['tailor_id', $tailor_id]])->get();
         if (count($parameters) === 0) {
-            return response()->json(['category_id' => $category_id, 'parameters' => 'Not Found']);
+            return response()->json(['category_id' => $category_id,'message' => "Paramater Not Found" , 'parameters' => []]);
         } else {
             foreach ($parameters as $parameter) {
-                $image = Parameter::where('id', $parameter->parameter_id)->value('image');
-                $parameter->image = $image;
+                $parameter->image = $parameter->parameter?->image;
             }
             return response()->json(['category_id' => $category_id, 'parameters' => $parameters]);
         }

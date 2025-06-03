@@ -28,7 +28,7 @@ class DressController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"customer_id", "shop_id", "category_id", "type", "quantity", "price", "delivery_date", "trial_date", "measurementBoxes", "questionAnswers"},
+     *             required={"customer_id", "shop_id", "category_id", "type", "quantity", "price", "delivery_date", "trial_date", "measurement_value", "questionAnswers"},
      *             @OA\Property(property="customer_id", type="integer", description="Customer ID"),
      *             @OA\Property(property="shop_id", type="integer", description="Shop ID"),
      *             @OA\Property(property="category_id", type="integer", description="Category ID"),
@@ -39,7 +39,7 @@ class DressController extends Controller
      *             @OA\Property(property="trial_date", type="string", format="date", description="Trial date"),
      *             @OA\Property(property="notes", type="string", nullable=true, description="Additional notes"),
      *             @OA\Property(
-     *                 property="measurementBoxes",
+     *                 property="measurement_values",
      *                 type="array",
      *                 @OA\Items(
      *                     type="object",
@@ -136,7 +136,7 @@ class DressController extends Controller
             'delivery_date' => 'required|date',
             'trial_date' => 'required|date',
             'notes' => '',
-            'measurementBoxes' => 'required|array',
+            'measurement_values' => 'required|array',
             'questionAnswers' => 'required|array',
             'designImages' => 'nullable|array',
             'clothImages' => 'nullable|array',
@@ -185,9 +185,10 @@ class DressController extends Controller
                 'model_id' => $dress->id,
                 'status' => 1,
             ]);
-            foreach ($request->measurementBoxes as $measurementBox) {
-                $measurementBox['measurement_id'] = $measurement->id;
-                MeasurementValue::newMeasurementValue($measurementBox);
+
+            foreach ($request->measurement_values as $measurement_value) {
+                $measurement_value['measurement_id'] = $measurement->id;
+                MeasurementValue::newMeasurementValue($measurement_value);
             }
 
             $answersToInsert = [];
@@ -1022,5 +1023,256 @@ class DressController extends Controller
                 return response()->json(['success' => false, 'message' => 'Dress Status could bot be updated'], 500);
             }
         }
+    }
+
+
+    // Show full dress
+    public function show($id)
+    {
+        return Dress::with(['measurement','clothes', 'images'])->findOrFail($id);
+    }
+
+    // Measurement
+    public function measurement($id)
+    {   
+        $dress = Dress::with("measurement")->findOrFail($id);
+
+        $measurementId = $dress->measurement?->id;
+        
+        if (!$measurementId) {
+            return response()->json(['message' => 'No measurement found for this dress'], 404);
+        }
+        
+        $values = MeasurementValue::with(['parameter', 'tailorCatParameter'])->where('measurement_id', $measurementId)->get();
+
+        
+        foreach ($values as $param => $value) {
+           $values[$param] = $value->toFrontend();
+        }
+        
+        return response()->json(['measurement_values' => $values , 'type' => $dress->type ], 200);   
+    }
+
+
+
+    public function updateMeasurement(Request $request, $id)
+    {
+        $dress = Dress::findOrFail($id);
+
+        $measurementId = $dress->measurement?->id;
+
+        if ($request->has('type')) {
+            $dress->type = $request->input('type');
+            $dress->save();
+        }
+
+        if ($request->has('measurement_values')) {
+            $measurementValues = $request->input('measurement_values');
+            if ($measurementId) {
+                // Update existing measurement values
+                foreach ($measurementValues as $value) {
+                    $measurementValue = MeasurementValue::where('measurement_id', $measurementId)
+                        ->where('tcp_id', $value['tcp_id'])
+                        ->first();
+
+                    if ($measurementValue) {
+                        $measurementValue->value = $value['value'];
+                        $measurementValue->save();
+                    } else {
+                        // Create new measurement value if it doesn't exist
+                        MeasurementValue::create([
+                            'tcp_id' => $value['tcp_id'],
+                            'measurement_id' => $measurementId,
+                            'parameter_id' => $value['parameter_id'],
+                            'value' => $value['value']
+                        ]);
+                    }
+                }
+            } else {
+                // Create new measurement and values
+                $newMeasurement = Measurement::create(['dress_id' => $id]);
+                foreach ($measurementValues as $value) {
+                    MeasurementValue::create([
+                        'measurement_id' => $newMeasurement->id,
+                        'parameter_id' => $value['parameter_id'],
+                        'value' => $value['value']
+                    ]);
+                }
+            }
+        }
+
+        return response()->json(['message' => 'Measurement updated', 'dress_id' => $id], 200);
+    }
+
+    // Images
+    public function images($id)
+    {
+        $dress = Dress::findOrFail($id);
+        return response()->json(['images' => $dress->images]); // assumes relation images()
+    }
+
+    public function deleteImage($id = null, $image_id)
+    {
+        $image = DressImage::where('dress_id', $id)->findOrFail($image_id);
+        $image->delete();
+
+        return response()->json(['message' => 'Image deleted'] , 200);
+    }
+
+    // Clothes
+    public function getClothes($id)
+    {
+        $clothes = Cloth::with('image')->where('dress_id', $id)->get();
+        $clothes = $clothes->map(function ($cloth) {
+            return $cloth->toFrontend();
+        });
+        return response()->json(['clothes' => $clothes], 200);
+
+    }
+
+    public function createCloth(Request $request, $id)
+    {
+        $dress =Dress::findOrFail($id);
+        $tailor_id = auth('sanctum')->user()->id;
+    
+        $rules = [
+            'title' => 'nullable|string|max:255',
+            'length' => 'nullable|numeric',
+            'provided_by' => 'required|string|max:255',
+            'price' => 'nullable|numeric',
+            'path' => 'nullable|string'
+        ];
+
+        $validation = Validator::make($request->all(), $rules);
+
+        if ($validation->fails()) {
+            return response()->json(['message' => 'Data validation error', 'data' => $validation->errors()], 422);
+        }
+
+        if (isset($request->path) && !empty($request->path)) {
+            $dress_image = DressImage::create([
+                'tailor_id' => $tailor_id,
+                'dress_id' => $id,
+                'order_id' => $dress->order_id,
+                'type' => 'cloth',
+                'path' => $request->path
+            ]);   
+        }    
+            
+        Cloth::create([
+            'title' => $request->title,
+            'dress_image_id' => $dress_image?->id,
+            'length' => $request->length,
+            'provided_by' => $request->provided_by,
+            'price' => $request->price,
+        ]);
+
+        return response()->json(['message' => 'Cloth Created Successfully', 'data' => ['Dress id' => $id]], 200);   
+    }
+
+    // public function updateCloth($id, $cid)
+    // {
+    //     $cloth = Cloth::where('dress_id', $id)->findOrFail($cid);
+    //     $cloth->delete(); // Assuming delete, though method name says "update"
+    //     return response()->json(['message' => 'Cloth deleted']);
+    // }
+
+    public function deleteCloth($id, $cid){
+        $cloth = Cloth::where('dress_id', $id)->findOrFail($cid);
+        $cloth->delete(); // Assuming delete, though method name says "update"
+        return response()->json(['message' => 'Cloth deleted']);
+    }
+
+    // Basic Details
+    public function getBasicDetails($id)
+    {
+        $dress = Dress::findOrFail($id);
+
+        return response()->json([
+            'dress_Id' => $dress->id,
+            'delivery_date' => $dress->delivery_date->toIso8601ZuluString(),
+            'trial_date' => $dress->trial_date->toIso8601ZuluString(),
+            'quantity' => $dress->quantity,
+            'price' => $dress->price
+        ]);
+    }
+
+    public function updateBasicDetails(Request $request, $id)
+    {
+        
+        $dress = Dress::findOrFail($id);
+
+        if ($request->has('delivery_date')) {
+            $dress->delivery_date = $request->input('delivery_date');
+        }
+
+        if ($request->has('trial_date')) {
+            $dress->trial_date = $request->input('trial_date');
+        }
+
+        if ($request->has('quantity')) {
+            $dress->quantity = $request->input('quantity');
+        }
+
+        if ($request->has('price')) {
+            $dress->price = $request->input('price');
+        }
+
+        $dress->save();
+
+        return response()->json([
+            'message' => 'Dress updated successfully',
+        ]);
+    }
+
+    // Instructions
+    public function instructions($id)
+    {
+        $dress = Dress::select('notes')->findOrFail($id);
+        $recording = Recording::where('dress_id', $id)->value('path');
+
+        return response()->json(['instructions' => $dress->notes, 'audio' => $recording]);
+    }
+
+    public function updateInstructions(Request $request, $id)
+    {
+        $dress = Dress::findOrFail($id);
+
+        if ($request->has('notes')) {
+            $dress->notes = $request->input('notes');
+        }
+
+        if ($request->has('audio')) {
+            if(!empty($request->input('audio')) ) {
+                $recording = Recording::where('dress_id', $id)->first();
+                $recording->path = $request->input('audio');
+                $recording->save();
+            }else{
+                Recording::where('dress_id', $id)->delete();
+            }
+        }
+
+        $dress->save();
+
+        return response()->json(['message' => 'Dress updated successfully']);
+           
+    }
+
+
+    public function getQuestions($id)
+    {
+        $dress = Dress::findOrFail($id);
+        $dress->delete();
+
+        return response()->json(['message' => 'Dress deleted successfully']);
+    }
+
+    public function updateQuestions(Request $request, $id)
+    {
+        $dress = Dress::findOrFail($id);
+        $dress->questions = $request->input('questions');
+        $dress->save();
+
+        return response()->json(['message' => 'Dress questions updated successfully']);
     }
 }

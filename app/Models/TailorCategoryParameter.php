@@ -17,4 +17,16 @@ class TailorCategoryParameter extends Model
         'part',
         'status',
     ];
+
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+
+    public function parameter()
+    {
+        return $this->belongsTo(Parameter::class);
+    }
 }

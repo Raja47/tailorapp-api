@@ -16,4 +16,23 @@ class Cloth extends Model
         'provided_by',
         'price'
     ];
+
+
+    protected array $frontendMap = [
+        'path' => fn($cloth) => $cloth->image ? $cloth->image->path : null,
+        'emailAddress' => 'email',
+        'isVerified' => fn($user) => (bool) $user->email_verified_at,
+    ];
+
+    public function toFrontend(): array
+    {
+        return $this->mapAttributes($this->frontendMap);
+    }
+
+
+
+    public function image()
+    {
+        return $this->belongsTo(DressImage::class , 'dress_image_id');
+    }
 }

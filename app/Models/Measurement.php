@@ -15,4 +15,17 @@ class Measurement extends Model
         'notes',
         'status'
     ];
+
+    public function dress()
+    {
+        return $this->belongsTo(Dress::class, 'model_id');
+    }
+
+
+    public function values()
+    {
+        return $this->hasMany(MeasurementValue::class, 'measurement_id');
+    }
+
+     
 }

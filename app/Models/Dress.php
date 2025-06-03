@@ -32,4 +32,19 @@ class Dress extends Model
         'created_at' => 'datetime:Y-m-d\TH:i:s.v\Z',
         'updated_at' => 'datetime:Y-m-d\TH:i:s.v\Z',
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+    public function clothes()
+    {
+        return $this->hasMany(Cloth::class);
+    }
+
+    public function measurement()
+    {
+        return $this->hasOne(Measurement::class);
+    }
 }
