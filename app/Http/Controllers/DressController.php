@@ -1034,7 +1034,7 @@ class DressController extends Controller
     
     /**
      * @OA\Get(
-     *     path="/tailors/dresses/measurement/{id}",
+     *     path="/tailors/dresses/{id}/measurement",
      *     summary="Get the measurement of a dress",
      *     description="Allows a tailor to get the measurement of a dress based on dress ID.",     
      *     operationId="getDressMeasurement",
@@ -1123,7 +1123,7 @@ class DressController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/tailors/dresses/measurement/{id}",     
+     *     path="/tailors/dresses/{id}/measurement",     
      *     summary="Update the measurement of a dress",
      *     description="Allows a tailor to update the measurement of a dress based on dress ID.",
      *     operationId="updateDressMeasurement",
