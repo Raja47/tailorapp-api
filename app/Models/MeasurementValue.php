@@ -37,6 +37,15 @@ class MeasurementValue extends Model
         return $this->mapAttributes($this->frontendMap());
     }
 
+    protected function mapAttributes(array $map): array
+    {
+        $result = [];
+        foreach ($map as $key => $value) {
+            $result[$key] = is_callable($value) ? $value($this) : $this->$value;
+        }
+        return $result;
+    }
+
     public static function newMeasurementValue(array $data)
     {
         $rules = [
