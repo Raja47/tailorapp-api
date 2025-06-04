@@ -1161,15 +1161,6 @@ class DressController extends Controller
         *             @OA\Property(property="dress_id", type="integer", example=1, description="ID of the dress")
         *         )
         *     ),
-     *     @OA\Response(
-        *         response=422, 
-        *         description="Validation error",
-        *         @OA\JsonContent(
-        *             type="object",
-        *             @OA\Property(property="message", type="string", example="Validation error"),
-        *             @OA\Property(property="errors", type="object", example={"type": ["The type field is required."]}),    
-        *         )
-        *     ),
         *)        
      */
     public function updateMeasurement(Request $request, $id)
