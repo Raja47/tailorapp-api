@@ -1111,11 +1111,10 @@ class DressController extends Controller
         }
         
         $values = MeasurementValue::with(['parameter', 'tailorCatParameter'])->where('measurement_id', $measurementId)->get();
-
         
-        foreach ($values as $param => $value) {
-           $values[$param] = $value->toFrontend();
-        }
+        $values =$values->map(function ($value) {
+            return $value->toFrontend();
+        });
         
         return response()->json(['measurement_values' => $values , 'type' => $dress->type ], 200);   
     }
