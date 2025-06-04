@@ -45,6 +45,6 @@ class Dress extends Model
 
     public function measurement()
     {
-        return $this->hasOne(Measurement::class);
+        return $this->hasOne(Measurement::class , 'model_id', 'id');
     }
 }
