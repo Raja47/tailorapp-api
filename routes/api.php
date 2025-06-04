@@ -135,7 +135,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/dresses'],
     $router->post('/image', [DressController::class, 'uploadImage']);
     $router->post('/images', [DressController::class, 'uploadImages']);
     $router->post('/audio', [DressController::class, 'uploadAudio']);
-    $router->get('/{dress_id}/measurement', [DressController::class, 'getOrderDressMeasurement']);
+    // $router->get('/{dress_id}/measurement', [DressController::class, 'getOrderDressMeasurement']);
     $router->get('/tab', [DressController::class, 'getTabDresses']);
     $router->post('/store', [DressController::class, 'addDress']);
     $router->post('/update', [DressController::class, 'updateDress']);
