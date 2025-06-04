@@ -1031,8 +1031,41 @@ class DressController extends Controller
     {
         return Dress::with(['measurement','clothes', 'images'])->findOrFail($id);
     }
-
-    // Measurement
+    
+    /**
+     * @OA\Get(
+     *     path="/tailors/dresses/measurement/{id}",
+     *     summary="Get the measurement of a dress",
+     *     description="Allows a tailor to get the measurement of a dress based on dress ID.",     
+     *     operationId="getDressMeasurement",
+     *     tags={"Dresses"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+        *         name="id",
+        *         in="path",        
+        *         required=true,
+        *         @OA\Schema(type="integer"),
+        *         description="Dress ID"
+        *     ),
+     *     @OA\Response(
+        *         response=200,                             
+        *         description="Dress measurement retrieved successfully",    
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="measurement_values", type="array",
+        *                 @OA\Items(
+        *                     type="object",
+        *                     @OA\Property(property="parameter_id", type="integer"),
+        *                     @OA\Property(property="value", type="number", format="float"),
+        *                     @OA\Property(property="parameter_name", type="string"),
+        *                     @OA\Property(property="parameter_unit", type="string"),
+        *                     @OA\Property(property="parameter_type", type="string"),
+        *                     @OA\Property(property="tailor_cat_parameter_id", type="integer"),
+        )
+        )
+     )
+     )
+    */
     public function measurement($id)
     {   
         $dress = Dress::with("measurement")->findOrFail($id);
@@ -1054,7 +1087,61 @@ class DressController extends Controller
     }
 
 
-
+    /**
+     * @OA\Post(
+     *     path="/tailors/dresses/measurement/{id}",     
+     *     summary="Update the measurement of a dress",
+     *     description="Allows a tailor to update the measurement of a dress based on dress ID.",
+     *     operationId="updateDressMeasurement",
+     *     tags={"Dresses"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+        *         name="id",
+        *         in="path",        
+        *         required=true,                        
+        *         @OA\Schema(type="integer"),
+        *         description="Dress ID"        
+        *     ),
+     *     @OA\RequestBody(
+        *         required=true,
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="type", type="string", enum={"stitching", "alteration"}, description="Dress type"),
+        *             @OA\Property(property="measurement_values", type="array",
+        *                 @OA\Items(
+        *                     type="object",
+        *                     @OA\Property(property="tcp_id", type="integer"),
+        *                     @OA\Property(property="parameter_id", type="integer"),
+        *                     @OA\Property(property="value", type="number", format="float"),
+        *                     description="Measurement values for the dress"
+        *                 )
+        *             )    
+        *         ) 
+        *     ),
+     *     @OA\Response(
+        *         response=200,
+        *         description="Measurement updated successfully",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="message", type="string", example="Measurement updated"),
+        *             @OA\Property(property="dress_id", type="integer", example=1, description="ID of the dress")
+        *         )
+        *     ),
+     *     @OA\Response(
+        *         response=422, 
+        *         description="Validation error",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="message", type="string", example="Validation error"),
+        *             @OA\Property(property="errors", type="object", example={"type": ["The type field is required."]}),    
+        )
+     )
+     )
+        )
+        )
+     )
+     )
+     */
     public function updateMeasurement(Request $request, $id)
     {
         $dress = Dress::findOrFail($id);
