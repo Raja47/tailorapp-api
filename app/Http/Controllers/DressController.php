@@ -1047,7 +1047,7 @@ class DressController extends Controller
         *         @OA\Schema(type="integer"),
         *         description="Dress ID"
         *     ),
-     *     @OA\Response(
+        *     @OA\Response(
         *         response=200,                             
         *         description="Dress measurement retrieved successfully",    
         *         @OA\JsonContent(
@@ -1061,11 +1061,45 @@ class DressController extends Controller
         *                     @OA\Property(property="parameter_unit", type="string"),
         *                     @OA\Property(property="parameter_type", type="string"),
         *                     @OA\Property(property="tailor_cat_parameter_id", type="integer"),
-        )
-        )
-     )
-     )
-    */
+        *               description="Measurement values for the dress")
+        *         ),
+        *           @OA\Property(property="type", type="string", example="stitching", description="Type of the dress")  
+        *         )
+        *     ),                         
+        *     @OA\Response(
+        *         response=404,                             
+        *         description="Dress not found",    
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="message", type="string", example="Dress not found"),
+        *         )
+        *     )
+        *     ),
+        *     @OA\Response(
+        *         response=500,
+        *         description="Internal server error",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="message", type="string", example="An error occurred while retrieving the measurement") 
+        *         ) 
+        *     ),
+        *     @OA\Response(
+        *         response=422,
+        *         description="Validation error",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="success", type="boolean", example=false),    
+        *             @OA\Property(property="message", type="string", example="Dress data validation error"),
+        *             @OA\Property(
+        *                 property="data",
+        *                 type="object",
+        *                 @OA\Property(property="dress_id", type="string", example="The dress_id field is required."),
+        *             ) 
+        *         )     
+        *     ),
+        * 
+        * )
+    **/
     public function measurement($id)
     {   
         $dress = Dress::with("measurement")->findOrFail($id);
@@ -1134,13 +1168,9 @@ class DressController extends Controller
         *             type="object",
         *             @OA\Property(property="message", type="string", example="Validation error"),
         *             @OA\Property(property="errors", type="object", example={"type": ["The type field is required."]}),    
-        )
-     )
-     )
-        )
-        )
-     )
-     )
+        *         )
+        *     ),
+        *)        
      */
     public function updateMeasurement(Request $request, $id)
     {
