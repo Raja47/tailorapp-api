@@ -1102,7 +1102,7 @@ class DressController extends Controller
     **/
     public function measurement($id)
     {   
-        $dress = Dress::with("measurement")->findOrFail($id);
+        $dress = Dress::with("measurement")->find($id); 
 
         $measurementId = $dress->measurement?->id;
         
@@ -1112,8 +1112,18 @@ class DressController extends Controller
         
         $values = MeasurementValue::with(['parameter', 'tailorCatParameter'])->where('measurement_id', $measurementId)->get();
         
-        $values =$values->map(function ($value) {
-            return $value->toFrontend();
+        
+        $values = $values->map(function ($value) {
+            return [
+                'id'   => $value->id,
+                'parameter_id' => $value->parameter_id,
+                'value' => $value->value,
+                'image' => $value->parameter?->image,
+                'tcp_id' => $value->tcp_id,
+                'measurement_id' => $value->measurement_id,
+                'label' => $value->tailorCatParameter?->label,
+                'part' => $value->tailorCatParameter?->part,
+            ];
         });
         
         return response()->json(['measurement_values' => $values , 'type' => $dress->type ], 200);   
@@ -1121,7 +1131,7 @@ class DressController extends Controller
 
 
     /**
-     * @OA\Post(
+     * @OA\PUT(
      *     path="/tailors/dresses/{id}/measurement",     
      *     summary="Update the measurement of a dress",
      *     description="Allows a tailor to update the measurement of a dress based on dress ID.",
@@ -1144,7 +1154,6 @@ class DressController extends Controller
         *                 @OA\Items(
         *                     type="object",
         *                     @OA\Property(property="tcp_id", type="integer"),
-        *                     @OA\Property(property="parameter_id", type="integer"),
         *                     @OA\Property(property="value", type="number", format="float"),
         *                     description="Measurement values for the dress"
         *                 )
@@ -1185,27 +1194,9 @@ class DressController extends Controller
                     if ($measurementValue) {
                         $measurementValue->value = $value['value'];
                         $measurementValue->save();
-                    } else {
-                        // Create new measurement value if it doesn't exist
-                        MeasurementValue::create([
-                            'tcp_id' => $value['tcp_id'],
-                            'measurement_id' => $measurementId,
-                            'parameter_id' => $value['parameter_id'],
-                            'value' => $value['value']
-                        ]);
-                    }
+                    } 
                 }
-            } else {
-                // Create new measurement and values
-                $newMeasurement = Measurement::create(['dress_id' => $id]);
-                foreach ($measurementValues as $value) {
-                    MeasurementValue::create([
-                        'measurement_id' => $newMeasurement->id,
-                        'parameter_id' => $value['parameter_id'],
-                        'value' => $value['value']
-                    ]);
-                }
-            }
+            } 
         }
 
         return response()->json(['message' => 'Measurement updated', 'dress_id' => $id], 200);

@@ -17,34 +17,8 @@ class MeasurementValue extends Model
         'value'
     ];
 
+  
 
-    private function  frontendMap () : array {
-
-        return [
-        'id' => 'id',
-        'tcp_id' => 'tcp_id',
-        'path' =>  fn() => $this->paramater ? $this->parameter->image : null,
-        'parameter_id' => 'parameter_id',
-        'measurement_id' => 'measurement_id',
-        'label' => fn() => $this->tailorCatParameter ? $this->tailorCatParameter->label : null,
-        'part'  => fn() => $this->tailorCatParameter ? $this->tailorCatParameter->part : null,
-        'value' => 'value',
-        ];
-    }    
-
-    public function toFrontend(): array
-    {
-        return $this->mapAttributes($this->frontendMap());
-    }
-
-    protected function mapAttributes(array $map): array
-    {
-        $result = [];
-        foreach ($map as $key => $value) {
-            $result[$key] = is_callable($value) ? $value($this) : $this->$value;
-        }
-        return $result;
-    }
 
     public static function newMeasurementValue(array $data)
     {
