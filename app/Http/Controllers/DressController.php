@@ -1132,6 +1132,7 @@ class DressController extends Controller
 
     /**
      * @OA\PUT(
+     * 
      *     path="/tailors/dresses/{id}/measurement",     
      *     summary="Update the measurement of a dress",
      *     description="Allows a tailor to update the measurement of a dress based on dress ID.",
@@ -1145,22 +1146,26 @@ class DressController extends Controller
         *         @OA\Schema(type="integer"),
         *         description="Dress ID"        
         *     ),
-     *     @OA\RequestBody(
+        *     @OA\RequestBody(
+        *         description="Measurement data",
         *         required=true,
-        *         @OA\JsonContent(
-        *             type="object",
-        *             @OA\Property(property="type", type="string", enum={"stitching", "alteration"}, description="Dress type"),
-        *             @OA\Property(property="measurement_values", type="array",
+        *         @OA\MediaType(
+        *           mediaType="application/json",
+        *           @OA\Schema(
+        *               type="object",
+        *               @OA\Property(property="type", type="string", enum={"stitching", "alteration"}, description="Dress type"),
+        *               @OA\Property(property="measurement_values", type="array",
         *                 @OA\Items(
         *                     type="object",
         *                     @OA\Property(property="tcp_id", type="integer"),
         *                     @OA\Property(property="value", type="number", format="float"),
         *                     description="Measurement values for the dress"
-        *                 )
-        *             )    
-        *         ) 
-        *     ),
-     *     @OA\Response(
+        *                  )
+        *               )    
+        *           ) 
+        *         ),
+        *      ),  
+        *     @OA\Response(
         *         response=200,
         *         description="Measurement updated successfully",
         *         @OA\JsonContent(
