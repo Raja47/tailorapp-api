@@ -1131,50 +1131,77 @@ class DressController extends Controller
 
 
     /**
-     * @OA\PUT(
-     * 
-     *     path="/tailors/dresses/{id}/measurement",     
+     * @OA\Put(
+     *     path="/tailors/dresses/{id}/measurement",
      *     summary="Update the measurement of a dress",
-     *     description="Allows a tailor to update the measurement of a dress based on dress ID.",
+     *     description="Allows a tailor to update the measurement of a dress based on the dress ID.",
      *     operationId="updateDressMeasurement",
      *     tags={"Dresses"},
      *     security={{"bearerAuth": {}}},
+     *     
      *     @OA\Parameter(
-        *         name="id",
-        *         in="path",        
-        *         required=true,                        
-        *         @OA\Schema(type="integer"),
-        *         description="Dress ID"        
-        *     ),
-        *     @OA\RequestBody(
-        *         description="Measurement data",
-        *         required=true,
-        *         @OA\MediaType(
-        *           mediaType="application/json",
-        *           @OA\Schema(
-        *               type="object",
-        *               @OA\Property(property="type", type="string", enum={"stitching", "alteration"}, description="Dress type"),
-        *               @OA\Property(property="measurement_values", type="array",
-        *                 @OA\Items(
-        *                     type="object",
-        *                     @OA\Property(property="tcp_id", type="integer"),
-        *                     @OA\Property(property="value", type="number", format="float"),
-        *                     description="Measurement values for the dress"
-        *                  )
-        *               )    
-        *           ) 
-        *         ),
-        *      ),  
-        *     @OA\Response(
-        *         response=200,
-        *         description="Measurement updated successfully",
-        *         @OA\JsonContent(
-        *             type="object",
-        *             @OA\Property(property="message", type="string", example="Measurement updated"),
-        *             @OA\Property(property="dress_id", type="integer", example=1, description="ID of the dress")
-        *         )
-        *     ),
-        *)        
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="Dress ID"
+     *     ),
+     *     
+     *     @OA\RequestBody(
+     *         description="Measurement data to update the dress",
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="type",
+     *                     type="string",
+     *                     enum={"stitching", "alteration"},
+     *                     description="Type of the dress"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="measurement_values",
+     *                     type="array",
+     *                     description="List of measurement values",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="tcp_id",
+     *                             type="integer",
+     *                             description="ID of the tailoring control point"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="value",
+     *                             type="number",
+     *                             format="float",
+     *                             description="Measurement value"
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=200,
+     *         description="Measurement updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Measurement updated"),
+     *             @OA\Property(property="dress_id", type="integer", example=1, description="ID of the updated dress")
+     *         )
+     *     ),
+     *     
+     *     @OA\Response(
+     *         response=404,
+     *         description="Dress not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Dress not found")
+     *         )
+     *     )
+     * )
      */
     public function updateMeasurement(Request $request, $id)
     {
