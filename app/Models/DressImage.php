@@ -16,4 +16,10 @@ class DressImage extends Model
         'type',
         'path'
     ];
+
+    public function dress()
+    {
+        return $this->belongsTo(Dress::class, 'dress_id', 'id');
+    }
+    
 }

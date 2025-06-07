@@ -1234,16 +1234,94 @@ class DressController extends Controller
         return response()->json(['message' => 'Measurement updated', 'dress_id' => $id], 200);
     }
 
-    // Images
-    public function images($id)
+
+    /**
+     * @OA\Get(
+     *     path="/tailors/dresses/{id}/designs",
+     *     summary="Get images for a dress",
+     *     description="Returns a list of images for a dress based on the dress ID.",
+     *     operationId="getDressImages",
+     *     tags={"Dresses"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+        *         name="id",
+        *         in="path",
+        *         required=true,
+        *         @OA\Schema(type="integer"),
+        *         description="Dress ID"
+        *     ),
+        *     @OA\Response(
+        *         response=200,
+        *         description="List of images for the dress",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="images", type="array",
+        *                 @OA\Items(
+        *                     type="object",
+        *                     @OA\Property(property="id", type="integer", example=1),
+        *                     @OA\Property(property="path", type="string", example="/images/design1.jpg")
+        *                 )
+        *             ) 
+        *         )
+        *     ),
+        *     @OA\Response(
+        *         response=404,
+        *         description="Dress not found",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="message", type="string", example="Dress not found")
+        *         )
+        *     )
+        * )
+     */
+    public function designs($id)
     {
-        $dress = Dress::findOrFail($id);
-        return response()->json(['images' => $dress->images]); // assumes relation images()
+        $designs = DressImage::select(['id' , 'path'])->where(['type' => 'design','dress_id'=> $id])->get();
+        return response()->json(['images' => $designs]); // assumes relation images()
     }
 
-    public function deleteImage($id = null, $image_id)
+    /**
+     * @OA\Delete(
+        *     path="/tailors/dresses/designs/{design_id}",
+        *     summary="Delete a design image",
+        *     description="Deletes a design image based on the design ID.",
+        *     operationId="deleteDesign",
+        *     tags={"Dresses"},
+        *     security={{"bearerAuth": {}}},
+        *     @OA\Parameter(
+        *         name="design_id",
+        *         in="path",
+        *         required=true,
+        *         @OA\Schema(type="integer"),
+        *         description="Design ID"
+        *     ),
+        *     @OA\Response(
+        *         response=200,
+        *         description="Design deleted successfully",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="message", type="string", example="Design deleted")
+        *         )
+        *     ),
+        *     @OA\Response(
+        *         response=404,
+        *         description="Design not found",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="message", type="string", example="Design not found")
+        *         )
+        *     )
+        * )
+     */
+    public function deleteDesign($design_id)
     {
-        $image = DressImage::where('dress_id', $id)->findOrFail($image_id);
+
+        $image = DressImage::where('id', $design_id)->find();
+        
+        if(!$image){
+            return response()->json(['message' => 'Design not found'] , 404);
+        }
+
         $image->delete();
 
         return response()->json(['message' => 'Image deleted'] , 200);

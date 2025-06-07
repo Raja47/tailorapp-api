@@ -130,7 +130,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories
 });
 
 
-Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/dresses'], function ($router) {
+    Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/dresses'], function ($router) {
     $router->post('/create', [DressController::class, 'create']);
     $router->post('/image', [DressController::class, 'uploadImage']);
     $router->post('/images', [DressController::class, 'uploadImages']);
@@ -146,19 +146,17 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/dresses'],
     $router->post('/updatestatus', [DressController::class, 'updateStatus']);
 
     $router->prefix('/{id}')->group(function ($router) {
-    // Basic Info
+        // Basic Info
         $router->get('/', [DressController::class, 'show']);
         $router->get('measurement', [DressController::class, 'measurement']);
         $router->put('measurement', [DressController::class, 'updateMeasurement']);
 
         // Images
-        $router->get('images', [DressController::class, 'images']);
-        $router->delete('images/{image_id}', [DressController::class, 'deleteImage']);
+        $router->get('designs', [DressController::class, 'designs']);
 
         // Clothes
         $router->get('clothes', [DressController::class, 'getClothes']);
         $router->post('clothes', [DressController::class, 'createCloth']);
-        $router->delete('clothes/{cid}', [DressController::class, 'updateCloth']);
 
         // Basic Details
         $router->get('basic-details', [DressController::class, 'getBasicDetails']);
@@ -169,6 +167,10 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/dresses'],
         $router->put('instructions', [DressController::class, 'updateInstructions']);
         
     });
+
+    $router->delete('designs/{id}', [DressController::class, 'deleteDesign']);
+    $router->delete('clothes/{id}', [DressController::class, 'updateCloth']);
+
 });
 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/orders'], function ($router) {
