@@ -170,7 +170,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories
     });
 
     $router->delete('designs/{id}', [DressController::class, 'deleteDesign']);
-    $router->delete('clothes/{id}', [DressController::class, 'updateCloth']);
+    $router->delete('clothes/{id}', [DressController::class, 'deleteCloth']);
 
 });
 

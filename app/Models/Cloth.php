@@ -10,6 +10,7 @@ class Cloth extends Model
     use HasFactory;
 
     protected $fillable = [
+        'dress_id',
         'title',
         'dress_image_id',
         'length',
@@ -21,6 +22,8 @@ class Cloth extends Model
     public function frontendMap(): array
     {
         return  [
+            'id' => 'id',
+            'dress_id' => 'dress_id',
             'dress_image_id' => fn($cloth) => $cloth->image ? $cloth->image->path : null,
             'title' => 'title',
             'length' => 'length',
