@@ -153,6 +153,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories
 
         // Images
         $router->get('designs', [DressController::class, 'designs']);
+        $router->post('designs', [DressController::class, 'createDesign']);
 
         // Clothes
         $router->get('clothes', [DressController::class, 'getClothes']);

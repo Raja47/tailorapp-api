@@ -1313,10 +1313,10 @@ class DressController extends Controller
         *     )
         * )
      */
-    public function deleteDesign($design_id)
+    public function deleteDesign($id)
     {
 
-        $image = DressImage::where('id', $design_id)->find();
+        $image = DressImage::find($id);
         
         if(!$image){
             return response()->json(['message' => 'Design not found'] , 404);
@@ -1325,6 +1325,82 @@ class DressController extends Controller
         $image->delete();
 
         return response()->json(['message' => 'Image deleted'] , 200);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/tailors/dresses/{id}/designs",
+     *     summary="Upload a Design image",
+     *     description="Stores an image in 'public/dress'.",
+     *     operationId="uploadDressDesign",
+     *     tags={"Dresses"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true, 
+     *         @OA\Schema(type="integer"),
+     *         description="Dress ID"
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(mediaType="multipart/form-data",
+     *             @OA\Schema(type="object", required={"image"},
+     *                 @OA\Property(property="image", type="string", format="binary", description="Image file")
+     *             )
+     *         )
+     * 
+     *     ),
+     *     @OA\Response(response=200, description="Image uploaded",
+     *         @OA\JsonContent(type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Image uploaded"),
+     *             @OA\Property(property="data", type="string", example="storage/dress/image.jpg")
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Validation error",
+     *         @OA\JsonContent(type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Data validation error"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
+    public function createDesign(Request $request, $id)
+    {
+        if (!$request->hasFile('image')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No file uploaded',
+                'data' => $request->all() // Debugging: Check what is actually sent
+            ], 400);
+        }
+
+        $validation = Validator::make([$request->image], ['required|image|mimes:jpeg,png,jpg,gif,svg']);
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
+        }
+        $file = $request->file('image');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('public/dress', $filename);
+
+        $base_url = url('');
+        $path = $base_url . '/storage/dress/' . $filename;
+
+        $dress = Dress::findOrFail($id);
+        $tailor_id = auth('sanctum')->user()->id;
+
+        DressImage::create([
+            'dress_id' => $dress->id,
+            'order_id' => $dress->order_id,
+            'tailor_id' => $tailor_id,
+            'path' => $path,
+            'type' => 'design',
+            'tailor_id' => $tailor_id
+        ]);
+
+        return response()->json(['message' => 'Design Created Successfully', 'data' => ['dress_id' => $id]], 200);
     }
 
     // Clothes
