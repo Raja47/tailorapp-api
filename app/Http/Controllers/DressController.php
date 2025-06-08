@@ -364,6 +364,7 @@ class DressController extends Controller
         $validation = Validator::make($request->all(), [
             'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg'
         ]);
+
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
         }
@@ -1342,16 +1343,17 @@ class DressController extends Controller
      *         @OA\Schema(type="integer"),
      *         description="Dress ID"
      *     ),
-     *     @OA\RequestBody(
+     *    @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(mediaType="multipart/form-data",
-     *             @OA\Schema(type="object", required={"image"},
-     *                 @OA\Property(property="image", type="string", format="binary", description="Image file")
+     *             @OA\Schema(type="object", required={"designs[]"},
+     *                 @OA\Property(property="designs[]", type="array", 
+     *                      @OA\Items(type="string", format="binary"),
+     *                      description="Array of design Image files")
      *             )
      *         )
-     * 
      *     ),
-     *     @OA\Response(response=200, description="Image uploaded",
+     *     @OA\Response(response=200, description="Images uploaded",
      *         @OA\JsonContent(type="object",
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="message", type="string", example="Image uploaded"),
@@ -1369,38 +1371,43 @@ class DressController extends Controller
      */
     public function createDesign(Request $request, $id)
     {
-        if (!$request->hasFile('image')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No file uploaded',
-                'data' => $request->all() // Debugging: Check what is actually sent
-            ], 400);
-        }
 
-        $validation = Validator::make([$request->image], ['required|image|mimes:jpeg,png,jpg,gif,svg']);
-        if ($validation->fails()) {
-            return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
-        }
-        $file = $request->file('image');
-        $filename = time() . '.' . $file->getClientOriginalExtension();
-        $file->storeAs('public/dress', $filename);
-
-        $base_url = url('');
-        $path = $base_url . '/storage/dress/' . $filename;
-
-        $dress = Dress::findOrFail($id);
-        $tailor_id = auth('sanctum')->user()->id;
-
-        DressImage::create([
-            'dress_id' => $dress->id,
-            'order_id' => $dress->order_id,
-            'tailor_id' => $tailor_id,
-            'path' => $path,
-            'type' => 'design',
-            'tailor_id' => $tailor_id
+        $validation = Validator::make($request->all(), [
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096', // Validate each image file
         ]);
 
-        return response()->json(['message' => 'Design Created Successfully', 'data' => ['dress_id' => $id]], 200);
+        if( $validation->fails() ) {
+            return response()->json(['success' => false, 'message' => 'Image Type or Size Error', 'data' => $validation->errors()], 422);
+        }
+
+        $uploadedImages = [];
+
+        $files = is_array($request->file('designs'))
+            ? $request->file('designs')
+            : [$request->file('designs')];
+
+        foreach ($files as $file) {
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/dress', $filename);
+
+            $base_url = url('');
+            $uploadedImage = $base_url . '/storage/dress/' . $filename;
+
+            DressImage::create([
+                'tailor_id' => auth('sanctum')->user()->id,
+                'dress_id' => $id,
+                'order_id' => Dress::findOrFail($id)->order_id,
+                'type' => 'design',
+                'path' => $uploadedImage
+            ]);
+
+            $uploadedImage = [
+                'id' => DressImage::latest()->first()->id,
+                'path' => $uploadedImage
+            ];
+        }
+        
+        return response()->json(['message' => 'Design Created Successfully', 'data' => ['designs' => $uploadedImages ]], 200);
     }
 
     // Clothes
