@@ -1039,7 +1039,7 @@ class DressController extends Controller
      *     summary="Get the measurement of a dress",
      *     description="Allows a tailor to get the measurement of a dress based on dress ID.",     
      *     operationId="getDressMeasurement",
-     *     tags={"Dresses"},
+     *     tags={"Dresses.edit"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
         *         name="id",
