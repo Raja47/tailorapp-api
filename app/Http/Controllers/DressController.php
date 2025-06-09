@@ -1645,7 +1645,7 @@ class DressController extends Controller
         * )
      *)
      */
-    public function getBasicDetails($id)
+    public function getDetails($id)
     {
         $dress = Dress::find($id);
 
