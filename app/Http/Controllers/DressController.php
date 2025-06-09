@@ -1137,7 +1137,7 @@ class DressController extends Controller
      *     summary="Update the measurement of a dress",
      *     description="Allows a tailor to update the measurement of a dress based on the dress ID.",
      *     operationId="updateDressMeasurement",
-     *     tags={"Dresses"},
+     *     tags={"Dresses.edit"},
      *     security={{"bearerAuth": {}}},
      *     
      *     @OA\Parameter(
@@ -1242,7 +1242,7 @@ class DressController extends Controller
      *     summary="Get images for a dress",
      *     description="Returns a list of images for a dress based on the dress ID.",
      *     operationId="getDressImages",
-     *     tags={"Dresses"},
+     *     tags={"Dresses.edit"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
         *         name="id",
@@ -1287,7 +1287,7 @@ class DressController extends Controller
         *     summary="Delete a design image",
         *     description="Deletes a design image based on the design ID.",
         *     operationId="deleteDesign",
-        *     tags={"Dresses"},
+        *     tags={"Dresses.edit"},
         *     security={{"bearerAuth": {}}},
         *     @OA\Parameter(
         *         name="design_id",
@@ -1334,7 +1334,7 @@ class DressController extends Controller
      *     summary="Upload a Design image",
      *     description="Stores an image in 'public/dress'.",
      *     operationId="uploadDressDesign",
-     *     tags={"Dresses"},
+     *     tags={"Dresses.edit"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -1416,7 +1416,7 @@ class DressController extends Controller
         *     summary="Get clothes for a dress",
         *     description="Returns all clothes for a dress",
         *     operationId="getDressClothes",
-        *     tags={"Dresses"},
+        *     tags={"Dresses.edit"},
         *     security={{"bearerAuth": {}}},
         *     @OA\Parameter(
         *         name="id",
@@ -1474,7 +1474,7 @@ class DressController extends Controller
         *     summary="Create a new cloth for a dress",
         *     description="Creates a new cloth for a specific dress.",
         *     operationId="createCloth",
-        *     tags={"Dresses"},
+        *     tags={"Dresses.edit"},
         *     security={{"bearerAuth": {}}},
         *     @OA\Parameter(
         *         name="id",
@@ -1574,7 +1574,7 @@ class DressController extends Controller
         *     summary="Delete a cloth",
         *     description="Deletes a cloth based on the dress ID and cloth ID.",
         *     operationId="deleteCloth",
-        *     tags={"Dresses"},
+        *     tags={"Dresses.edit"},
         *     security={{"bearerAuth": {}}},
         *     @OA\Parameter(
         *         name="id",
@@ -1613,7 +1613,7 @@ class DressController extends Controller
         *     summary="Get basic details for a dress",
         *     description="Returns basic details for a dress based on the dress ID.",
         *     operationId="getBasicDetails",
-        *     tags={"Dresses"},
+        *     tags={"Dresses.edit"},
         *     security={{"bearerAuth": {}}},
         *     @OA\Parameter(
         *         name="id",
@@ -1669,7 +1669,7 @@ class DressController extends Controller
         *     summary="Update basic details for a dress",
         *     description="Allows a tailor to update basic details for a dress based on the dress ID.",
         *     operationId="updateBasicDetails",
-        *     tags={"Dresses"},
+        *     tags={"Dresses.edit"},
         *     security={{"bearerAuth": {}}},
         *     @OA\Parameter(
         *         name="id",
@@ -1769,7 +1769,7 @@ class DressController extends Controller
     *     summary="Get instructions and audio for a dress",
     *     description="Allows a tailor to retrieve instructions and audio for a dress based on the dress ID.",
     *     operationId="getInstructions",
-    *     tags={"Dresses"},
+    *     tags={"Dresses.edit"},
     *     security={{"bearerAuth": {}}},
     *     @OA\Parameter(
     *         name="id",
@@ -1820,7 +1820,7 @@ class DressController extends Controller
         *     summary="Update instructions and audio for a dress",
         *     description="Allows a tailor to update instructions and audio for a dress based on the dress ID.",
         *     operationId="updateInstructions",
-        *     tags={"Dresses"},
+        *     tags={"Dresses.edit"},
         *     security={{"bearerAuth": {}}},
         *     @OA\Parameter(
         *         name="id",
