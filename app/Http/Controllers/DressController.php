@@ -1256,7 +1256,7 @@ class DressController extends Controller
         *         description="List of images for the dress",
         *         @OA\JsonContent(
         *             type="object",
-        *             @OA\Property(property="images", type="array",
+        *             @OA\Property(property="designs", type="array",
         *                 @OA\Items(
         *                     type="object",
         *                     @OA\Property(property="id", type="integer", example=1),
@@ -1278,7 +1278,7 @@ class DressController extends Controller
     public function designs($id)
     {
         $designs = DressImage::select(['id' , 'path'])->where(['type' => 'design','dress_id'=> $id])->get();
-        return response()->json(['images' => $designs]); // assumes relation images()
+        return response()->json(['designs' => $designs]); // assumes relation images()
     }
 
     /**
@@ -1401,11 +1401,12 @@ class DressController extends Controller
                 'path' => $uploadedImage
             ]);
 
-            $uploadedImage = [
+            $uploadedImages[] = [
                 'id' => DressImage::latest()->first()->id,
                 'path' => $uploadedImage
             ];
         }
+
 
         return response()->json(['message' => 'Design Created Successfully', 'data' => ['designs' => $uploadedImages ]], 200);
     }
@@ -1556,7 +1557,7 @@ class DressController extends Controller
             ]);   
         }    
             
-        Cloth::create([
+        $cloth = Cloth::create([
             'dress_id' => $dress->id,
             'title' => $request->title,
             'dress_image_id' => $dress_image?->id,
@@ -1564,8 +1565,20 @@ class DressController extends Controller
             'provided_by' => $request->provided_by,
             'price' => (isset($request->price) && $request->provided_by == 'tailor') ? $request->price : null,
         ]);
+        
+        $clothResponse = [
+            'id' => $cloth->id,
+            'dress_id' => $cloth->dress_id, 
+            'title' => $cloth->title,
+            'length' => $cloth->length,
+            'provided_by' => $cloth->provided_by,
+            'price' => $cloth->price,
+            'path' => $dress_image?->path,
+            'created_at' => $cloth->created_at->toIso8601ZuluString(),
+            'updated_at' => $cloth->updated_at->toIso8601ZuluString(),    
+        ];
 
-        return response()->json(['message' => 'Cloth Created Successfully', 'data' => ['Dress id' => $id]], 200);   
+        return response()->json(['message' => 'Cloth Created Successfully', 'cloth' => $clothResponse], 200);   
     }
 
     /**
@@ -1659,7 +1672,7 @@ class DressController extends Controller
             'trial_date' => $dress->trial_date->toIso8601ZuluString(),
             'quantity' => $dress->quantity,
             'price' => $dress->price
-        ]);
+        ], 200);
 
     }
 
@@ -1904,7 +1917,7 @@ class DressController extends Controller
 
         $dress->save();
 
-        return response()->json(['message' => 'Dress updated successfully']);
+        return response()->json(['message' => 'Dress updated successfully' ,200]);
            
     }
 
@@ -1914,7 +1927,7 @@ class DressController extends Controller
         $dress = Dress::findOrFail($id);
         $dress->delete();
 
-        return response()->json(['message' => 'Dress deleted successfully']);
+        return response()->json(['message' => 'Dress deleted successfully', 200]);
     }
 
     public function updateQuestions(Request $request, $id)
