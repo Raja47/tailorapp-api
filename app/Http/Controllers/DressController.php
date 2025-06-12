@@ -1027,10 +1027,169 @@ class DressController extends Controller
     }
 
 
-    // Show full dress
+    /**
+     * Get a dress by ID.
+     * @OA\Get(
+     *      path="/tailors/dresses/{id}",
+     *      summary="Get a dress by ID",
+     *      description="Retrieves a dress by its ID, including its measurement, clothes, and images.",
+     *      operationId="getDressById",
+     *      tags={"Dresses.edit"},
+     *      security={{"bearerAuth": {}}},
+     *      @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *     @OA\Schema(type="integer"),
+     *     description="Dress ID"
+     *    ),
+     * @OA\Response(
+     *     response=200,
+     *     description="Dress retrieved successfully",
+     *    @OA\JsonContent(
+     *        type="object",
+     *          @OA\Property(property="id", type="integer", example=1),
+     *          @OA\Property(property="name", type="string", example="Elegant Dress"),
+     *          @OA\Property(property="category_id", type="integer", example=3),
+     *          @OA\Property(property="type", type="string", example="alteration"),
+     *          @OA\Property(property="quantity", type="integer", example=2),
+     *          @OA\Property(property="price", type="number", format="float", example=1500.50),
+     *          @OA\Property(property="delivery_date", type="string", format="date", example="2024-10-01"),
+     *          @OA\Property(property="trial_date", type="string", format="date", example="2024-10-15"),
+     *          @OA\Property(property="is_urgent", type="boolean", example=true),
+     *          @OA\Property(property="status", type="integer", example=1),
+     *          @OA\Property(property="notes", type="string", example="Add lace at the sleeves"),
+     *          @OA\Property(property="measurement", type="object",
+     *          @OA\Property(property="id", type="integer", example=1),
+     *          @OA\Property(property="dress_id", type="integer", example=1),
+     *          @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),
+     *          @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-03T12:00:00Z")
+     *          ),
+     *        
+     *     @OA\Property(property="measurement_values", type="array",
+     *         @OA\Items(
+        *             type="object",
+        *             @OA\Property(property="id", type="integer", example=1),
+        *             @OA\Property(property="parameter_id", type="integer", example=1),
+        *             @OA\Property(property="value", type="number", format="float", example=34.5),
+        *             @OA\Property(property="image", type="string", example="uploads/measurement1.jpg"),
+        *             @OA\Property(property="tcp_id", type="integer", example=1),   
+        *             @OA\Property(property="label", type="string", example="Chest"),
+        *             @OA\Property(property="part", type="string", example="Upper Body"),  
+        *             @OA\Property(property="measurement_id", type="integer", example=1)
+        *         )
+        *     ),
+        *     @OA\Property(property="clothes", type="array",
+        *         @OA\Items(
+        *             type="object",  
+        *             @OA\Property(property="id", type="integer", example=1),
+        *             @OA\Property(property="dress_id", type="integer", example=1),
+        *             @OA\Property(property="path", type="string", example="uploads/cloth1.jpg"),
+        *             @OA\Property(property="title", type="string", example="Cloth Title"),
+        *             @OA\Property(property="length", type="string", example="2.5 meters"),
+        *             @OA\Property(property="provided_by", type="string", example="Supplier Name"),
+        *             @OA\Property(property="price", type="number", format="float", example=500.00),
+        *             @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),
+        *             @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-03T12:00:00Z")
+        *         )
+        *     ),
+        *     @OA\Property(property="designs", type="array",
+        *         @OA\Items(
+        *             type="object",
+        *             @OA\Property(property="id", type="integer", example=1),
+        *             @OA\Property(property="path", type="string", example="uploads/design1.jpg")
+        *         )
+        *     ),
+        *     @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),  
+        *     @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-03T12:00:00Z")
+        * ),
+     * ), 
+     * @OA\Response(
+     *     response=404,
+     *     description="Dress not found",
+     *     @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="message", type="string", example="Dress not found")
+     *     )
+     * ),
+     * @OA\Response(
+     *     response=500,
+     *     description="Internal server error",
+     *     @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="message", type="string", example="An error occurred while retrieving the dress")
+     *      )
+     *  )
+     *)
+     */
     public function show($id)
     {
-        return Dress::with(['measurement','clothes', 'images'])->findOrFail($id);
+        $dress = Dress::with(['measurement', 'designs'])->find($id);
+        
+        if (!$dress) {
+            return response()->json(['message' => 'Dress not found'], 404);
+        }
+
+        $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
+        $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
+
+        $dress->measurement_values = [];
+        $values = [];
+        if( $dress->measurement?->id){
+            $values = MeasurementValue::with(['parameter', 'tailorCatParameter'])->where('measurement_id', $dress->measurement->id)->get();
+            $values = $values->map(function ($value) {
+                return [
+                    'id'   => $value->id,
+                    'parameter_id' => $value->parameter_id,
+                    'value' => $value->value,
+                    'image' => $value->parameter?->image,
+                    'tcp_id' => $value->tcp_id,
+                    'measurement_id' => $value->measurement_id,
+                    'label' => $value->tailorCatParameter?->label,
+                    'part' => $value->tailorCatParameter?->part,
+                ];
+            });
+        }
+        $dress->measurement_values = $values;
+
+        $dress->clothes = $dress->clothes->map(function ($cloth) {
+            $cloth->created_at = Carbon::parse($cloth->created_at)->toIso8601ZuluString();
+            
+            return $cloth;
+        });
+
+
+        $dress->clothes = [];
+
+        $clothes = Cloth::with('image')->where('dress_id', $id)->get();
+        
+        if( $clothes->isEmpty()) {
+            $dress->clothes = [];
+        } else {
+            $dress->clothes = $clothes->map(function ($cloth) {
+                return [
+                    'id' => $cloth->id,
+                    'dress_id' => $cloth->dress_id,
+                    'path' => $cloth->image?->path,
+                    'title' => $cloth->title,
+                    'length' => $cloth->length,
+                    'provided_by' => $cloth->provided_by,
+                    'price' => $cloth->price,
+                    'created_at' => $cloth->created_at->toIso8601ZuluString(),
+                    'updated_at' => $cloth->updated_at->toIso8601ZuluString(),
+                ];
+            });
+        }
+      
+       $onlyDesigns = $dress->designs
+        ->map(fn($design) => collect($design)->only(['id', 'path']))
+        ->values();
+       $dress->setRelation('designs', $onlyDesigns);  // setRelation is used to replace the designs relation with the modified collection
+
+        $dress->created_at = Carbon::parse($dress->created_at)->toIso8601ZuluString();
+        $dress->updated_at = Carbon::parse($dress->updated_at)->toIso8601ZuluString();
+
+        return response()->json( $dress);
     }
     
     /**
@@ -1206,7 +1365,11 @@ class DressController extends Controller
      */
     public function updateMeasurement(Request $request, $id)
     {
-        $dress = Dress::findOrFail($id);
+        $dress = Dress::find($id);
+
+        if (!$dress) {
+            return response()->json(['message' => 'Dress not found'], 404);
+        }
 
         $measurementId = $dress->measurement?->id;
 
@@ -1215,7 +1378,8 @@ class DressController extends Controller
             $dress->save();
         }
 
-        if ($request->has('measurement_values')) {
+        if ($request->has('measurement_values') && is_array($request->input('measurement_values'))) {
+            // Validate the measurement values
             $measurementValues = $request->input('measurement_values');
             if ($measurementId) {
                 // Update existing measurement values
@@ -1451,7 +1615,7 @@ class DressController extends Controller
      */
     // Clothes
     public function getClothes($id)
-    {
+    {   
         $clothes = Cloth::with('image')->where('dress_id', $id)->get();
         $clothes = $clothes->map(function ($cloth) {
             return [

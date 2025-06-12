@@ -48,8 +48,8 @@ class Dress extends Model
         return $this->hasOne(Measurement::class , 'model_id', 'id');
     }
 
-    public function images()
+    public function designs()
     {
-        return $this->hasMany(DressImage::class, 'dress_id', 'id'); 
+        return $this->hasMany(DressImage::class, 'dress_id', 'id')->where('type', 'design'); 
     }
 }
