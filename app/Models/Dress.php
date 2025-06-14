@@ -48,6 +48,11 @@ class Dress extends Model
         return $this->hasOne(Measurement::class , 'model_id', 'id');
     }
 
+    public function measurement_values()
+    {
+        return $this->hasManyThrough(MeasurementValue::class, Measurement::class, 'model_id' ,'measurement_id' , 'id' , 'id');
+    }
+
     public function designs()
     {
         return $this->hasMany(DressImage::class, 'dress_id', 'id')->where('type', 'design'); 

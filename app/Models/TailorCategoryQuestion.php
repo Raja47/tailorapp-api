@@ -18,4 +18,20 @@ class TailorCategoryQuestion extends Model
         'options',
         'status'
     ];
+
+
+    public function answers()
+    {
+        return $this->hasOne(TailorCategoryAnswer::class, 'question_id', 'id');
+    }
+
+    /**
+     * Check if the question type is a select type.
+     * @return bool
+     */
+    public function isMulti() :bool
+    {
+        return $this->type === 'multi-select' || $this->type === 'multi-icon';
+    }
+
 }

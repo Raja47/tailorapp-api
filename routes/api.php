@@ -163,9 +163,14 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories
         $router->get('details', [DressController::class, 'getDetails']);
         $router->put('details', [DressController::class, 'updateDetails']);
         
-        // Inventory (optional example)
+        // Instructions
         $router->get('instructions', [DressController::class, 'instructions']);
         $router->put('instructions', [DressController::class, 'updateInstructions']);
+
+        // Questions
+        $router->get('questions', [DressController::class, 'getQuestions']);
+        $router->put('questions', [DressController::class, 'updateQuestions']);
+
         
     });
 
