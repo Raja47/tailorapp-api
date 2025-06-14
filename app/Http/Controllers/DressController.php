@@ -228,6 +228,7 @@ class DressController extends Controller
                 }    
                  
                 Cloth::create([
+                    'dress_id' => $dress->id,
                     'title' => $clothImage['title'],
                     'dress_image_id' => $dress_image?->id,
                     'length' => $clothImage['length'],
