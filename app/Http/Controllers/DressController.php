@@ -1127,7 +1127,7 @@ class DressController extends Controller
     {
         $dress = Dress::with(['measurement', 'designs'])->find($id);
         
-        if (!$dress) {
+        if (empty($dress)) {
             return response()->json(['message' => 'Dress not found'], 404);
         }
 
@@ -1265,14 +1265,13 @@ class DressController extends Controller
     {   
         $dress = Dress::with("measurement")->find($id); 
 
+        if(empty($dress) || empty($dress->measurement?->id)) {
+            return response()->json(['message' => 'Dress or Measurement not found'], 404);
+        }
+
         $measurementId = $dress->measurement?->id;
         
-        if (!$measurementId) {
-            return response()->json(['message' => 'No measurement found for this dress'], 404);
-        }
-        
         $values = MeasurementValue::with(['parameter', 'tailorCatParameter'])->where('measurement_id', $measurementId)->get();
-        
         
         $values = $values->map(function ($value) {
             return [
@@ -1368,16 +1367,16 @@ class DressController extends Controller
     {
         $dress = Dress::find($id);
 
-        if (!$dress) {
+        if (empty($dress)) {
             return response()->json(['message' => 'Dress not found'], 404);
         }
 
-        $measurementId = $dress->measurement?->id;
-
-        if ($request->has('type')) {
+        if ($request->has('type') ) {            
             $dress->type = $request->input('type');
             $dress->save();
         }
+
+        $measurementId = $dress->measurement?->id;
 
         if ($request->has('measurement_values') && is_array($request->input('measurement_values'))) {
             // Validate the measurement values
@@ -1484,7 +1483,7 @@ class DressController extends Controller
 
         $image = DressImage::find($id);
         
-        if(!$image){
+        if(empty($image)){
             return response()->json(['message' => 'Design not found'] , 404);
         }
 
@@ -1827,7 +1826,7 @@ class DressController extends Controller
     {
         $dress = Dress::find($id);
 
-        if(!$dress) {
+        if(empty($dress)) {
             return response()->json(['message' => 'Dress not found'], 404);
         }
 
@@ -1979,7 +1978,7 @@ class DressController extends Controller
     {
         $dress = Dress::select('notes')->find($id);
 
-        if (!$dress) {
+        if (empty($dress) ){
             return response()->json(['message' => 'Dress not found'], 404);
         }
      
