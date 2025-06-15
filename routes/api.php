@@ -6,6 +6,8 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\TailorCustomerController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ClothController;
+use App\Http\Controllers\DressImageController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\CategoryParameterController;
 use App\Http\Controllers\CategoryQuestionController;
@@ -152,12 +154,12 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories
         $router->put('measurement', [DressController::class, 'updateMeasurement']);
 
         // Images
-        $router->get('designs', [DressController::class, 'designs']);
-        $router->post('designs', [DressController::class, 'createDesign']);
+        $router->get('designs', [DressImageController::class, 'designs']);
+        $router->post('designs', [DressImageController::class, 'createDesign']);
 
         // Clothes
-        $router->get('clothes', [DressController::class, 'getClothes']);
-        $router->post('clothes', [DressController::class, 'createCloth']);
+        $router->get('clothes', [ClothController::class, 'getClothes']);
+        $router->post('clothes', [ClothController::class, 'createCloth']);
 
         // Basic Details
         $router->get('details', [DressController::class, 'getDetails']);
@@ -174,8 +176,8 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories
         
     });
 
-    $router->delete('designs/{id}', [DressController::class, 'deleteDesign']);
-    $router->delete('clothes/{id}', [DressController::class, 'deleteCloth']);
+    $router->delete('designs/{id}', [DressImageController::class, 'deleteDesign']);
+    $router->delete('clothes/{id}', [ClothController::class, 'deleteCloth']);
 
 });
 
