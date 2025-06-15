@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CategoryQuestion;
 use App\Models\TailorCategory;
 use App\Models\TailorCategoryQuestion;
+use App\Models\TailorCategoryAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -210,6 +211,174 @@ class TailorCategoryQuestionController extends Controller
             }
         }
     }
+
+
+
+        /**
+     * @OA\Get(
+     *     path="/tailors/dresses/{id}/questions",
+     *     summary="Get questions for a dress",
+     *     description="Returns a list of questions for a dress based on the dress ID.",
+     *     operationId="getQuestions",
+     *     tags={"Dresses.edit"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+        *         name="id",
+        *         in="path",
+        *         required=true,        
+        *         @OA\Schema(type="integer"),
+        *         description="Dress ID"
+        *     ),
+     *     @OA\Response(
+        *         response=200,
+        *         description="Questions retrieved successfully",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="questions", type="array",
+        *                 @OA\Items(
+        *                     type="object",
+        *                     @OA\Property(property="id", type="integer", example=1),
+        *                     @OA\Property(property="tailor_id", type="integer", example=1),    
+        *                     @OA\Property(property="category_id", type="integer", example=1),
+        *                     @OA\Property(property="dress_id", type="integer", example=1),
+        *                     @OA\Property(property="question", type="string", example="What is your favorite color?"),
+        *                     @OA\Property(property="type", type="string", example="text"),
+        *                     @OA\Property(property="options", type="array", @OA\Items(type="string", example="Red")),
+        *                     @OA\Property(property="value", type="string", example="Red"),
+        *                     @OA\Property(property="created_at", type="string", format="date-time", example="2023-06-01T10:00:00Z"),
+        *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2023-06-01T10:00:00Z")
+        *                 )
+        *             ) 
+        *         )
+        *     ),
+        *     @OA\Response(
+        *         response=404,
+        *         description="Dress not found",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="message", type="string", example="Dress not found")
+        *         )
+        *     )
+        * )        
+     */
+    public function getDressQuestions($id)
+    {
+        
+        $answers = TailorCategoryAnswer::with('question')->where('dress_id', $id)->get();
+
+        $questions = $answers->map(function ($answer) {
+            return [
+                'id' => $answer->question?->id,
+                'tailor_id' => $answer->tailor_id,
+                'category_id' => $answer->question?->category_id,
+                'dress_id' => $answer->dress_id,
+                'question' => $answer->question?->question,
+                'type' => $answer->question?->type,
+                'options' => $answer->question?->options,
+                'value' => ( $answer && $answer->question?->isMulti()) ? explode(',',$answer->value) : $answer->value, 
+                'created_at' => $answer->created_at?->toIso8601ZuluString(),
+                'updated_at' => $answer->updated_at?->toIso8601ZuluString(),
+            ];
+        });
+
+        return response()->json(['message' => 'Questions retrieved successfully','questions' => $questions] ,200);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/tailors/dresses/{id}/questions",
+     *     summary="Update questions for a dress",
+     *     description="Updates the questions for a dress based on the dress ID.",
+     *     operationId="updateQuestions",
+     *     tags={"Dresses.edit"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+        *         name="id",
+        *         in="path",
+        *         required=true,        
+        *         @OA\Schema(type="integer"),
+        *         description="Dress ID"
+        *     ),     
+     *     @OA\RequestBody(
+        *         required=true,
+        *         @OA\MediaType(
+        *             mediaType="application/json",
+        *             @OA\Schema(
+        *                 @OA\Property(
+        *                     property="questions",
+        *                     type="array",
+        *                     @OA\Items(
+        *                         type="object",
+        *                         @OA\Property(property="id", type="integer", example=1, description="Question ID"),
+        *                         @OA\Property(property="value", type="string", example="Red", description="Answer value")
+        *                     )
+        *                 )
+        *             )
+        *         )
+        *     ),
+        *     @OA\Response(
+        *         response=200,
+        *         description="Questions updated successfully",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="message", type="string", example="Dress questions updated successfully")
+        *         )
+        *     ),
+        *     @OA\Response(
+        *         response=404,
+        *         description="Dress not found",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="message", type="string", example="Dress not found")
+        *         )
+        *     ),
+        *     @OA\Response(
+        *         response=422,
+        *         description="Validation error",
+        *         @OA\JsonContent(
+        *             type="object",
+        *             @OA\Property(property="success", type="boolean", example=false),
+        *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+        *             @OA\Property(
+        *                 property="errors",
+        *                 type="object",
+        *                 @OA\Property(
+        *                     property="questions",
+        *                     type="array",
+        *                     @OA\Items(
+        *                         type="string",
+        *                         example="The questions field is required."
+        *                     )
+        *                 )
+        *             )
+        *         )
+        *     )
+        * )
+     */
+    public function updateDressQuestions(Request $request, $id)
+    {
+        
+        $rules = [
+            'questions' => 'required|array|min:1',
+            'questions.*.id' => 'required|integer|exists:tailor_category_questions,id',
+            'questions.*.value' => 'nullable|string|max:1000',
+        ];
+
+        if ($request->has('questions')) {
+
+            $questionData = collect($request->input('questions'))->mapWithKeys(function ($question) {
+                return [$question['id'] => implode(',', (array) $question['value'])];
+            });
+            TailorCategoryAnswer::whereIn('tcq_id', $questionData->keys())
+                ->where('dress_id', $id)
+                ->each(function ($answer) use ($questionData) {
+                    $answer->update(['value' => $questionData[$answer->tcq_id]]);
+            });
+        }    
+        
+        return response()->json(['message' => 'Dress questions updated successfully']);
+    }
+
 
     /**
      * Display the specified resource.

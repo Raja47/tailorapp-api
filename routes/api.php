@@ -27,6 +27,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Tailor;
 use App\Models\TailorCategory;
+use App\Models\TailorCategoryQuestion;
 
 /*
 |--------------------------------------------------------------------------
@@ -150,28 +151,30 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories
     $router->prefix('/{id}')->group(function ($router) {
         // Basic Info
         $router->get('/', [DressController::class, 'show']);
-        $router->get('measurement', [DressController::class, 'measurement']);
-        $router->put('measurement', [DressController::class, 'updateMeasurement']);
-
-        // Images
-        $router->get('designs', [DressImageController::class, 'designs']);
-        $router->post('designs', [DressImageController::class, 'createDesign']);
-
-        // Clothes
-        $router->get('clothes', [ClothController::class, 'getClothes']);
-        $router->post('clothes', [ClothController::class, 'createCloth']);
 
         // Basic Details
         $router->get('details', [DressController::class, 'getDetails']);
         $router->put('details', [DressController::class, 'updateDetails']);
         
-        // Instructions
+        // Instructions & voice note
         $router->get('instructions', [DressController::class, 'instructions']);
         $router->put('instructions', [DressController::class, 'updateInstructions']);
+        
+        // Measurement & values and dress type
+        $router->get('measurement', [MeasurementController::class, 'getDressMeasurement']);
+        $router->put('measurement', [MeasurementController::class, 'updateDressMeasurement']);
+
+        // Designs
+        $router->get('designs', [DressImageController::class, 'designs']);
+        $router->post('designs', [DressImageController::class, 'createDesign']);
+
+        // Clothes tailor & customer
+        $router->get('clothes', [ClothController::class, 'getClothes']);
+        $router->post('clothes', [ClothController::class, 'createCloth']);
 
         // Questions
-        $router->get('questions', [DressController::class, 'getQuestions']);
-        $router->put('questions', [DressController::class, 'updateQuestions']);
+        $router->get('questions', [TailorCategoryQuestionController::class, 'getDressQuestions']);
+        $router->put('questions', [TailorCategoryQuestionController::class, 'updateDressQuestions']);
 
         
     });
