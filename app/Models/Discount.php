@@ -15,4 +15,9 @@ class Discount extends Model
         'order_id',
         'tailor_id'
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id');
+    }
 }

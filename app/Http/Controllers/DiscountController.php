@@ -159,6 +159,9 @@ class DiscountController extends Controller
         ]);
 
         if ($discount->save()) {
+            $discount_order = $discount->order;
+            $discount_order->increment('total_discount', $request->amount);
+
             return response()->json(['success' => true, 'message' => 'Discount Added Successfully'], 200);
         } else {
             return response()->json(['success' => false, 'message' => 'Discount cannot be added'], 500);

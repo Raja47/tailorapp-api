@@ -159,18 +159,22 @@ class ExpenseController extends Controller
         }
 
         $tailor_id = auth('sanctum')->user()->id;
+        $order_id = $request->order_id;
 
         $expense = Expense::create([
             'title' => $request->title,
             'amount' => $request->amount,
-            'order_id' => $request->order_id,
+            'order_id' => $order_id,
             'tailor_id' => $tailor_id,
             'dress_id' => $request->dress_id,
             'cloth_id' => $request->cloth_id,
         ]);
 
         if ($expense->save()) {
-            return response()->json(['success' => true, 'message' => 'Expense Added Successfully'], 200);
+            $expense_order = $expense->order;
+            $expense_order->increment('total_expenses', $request->amount);
+
+            return response()->json(['success' => true, 'message' => 'Expense Added Successfullyy'], 200);
         } else {
             return response()->json(['success' => false, 'message' => 'Expense cannot be added'], 500);
         }
