@@ -11,6 +11,8 @@ class Cloth extends Model
 
     protected $fillable = [
         'dress_id',
+        'order_id',
+        'tailor_id',
         'title',
         'dress_image_id',
         'length',
@@ -24,6 +26,8 @@ class Cloth extends Model
         return  [
             'id' => 'id',
             'dress_id' => 'dress_id',
+            'order_id' => 'order_id',
+            'tailor_id' => 'tailor_id',
             'dress_image_id' => fn($cloth) => $cloth->image ? $cloth->image->path : null,
             'title' => 'title',
             'length' => 'length',
