@@ -148,6 +148,7 @@ class DressController extends Controller
             return response()->json(['success' => false, 'message' => 'Data validation error', 'error' => $validation->errors()], 422);
         }
 
+        
         DB::beginTransaction();
         try {
             $tailor_id = auth('sanctum')->user()->id;
@@ -160,7 +161,6 @@ class DressController extends Controller
                     'customer_id' => $request->customer_id,
                     'tailor_id' => $tailor_id,
                     'shop_id' => $request->shop_id,
-                    'name' => 'order-1',
                     'status' => 0,
                 ])->id;
             }
@@ -170,7 +170,6 @@ class DressController extends Controller
                 'tailor_id' => $tailor_id,
                 'shop_id' => $request->shop_id,
                 'category_id' => $request->category_id,
-                'name' => '',
                 'type' => $request->type,
                 'quantity' => $request->quantity,
                 'price' => $request->price,
