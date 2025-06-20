@@ -178,7 +178,6 @@ class DressController extends Controller
                 'notes' => $request->notes,
                 'status' => 0,
             ]);
-            $dress->update(['name' => '#D-' . $request->category_id . '-' . $dress->id]);
             $order = Order::findOrFail($order_id);
             $order->increment('total_dress_amount', $request->price);
 
