@@ -134,50 +134,51 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/categories
 
 
     Route::group(['middleware' => ['auth:sanctum'], 'prefix' => '/tailors/dresses'], function ($router) {
-    $router->post('/create', [DressController::class, 'create']);
-    $router->post('/image', [DressController::class, 'uploadImage']);
-    $router->post('/images', [DressController::class, 'uploadImages']);
-    $router->post('/audio', [DressController::class, 'uploadAudio']);
-    // $router->get('/{dress_id}/measurement', [DressController::class, 'getOrderDressMeasurement']);
-    $router->get('/tab', [DressController::class, 'getTabDresses']);
-    $router->post('/store', [DressController::class, 'addDress']);
-    $router->post('/update', [DressController::class, 'updateDress']);
-    $router->get('/countbystatus/{shop_id}/{index}', [DressController::class, 'countDressesByStatus']);
-    $router->get('/count', [DressController::class, 'countDresses']);
-    $router->get('/{dress_id}/delete', [DressController::class, 'delete']);
-    $router->get('/orders/{order_id}', [DressController::class, 'getOrderDresses']);
-    $router->post('/updatestatus', [DressController::class, 'updateStatus']);
-
-    $router->prefix('/{id}')->group(function ($router) {
-        // Basic Info
-        $router->get('/', [DressController::class, 'show']);
-
-        // Basic Details
-        $router->get('details', [DressController::class, 'getDetails']);
-        $router->put('details', [DressController::class, 'updateDetails']);
         
-        // Instructions & voice note
-        $router->get('instructions', [DressController::class, 'instructions']);
-        $router->put('instructions', [DressController::class, 'updateInstructions']);
-        
-        // Measurement & values and dress type
-        $router->get('measurement', [MeasurementController::class, 'getDressMeasurement']);
-        $router->put('measurement', [MeasurementController::class, 'updateDressMeasurement']);
+        $router->post('/create', [DressController::class, 'create']);
+        $router->post('/image', [DressController::class, 'uploadImage']);
+        $router->post('/images', [DressController::class, 'uploadImages']);
+        $router->post('/audio', [DressController::class, 'uploadAudio']);
+        // $router->get('/{dress_id}/measurement', [DressController::class, 'getOrderDressMeasurement']);
+        $router->get('/tab', [DressController::class, 'getTabDresses']);
+        $router->post('/store', [DressController::class, 'addDress']);
+        $router->post('/update', [DressController::class, 'updateDress']);
+        $router->get('/countbystatus/{shop_id}/{index}', [DressController::class, 'countDressesByStatus']);
+        $router->get('/count', [DressController::class, 'countDresses']);
+        $router->get('/{dress_id}/delete', [DressController::class, 'delete']);
+        $router->get('/orders/{order_id}', [DressController::class, 'getOrderDresses']);
+        $router->post('/updatestatus', [DressController::class, 'updateStatus']);
 
-        // Designs
-        $router->get('designs', [DressImageController::class, 'designs']);
-        $router->post('designs', [DressImageController::class, 'createDesign']);
+        // Dress Edit Comonents routes
+        $router->prefix('/{id}')->group(function ($router) {
+            // Basic Info
+            $router->get('/', [DressController::class, 'show']);
 
-        // Clothes tailor & customer
-        $router->get('clothes', [ClothController::class, 'getClothes']);
-        $router->post('clothes', [ClothController::class, 'createCloth']);
+            // Basic Details
+            $router->get('details', [DressController::class, 'getDetails']);
+            $router->put('details', [DressController::class, 'updateDetails']);
+            
+            // Instructions & voice note
+            $router->get('instructions', [DressController::class, 'instructions']);
+            $router->put('instructions', [DressController::class, 'updateInstructions']);
+            
+            // Measurement & values and dress type
+            $router->get('measurement', [MeasurementController::class, 'getDressMeasurement']);
+            $router->put('measurement', [MeasurementController::class, 'updateDressMeasurement']);
 
-        // Questions
-        $router->get('questions', [TailorCategoryQuestionController::class, 'getDressQuestions']);
-        $router->put('questions', [TailorCategoryQuestionController::class, 'updateDressQuestions']);
+            // Designs
+            $router->get('designs', [DressImageController::class, 'designs']);
+            $router->post('designs', [DressImageController::class, 'createDesign']);
 
-        
-    });
+            // Clothes tailor & customer
+            $router->get('clothes', [ClothController::class, 'getClothes']);
+            $router->post('clothes', [ClothController::class, 'createCloth']);
+
+            // Questions
+            $router->get('questions', [TailorCategoryQuestionController::class, 'getDressQuestions']);
+            $router->put('questions', [TailorCategoryQuestionController::class, 'updateDressQuestions']);
+
+        });
 
     $router->delete('designs/{id}', [DressImageController::class, 'deleteDesign']);
     $router->delete('clothes/{id}', [ClothController::class, 'deleteCloth']);
