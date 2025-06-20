@@ -42,7 +42,7 @@ class Order extends Model
                         ->orderBy('id', 'desc')
                         ->first();
 
-            if ($latest && preg_match('/^' . $shopId . 'DR(\d+)$/', $latest->name, $matches)) {
+            if ($latest && preg_match('/^' . $shopId . 'OR(\d+)$/', $latest->name, $matches)) {
                 $last = (int)$matches[1];
             } else {
                 $last = 0;

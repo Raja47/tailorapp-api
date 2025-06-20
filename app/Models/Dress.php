@@ -69,11 +69,11 @@ class Dress extends Model
             $prefix = $shopId . 'DR';
 
             $latest = self::where('name', 'like', $prefix . '%')
-                        ->where('shop_id', $order->shop_id)
+                        ->where('shop_id', $shopId)
                         ->orderBy('id', 'desc')
                         ->first();
 
-            if ($latest && preg_match('/^' . $shopId . 'ORD(\d+)$/', $latest->name, $matches)) {
+            if ($latest && preg_match('/^' . $shopId . 'DR(\d+)$/', $latest->name, $matches)) {
                 $last = (int)$matches[1];
             } else {
                 $last = 0;
