@@ -53,4 +53,18 @@ class Order extends Model
         });
     }
 
+    public function discounts()
+    {
+        return $this->hasMany(Discount::class, 'order_id');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'order_id');
+    }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class, 'order_id');
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Dress;
+use App\Models\Expense;
 use App\Models\Cloth;
 use App\Models\DressImage;
 use App\Models\Order;
@@ -29,23 +30,24 @@ class DressController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"customer_id", "shop_id", "category_id", "type", "quantity", "price", "delivery_date", "trial_date", "measurement_value", "questionAnswers"},
-     *             @OA\Property(property="customer_id", type="integer", description="Customer ID"),
-     *             @OA\Property(property="shop_id", type="integer", description="Shop ID"),
-     *             @OA\Property(property="category_id", type="integer", description="Category ID"),
-     *             @OA\Property(property="type", type="string", enum={"stitching", "alteration"}, description="Dress type"),
-     *             @OA\Property(property="quantity", type="integer", minimum=1, description="Dress quantity"),
-     *             @OA\Property(property="price", type="number", description="Dress price"),
-     *             @OA\Property(property="delivery_date", type="string", format="date", description="Delivery date"),
-     *             @OA\Property(property="trial_date", type="string", format="date", description="Trial date"),
-     *             @OA\Property(property="notes", type="string", nullable=true, description="Additional notes"),
+     *             required={"order_id", "customer_id", "shop_id", "category_id", "type", "quantity", "price", "delivery_date", "trial_date", "measurement_values", "questionAnswers"},
+     *             @OA\Property(property="order_id", type="integer", description="Order ID", example=11),
+     *             @OA\Property(property="customer_id", type="integer", description="Customer ID", example=1),
+     *             @OA\Property(property="shop_id", type="integer", description="Shop ID", example=1),
+     *             @OA\Property(property="category_id", type="integer", description="Category ID", example=4),
+     *             @OA\Property(property="type", type="string", enum={"stitching", "alteration"}, description="Dress type", example="stitching"),
+     *             @OA\Property(property="quantity", type="integer", minimum=1, description="Dress quantity", example=1),
+     *             @OA\Property(property="price", type="number", description="Dress price", example=999),
+     *             @OA\Property(property="delivery_date", type="string", format="date", description="Delivery date", example="2025-06-19"),
+     *             @OA\Property(property="trial_date", type="string", format="date", description="Trial date", example="2025-06-19"),
+     *             @OA\Property(property="notes", type="string", nullable=true, description="Additional notes", example="string"),
      *             @OA\Property(
      *                 property="measurement_values",
      *                 type="array",
      *                 @OA\Items(
      *                     type="object",
-     *                     @OA\Property(property="parameter_id", type="integer"),
-     *                     @OA\Property(property="value", type="number", format="float")
+     *                     @OA\Property(property="parameter_id", type="integer", example=0),
+     *                     @OA\Property(property="value", type="number", format="float", example=0)
      *                 )
      *             ),
      *             @OA\Property(
@@ -53,14 +55,12 @@ class DressController extends Controller
      *                 type="array",
      *                 @OA\Items(
      *                     type="object",
-     *                     @OA\Property(property="question_id", type="integer"),
+     *                     @OA\Property(property="id", type="integer", example=0),
+     *                     @OA\Property(property="question_id", type="integer", example=0),
      *                     @OA\Property(
      *                         property="value",
      *                         type="array",
-     *                         @OA\Items(
-     *                             type="string",
-     *                             example="value1"
-     *                         )
+     *                         @OA\Items(type="string", example="value1")
      *                     )
      *                 )
      *             ),
@@ -80,10 +80,10 @@ class DressController extends Controller
      *                     @OA\Property(property="title", type="string", example="cloth1", description="Title of the cloth"),
      *                     @OA\Property(property="length", type="number", example=56, description="Length of the cloth"),
      *                     @OA\Property(property="provided_by", type="string", example="tailor", description="Provider of the cloth"),
-     *                     @OA\Property(property="price", type="number", example=1790, description="Price of the cloth")
+     *                     @OA\Property(property="price", type="number", example=4, description="Price of the cloth")
      *                 )
      *             ),
-     *            @OA\Property(property="audio", type="string", description="Path of audio recording")
+     *             @OA\Property(property="audio", type="string", description="Path of audio recording", example="string")
      *         )
      *     ),
      *     @OA\Response(
@@ -179,6 +179,8 @@ class DressController extends Controller
                 'status' => 0,
             ]);
             $dress->update(['name' => '#D-' . $request->category_id . '-' . $dress->id]);
+            $order = Order::findOrFail($order_id);
+            $order->increment('total_dress_amount', $request->price);
 
             $measurement = Measurement::create([
                 'model' => 'dress',
@@ -194,11 +196,11 @@ class DressController extends Controller
             $answersToInsert = [];
             foreach ($request->questionAnswers as $questionAnswer) {
                 $answersToInsert[] = [
-                        'tailor_id' => $tailor_id,
-                        'dress_id' => $dress->id,
-                        'tcq_id' => $questionAnswer['id'], // Assuming tcq_id is the same as question_id   
-                        'question_id' => $questionAnswer['question_id'],
-                        'value' => is_array($questionAnswer['value']) ? implode( "," ,$questionAnswer['value'] ) : $questionAnswer['value'],   
+                    'tailor_id' => $tailor_id,
+                    'dress_id' => $dress->id,
+                    'tcq_id' => $questionAnswer['id'], // Assuming tcq_id is the same as question_id   
+                    'question_id' => $questionAnswer['question_id'],
+                    'value' => is_array($questionAnswer['value']) ? implode(",", $questionAnswer['value']) : $questionAnswer['value'],
                 ];
             }
             // Insert all answers in one go
@@ -215,7 +217,7 @@ class DressController extends Controller
             }
 
             foreach ($request->clothImages as $clothImage) {
-                
+
                 if (isset($clothImage['path']) && !empty($clothImage['path'])) {
                     $dress_image = DressImage::create([
                         'tailor_id' => $tailor_id,
@@ -223,19 +225,30 @@ class DressController extends Controller
                         'order_id' => $order_id,
                         'type' => 'cloth',
                         'path' => $clothImage['path']
-                    ]);   
-                }    
-                 
-                Cloth::create([
+                    ]);
+                }
+
+                $cloth = Cloth::create([
                     'dress_id' => $dress->id,
+                    'order_id' => $order_id,
+                    'tailor_id' => $tailor_id,
                     'title' => $clothImage['title'],
                     'dress_image_id' => $dress_image?->id,
                     'length' => $clothImage['length'],
                     'provided_by' => $clothImage['provided_by'],
-                    'price' => $clothImage['price']
+                    'price' => (isset($clothImage['price']) && $clothImage['provided_by'] == 'tailor') ? $clothImage['price'] : null
                 ]);
-                    
-                
+
+                $expense = Expense::create([
+                    'title' => 'Cloth Expense',
+                    'amount' => $clothImage['price'],
+                    'order_id' => $order_id,
+                    'tailor_id' => $tailor_id,
+                    'dress_id' => $dress->id,
+                    'cloth_id' => $cloth->id,
+                ]);
+
+                $order->increment('total_expenses', $expense->amount);
             }
 
             if (!empty($request->audio)) {
@@ -1068,41 +1081,41 @@ class DressController extends Controller
      *        
      *     @OA\Property(property="measurement_values", type="array",
      *         @OA\Items(
-        *             type="object",
-        *             @OA\Property(property="id", type="integer", example=1),
-        *             @OA\Property(property="parameter_id", type="integer", example=1),
-        *             @OA\Property(property="value", type="number", format="float", example=34.5),
-        *             @OA\Property(property="image", type="string", example="uploads/measurement1.jpg"),
-        *             @OA\Property(property="tcp_id", type="integer", example=1),   
-        *             @OA\Property(property="label", type="string", example="Chest"),
-        *             @OA\Property(property="part", type="string", example="Upper Body"),  
-        *             @OA\Property(property="measurement_id", type="integer", example=1)
-        *         )
-        *     ),
-        *     @OA\Property(property="clothes", type="array",
-        *         @OA\Items(
-        *             type="object",  
-        *             @OA\Property(property="id", type="integer", example=1),
-        *             @OA\Property(property="dress_id", type="integer", example=1),
-        *             @OA\Property(property="path", type="string", example="uploads/cloth1.jpg"),
-        *             @OA\Property(property="title", type="string", example="Cloth Title"),
-        *             @OA\Property(property="length", type="string", example="2.5 meters"),
-        *             @OA\Property(property="provided_by", type="string", example="Supplier Name"),
-        *             @OA\Property(property="price", type="number", format="float", example=500.00),
-        *             @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),
-        *             @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-03T12:00:00Z")
-        *         )
-        *     ),
-        *     @OA\Property(property="designs", type="array",
-        *         @OA\Items(
-        *             type="object",
-        *             @OA\Property(property="id", type="integer", example=1),
-        *             @OA\Property(property="path", type="string", example="uploads/design1.jpg")
-        *         )
-        *     ),
-        *     @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),  
-        *     @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-03T12:00:00Z")
-        * ),
+     *             type="object",
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="parameter_id", type="integer", example=1),
+     *             @OA\Property(property="value", type="number", format="float", example=34.5),
+     *             @OA\Property(property="image", type="string", example="uploads/measurement1.jpg"),
+     *             @OA\Property(property="tcp_id", type="integer", example=1),   
+     *             @OA\Property(property="label", type="string", example="Chest"),
+     *             @OA\Property(property="part", type="string", example="Upper Body"),  
+     *             @OA\Property(property="measurement_id", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Property(property="clothes", type="array",
+     *         @OA\Items(
+     *             type="object",  
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="dress_id", type="integer", example=1),
+     *             @OA\Property(property="path", type="string", example="uploads/cloth1.jpg"),
+     *             @OA\Property(property="title", type="string", example="Cloth Title"),
+     *             @OA\Property(property="length", type="string", example="2.5 meters"),
+     *             @OA\Property(property="provided_by", type="string", example="Supplier Name"),
+     *             @OA\Property(property="price", type="number", format="float", example=500.00),
+     *             @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),
+     *             @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-03T12:00:00Z")
+     *         )
+     *     ),
+     *     @OA\Property(property="designs", type="array",
+     *         @OA\Items(
+     *             type="object",
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="path", type="string", example="uploads/design1.jpg")
+     *         )
+     *     ),
+     *     @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),  
+     *     @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-03T12:00:00Z")
+     * ),
      * ), 
      * @OA\Response(
      *     response=404,
@@ -1125,7 +1138,7 @@ class DressController extends Controller
     public function show($id)
     {
         $dress = Dress::with(['measurement', 'designs'])->find($id);
-        
+
         if (empty($dress)) {
             return response()->json(['message' => 'Dress not found'], 404);
         }
@@ -1135,7 +1148,7 @@ class DressController extends Controller
 
         $dress->measurement_values = [];
         $values = [];
-        if( $dress->measurement?->id){
+        if ($dress->measurement?->id) {
             $values = MeasurementValue::with(['parameter', 'tailorCatParameter'])->where('measurement_id', $dress->measurement->id)->get();
             $values = $values->map(function ($value) {
                 return [
@@ -1154,7 +1167,7 @@ class DressController extends Controller
 
         $dress->clothes = $dress->clothes->map(function ($cloth) {
             $cloth->created_at = Carbon::parse($cloth->created_at)->toIso8601ZuluString();
-            
+
             return $cloth;
         });
 
@@ -1162,8 +1175,8 @@ class DressController extends Controller
         $dress->clothes = [];
 
         $clothes = Cloth::with('image')->where('dress_id', $id)->get();
-        
-        if( $clothes->isEmpty()) {
+
+        if ($clothes->isEmpty()) {
             $dress->clothes = [];
         } else {
             $dress->clothes = $clothes->map(function ($cloth) {
@@ -1180,62 +1193,62 @@ class DressController extends Controller
                 ];
             });
         }
-      
-       $onlyDesigns = $dress->designs
-        ->map(fn($design) => collect($design)->only(['id', 'path']))
-        ->values();
-       $dress->setRelation('designs', $onlyDesigns);  // setRelation is used to replace the designs relation with the modified collection
+
+        $onlyDesigns = $dress->designs
+            ->map(fn($design) => collect($design)->only(['id', 'path']))
+            ->values();
+        $dress->setRelation('designs', $onlyDesigns);  // setRelation is used to replace the designs relation with the modified collection
 
         $dress->created_at = Carbon::parse($dress->created_at)->toIso8601ZuluString();
         $dress->updated_at = Carbon::parse($dress->updated_at)->toIso8601ZuluString();
 
-        return response()->json( $dress);
+        return response()->json($dress);
     }
-    
+
 
     /**
-        * @OA\Get(
-        *     path="/tailors/dresses/{id}/details",
-        *     summary="Get basic details for a dress",
-        *     description="Returns basic details for a dress based on the dress ID.",
-        *     operationId="getBasicDetails",
-        *     tags={"Dresses.edit"},
-        *     security={{"bearerAuth": {}}},
-        *     @OA\Parameter(
-        *         name="id",
-        *         in="path",
-        *         required=true,        
-        *         @OA\Schema(type="integer"),
-        *         description="Dress ID"        
-        *     ),
-        *     @OA\Response(
-        *         response=200,
-        *         description="Basic details for the dress",
-        *         @OA\JsonContent(
-        *             type="object",
-        *             @OA\Property(property="dress_Id", type="integer", example=1),         
-        *             @OA\Property(property="delivery_date", type="string", format="date", example="2023-09-01"),
-        *             @OA\Property(property="trial_date", type="string", format="date", example="2023-09-01"),
-        *             @OA\Property(property="quantity", type="integer", example=1),
-        *             @OA\Property(property="price", type="number", example=100)
-        *         )
-        *     ),
-        *     @OA\Response(
-        *         response=404,
-        *         description="Dress not found",
-        *         @OA\JsonContent(
-        *             type="object",
-        *             @OA\Property(property="message", type="string", example="Dress not found")            
-        *         )
-        *     )
-        * )
+     * @OA\Get(
+     *     path="/tailors/dresses/{id}/details",
+     *     summary="Get basic details for a dress",
+     *     description="Returns basic details for a dress based on the dress ID.",
+     *     operationId="getBasicDetails",
+     *     tags={"Dresses.edit"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,        
+     *         @OA\Schema(type="integer"),
+     *         description="Dress ID"        
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Basic details for the dress",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="dress_Id", type="integer", example=1),         
+     *             @OA\Property(property="delivery_date", type="string", format="date", example="2023-09-01"),
+     *             @OA\Property(property="trial_date", type="string", format="date", example="2023-09-01"),
+     *             @OA\Property(property="quantity", type="integer", example=1),
+     *             @OA\Property(property="price", type="number", example=100)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Dress not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Dress not found")            
+     *         )
+     *     )
+     * )
      *)
      */
     public function getDetails($id)
     {
         $dress = Dress::find($id);
 
-        if(empty($dress)) {
+        if (empty($dress)) {
             return response()->json(['message' => 'Dress not found'], 404);
         }
 
@@ -1246,70 +1259,69 @@ class DressController extends Controller
             'quantity' => $dress->quantity,
             'price' => $dress->price
         ], 200);
-
     }
 
     /**
-        * @OA\Put(
-        *     path="/tailors/dresses/{id}/details",
-        *     summary="Update basic details for a dress",
-        *     description="Allows a tailor to update basic details for a dress based on the dress ID.",
-        *     operationId="updateBasicDetails",
-        *     tags={"Dresses.edit"},
-        *     security={{"bearerAuth": {}}},
-        *     @OA\Parameter(
-        *         name="id",
-        *         in="path",
-        *         required=true,        
-        *         @OA\Schema(type="integer"),
-        *         description="Dress ID"
-        *     ),
-        *     @OA\RequestBody(
-        *         required=true,
-        *         @OA\MediaType(mediaType="application/json",
-        *             @OA\Schema(
-        *                 type="object",                
-        *                 @OA\Property(property="delivery_date", type="string", format="date", example="2023-09-01"),
-        *                 @OA\Property(property="trial_date", type="string", format="date", example="2023-09-01"),  
-        *                 @OA\Property(property="quantity", type="integer", example=1),
-        *                 @OA\Property(property="price", type="number", example=100)
-        *             )
-        *         )
-        *     ),
-        *     @OA\Response(
-        *         response=200,
-        *         description="Dress updated successfully",
-        *         @OA\JsonContent(
-        *             type="object",
-        *             @OA\Property(property="message", type="string", example="Dress updated successfully")
-        *         )
-        *     ),
-        *     @OA\Response(
-        *         response=404,
-        *         description="Dress not found",
-        *         @OA\JsonContent(
-        *             type="object",
-        *             @OA\Property(property="message", type="string", example="Dress not found")
-        *         )
-        *     ),
-        *     @OA\Response(
-        *         response=422,
-        *         description="Validation error",
-        *         @OA\JsonContent(
-        *             type="object",
-        *             @OA\Property(property="errors", type="object",
-        *                 @OA\Property(property="delivery_date", type="array", @OA\Items(type="string")),
-        *                 @OA\Property(property="trial_date", type="array", @OA\Items(type="string")),
-        *                 @OA\Property(property="quantity", type="array", @OA\Items(type="string")),
-        *                 @OA\Property(property="price", type="array", @OA\Items(type="string"))
-        *             )
-        *         )
-        *     )
-        * )
-    */ 
+     * @OA\Put(
+     *     path="/tailors/dresses/{id}/details",
+     *     summary="Update basic details for a dress",
+     *     description="Allows a tailor to update basic details for a dress based on the dress ID.",
+     *     operationId="updateBasicDetails",
+     *     tags={"Dresses.edit"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,        
+     *         @OA\Schema(type="integer"),
+     *         description="Dress ID"
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",                
+     *                 @OA\Property(property="delivery_date", type="string", format="date", example="2023-09-01"),
+     *                 @OA\Property(property="trial_date", type="string", format="date", example="2023-09-01"),  
+     *                 @OA\Property(property="quantity", type="integer", example=1),
+     *                 @OA\Property(property="price", type="number", example=100)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Dress updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Dress updated successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Dress not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Dress not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="errors", type="object",
+     *                 @OA\Property(property="delivery_date", type="array", @OA\Items(type="string")),
+     *                 @OA\Property(property="trial_date", type="array", @OA\Items(type="string")),
+     *                 @OA\Property(property="quantity", type="array", @OA\Items(type="string")),
+     *                 @OA\Property(property="price", type="array", @OA\Items(type="string"))
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function updateDetails(Request $request, $id)
     {
-    
+
         $dress = Dress::findOrFail($id);
 
         $rules = [
@@ -1323,14 +1335,14 @@ class DressController extends Controller
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
-        }   
+        }
 
 
         if ($request->has('delivery_date') && !empty($request->input('delivery_date'))) {
             $dress->delivery_date = $request->input('delivery_date');
         }
 
-        if ($request->has('trial_date') ) {
+        if ($request->has('trial_date')) {
             $dress->trial_date = $request->input('trial_date');
         }
 
@@ -1350,47 +1362,47 @@ class DressController extends Controller
     }
 
     /**
-    * @OA\Get(
-    *     path="/tailors/dresses/{id}/instructions",
-    *     summary="Get instructions and audio for a dress",
-    *     description="Allows a tailor to retrieve instructions and audio for a dress based on the dress ID.",
-    *     operationId="getInstructions",
-    *     tags={"Dresses.edit"},
-    *     security={{"bearerAuth": {}}},
-    *     @OA\Parameter(
-    *         name="id",
-    *         in="path",
-    *         required=true,        
-    *         @OA\Schema(type="integer"),
-    *         description="Dress ID"
-    *     ),
-    *     @OA\Response(
-    *         response=200,
-    *         description="Instructions and audio retrieved successfully",
-    *         @OA\JsonContent(
-    *             type="object",
-    *             @OA\Property(property="instructions", type="string", example="Instructions for the dress"),
-    *             @OA\Property(property="audio", type="string", example="Audio file path")
-    *         )
-    *     ),
-    *     @OA\Response(
-    *         response=404,
-    *         description="Dress not found",
-    *         @OA\JsonContent(
-    *             type="object",
-    *             @OA\Property(property="message", type="string", example="Dress not found")
-    *         )
-    *     )
-    * )
-    */   
+     * @OA\Get(
+     *     path="/tailors/dresses/{id}/instructions",
+     *     summary="Get instructions and audio for a dress",
+     *     description="Allows a tailor to retrieve instructions and audio for a dress based on the dress ID.",
+     *     operationId="getInstructions",
+     *     tags={"Dresses.edit"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,        
+     *         @OA\Schema(type="integer"),
+     *         description="Dress ID"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Instructions and audio retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="instructions", type="string", example="Instructions for the dress"),
+     *             @OA\Property(property="audio", type="string", example="Audio file path")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Dress not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Dress not found")
+     *         )
+     *     )
+     * )
+     */
     public function instructions($id)
     {
         $dress = Dress::select('notes')->find($id);
 
-        if (empty($dress) ){
+        if (empty($dress)) {
             return response()->json(['message' => 'Dress not found'], 404);
         }
-     
+
         if (!Recording::where('dress_id', $id)->exists()) {
             return response()->json(['instructions' => $dress->notes, 'audio' => null]);
         }
@@ -1402,58 +1414,58 @@ class DressController extends Controller
 
     /**
      * @OA\Put(
-        *     path="/tailors/dresses/{id}/instructions",
-        *     summary="Update instructions and audio for a dress",
-        *     description="Allows a tailor to update instructions and audio for a dress based on the dress ID.",
-        *     operationId="updateInstructions",
-        *     tags={"Dresses.edit"},
-        *     security={{"bearerAuth": {}}},
-        *     @OA\Parameter(
-        *         name="id",
-        *         in="path",
-        *         required=true,        
-        *         @OA\Schema(type="integer"),
-        *         description="Dress ID"
-        *     ),
-        *     @OA\RequestBody(
-        *         required=true,
-        *         @OA\MediaType(mediaType="application/json",
-        *             @OA\Schema(
-        *                 type="object",
-        *                 @OA\Property(property="notes", type="string", example="Updated instructions for the dress"),
-        *                 @OA\Property(property="audio", type="string", example="Updated audio file path")
-        *             )
-        *         )
-        *     ),
-        *     @OA\Response(
-        *         response=200,
-        *         description="Instructions and audio updated successfully",
-        *         @OA\JsonContent(
-        *             type="object",
-        *             @OA\Property(property="message", type="string", example="Dress updated successfully")
-        *         )
-        *     ),
-        *     @OA\Response(
-        *         response=404,
-        *         description="Dress not found",
-        *         @OA\JsonContent(
-        *             type="object",
-        *             @OA\Property(property="message", type="string", example="Dress not found")
-        *         )
-        *     ),
-        *     @OA\Response(
-        *         response=422,
-        *         description="Validation error",
-        *         @OA\JsonContent(
-        *             type="object",
-        *             @OA\Property(property="message", type="string", example="Data validation error"),
-        *             @OA\Property(property="data", type="object",
-        *                 @OA\Property(property="notes", type="array", @OA\Items(type="string", example="The notes field is required.")),
-        *                 @OA\Property(property="audio", type="array", @OA\Items(type="string", example="The audio field is required."))
-        *             )
-        *         )
-        *     )
-        * ) 
+     *     path="/tailors/dresses/{id}/instructions",
+     *     summary="Update instructions and audio for a dress",
+     *     description="Allows a tailor to update instructions and audio for a dress based on the dress ID.",
+     *     operationId="updateInstructions",
+     *     tags={"Dresses.edit"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,        
+     *         @OA\Schema(type="integer"),
+     *         description="Dress ID"
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="notes", type="string", example="Updated instructions for the dress"),
+     *                 @OA\Property(property="audio", type="string", example="Updated audio file path")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Instructions and audio updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Dress updated successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Dress not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Dress not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Data validation error"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="notes", type="array", @OA\Items(type="string", example="The notes field is required.")),
+     *                 @OA\Property(property="audio", type="array", @OA\Items(type="string", example="The audio field is required."))
+     *             )
+     *         )
+     *     )
+     * ) 
      */
     public function updateInstructions(Request $request, $id)
     {
@@ -1469,30 +1481,27 @@ class DressController extends Controller
             return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validator->errors()], 422);
         }
 
-        if ($request->has('notes') ) {
+        if ($request->has('notes')) {
             $dress->notes = $request->input('notes');
         }
 
         if ($request->has('audio')) {
-            if(!empty($request->input('audio')) ) {
+            if (!empty($request->input('audio'))) {
                 $recording = Recording::where('dress_id', $id)->first();
-                if($recording == null){
+                if ($recording == null) {
                     $recording = new Recording();
                     $recording->dress_id = $id;
                 }
                 $recording->path = $request->input('audio');
                 $recording->duration = 0; // Assuming duration is not provided in the request
                 $recording->save();
-            }else{
+            } else {
                 Recording::where('dress_id', $id)->delete();
             }
         }
 
         $dress->save();
 
-        return response()->json(['message' => 'Dress updated successfully' ,200]);
-           
+        return response()->json(['message' => 'Dress updated successfully', 200]);
     }
-
-
 }

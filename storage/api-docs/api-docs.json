@@ -12,6 +12,279 @@
         }
     ],
     "paths": {
+        "/tailors/dresses/{id}/clothes": {
+            "get": {
+                "tags": [
+                    "Dresses.edit"
+                ],
+                "summary": "Get clothes for a dress",
+                "description": "Returns all clothes for a dress",
+                "operationId": "getDressClothes",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Dress ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of clothes for the dress",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "clothes": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "dress_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "length": {
+                                                        "type": "integer"
+                                                    },
+                                                    "provided_by": {
+                                                        "type": "string"
+                                                    },
+                                                    "price": {
+                                                        "type": "integer"
+                                                    },
+                                                    "path": {
+                                                        "type": "string"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Dresses.edit"
+                ],
+                "summary": "Create a new cloth for a dress",
+                "description": "Creates a new cloth for a specific dress.",
+                "operationId": "createCloth",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Dress ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Summer Dress"
+                                    },
+                                    "length": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 50.5
+                                    },
+                                    "provided_by": {
+                                        "type": "string",
+                                        "example": "Tailor Name"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 100
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "example": "/images/cloth.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cloth created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cloth Created Successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "Dress id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data validation error"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "title": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The title field is required."
+                                                    }
+                                                },
+                                                "provided_by": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The provided_by field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cloth could not be created"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/dresses/clothes/{id}": {
+            "delete": {
+                "tags": [
+                    "Dresses.edit"
+                ],
+                "summary": "Delete a cloth",
+                "description": "Deletes a cloth based on the dress ID and cloth ID.",
+                "operationId": "deleteCloth",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Cloth ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cloth deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cloth deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cloth not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cloth not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/discounts/orders/{order_id}": {
             "get": {
                 "tags": [
@@ -291,6 +564,7 @@
                         "application/json": {
                             "schema": {
                                 "required": [
+                                    "order_id",
                                     "customer_id",
                                     "shop_id",
                                     "category_id",
@@ -299,21 +573,29 @@
                                     "price",
                                     "delivery_date",
                                     "trial_date",
-                                    "measurement_value",
+                                    "measurement_values",
                                     "questionAnswers"
                                 ],
                                 "properties": {
+                                    "order_id": {
+                                        "description": "Order ID",
+                                        "type": "integer",
+                                        "example": 11
+                                    },
                                     "customer_id": {
                                         "description": "Customer ID",
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "example": 1
                                     },
                                     "shop_id": {
                                         "description": "Shop ID",
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "example": 1
                                     },
                                     "category_id": {
                                         "description": "Category ID",
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "example": 4
                                     },
                                     "type": {
                                         "description": "Dress type",
@@ -321,30 +603,36 @@
                                         "enum": [
                                             "stitching",
                                             "alteration"
-                                        ]
+                                        ],
+                                        "example": "stitching"
                                     },
                                     "quantity": {
                                         "description": "Dress quantity",
                                         "type": "integer",
-                                        "minimum": 1
+                                        "minimum": 1,
+                                        "example": 1
                                     },
                                     "price": {
                                         "description": "Dress price",
-                                        "type": "number"
+                                        "type": "number",
+                                        "example": 999
                                     },
                                     "delivery_date": {
                                         "description": "Delivery date",
                                         "type": "string",
-                                        "format": "date"
+                                        "format": "date",
+                                        "example": "2025-06-19"
                                     },
                                     "trial_date": {
                                         "description": "Trial date",
                                         "type": "string",
-                                        "format": "date"
+                                        "format": "date",
+                                        "example": "2025-06-19"
                                     },
                                     "notes": {
                                         "description": "Additional notes",
                                         "type": "string",
+                                        "example": "string",
                                         "nullable": true
                                     },
                                     "measurement_values": {
@@ -352,11 +640,13 @@
                                         "items": {
                                             "properties": {
                                                 "parameter_id": {
-                                                    "type": "integer"
+                                                    "type": "integer",
+                                                    "example": 0
                                                 },
                                                 "value": {
                                                     "type": "number",
-                                                    "format": "float"
+                                                    "format": "float",
+                                                    "example": 0
                                                 }
                                             },
                                             "type": "object"
@@ -366,8 +656,13 @@
                                         "type": "array",
                                         "items": {
                                             "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
                                                 "question_id": {
-                                                    "type": "integer"
+                                                    "type": "integer",
+                                                    "example": 0
                                                 },
                                                 "value": {
                                                     "type": "array",
@@ -416,7 +711,7 @@
                                                 "price": {
                                                     "description": "Price of the cloth",
                                                     "type": "number",
-                                                    "example": 1790
+                                                    "example": 4
                                                 }
                                             },
                                             "type": "object"
@@ -424,7 +719,8 @@
                                     },
                                     "audio": {
                                         "description": "Path of audio recording",
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "string"
                                     }
                                 },
                                 "type": "object"
@@ -1418,14 +1714,14 @@
                 ]
             }
         },
-        "/tailors/dresses/{id}/measurement": {
+        "/tailors/dresses/{id}": {
             "get": {
                 "tags": [
-                    "Dresses"
+                    "Dresses.edit"
                 ],
-                "summary": "Get the measurement of a dress",
-                "description": "Allows a tailor to get the measurement of a dress based on dress ID.",
-                "operationId": "getDressMeasurement",
+                "summary": "Get a dress by ID",
+                "description": "Retrieves a dress by its ID, including its measurement, clothes, and images.",
+                "operationId": "getDressById",
                 "parameters": [
                     {
                         "name": "id",
@@ -1439,203 +1735,170 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Dress measurement retrieved successfully",
+                        "description": "Dress retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Elegant Dress"
+                                        },
+                                        "category_id": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "example": "alteration"
+                                        },
+                                        "quantity": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "price": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 1500.5
+                                        },
+                                        "delivery_date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2024-10-01"
+                                        },
+                                        "trial_date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2024-10-15"
+                                        },
+                                        "is_urgent": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "notes": {
+                                            "type": "string",
+                                            "example": "Add lace at the sleeves"
+                                        },
+                                        "measurement": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "dress_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-03-03T12:00:00Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-03-03T12:00:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
                                         "measurement_values": {
                                             "type": "array",
                                             "items": {
-                                                "description": "Measurement values for the dress",
                                                 "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
                                                     "parameter_id": {
-                                                        "type": "integer"
+                                                        "type": "integer",
+                                                        "example": 1
                                                     },
                                                     "value": {
                                                         "type": "number",
-                                                        "format": "float"
+                                                        "format": "float",
+                                                        "example": 34.5
                                                     },
-                                                    "parameter_name": {
-                                                        "type": "string"
+                                                    "image": {
+                                                        "type": "string",
+                                                        "example": "uploads/measurement1.jpg"
                                                     },
-                                                    "parameter_unit": {
-                                                        "type": "string"
+                                                    "tcp_id": {
+                                                        "type": "integer",
+                                                        "example": 1
                                                     },
-                                                    "parameter_type": {
-                                                        "type": "string"
+                                                    "label": {
+                                                        "type": "string",
+                                                        "example": "Chest"
                                                     },
-                                                    "tailor_cat_parameter_id": {
-                                                        "type": "integer"
+                                                    "part": {
+                                                        "type": "string",
+                                                        "example": "Upper Body"
+                                                    },
+                                                    "measurement_id": {
+                                                        "type": "integer",
+                                                        "example": 1
                                                     }
                                                 },
                                                 "type": "object"
                                             }
                                         },
-                                        "type": {
-                                            "description": "Type of the dress",
-                                            "type": "string",
-                                            "example": "stitching"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Dress not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Dress not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "Dresses.edit"
-                ],
-                "summary": "Update the measurement of a dress",
-                "description": "Allows a tailor to update the measurement of a dress based on the dress ID.",
-                "operationId": "updateDressMeasurement",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Dress ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "description": "Measurement data to update the dress",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "type": {
-                                        "description": "Type of the dress",
-                                        "type": "string",
-                                        "enum": [
-                                            "stitching",
-                                            "alteration"
-                                        ]
-                                    },
-                                    "measurement_values": {
-                                        "description": "List of measurement values",
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "tcp_id": {
-                                                    "description": "ID of the tailoring control point",
-                                                    "type": "integer"
+                                        "clothes": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "dress_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "path": {
+                                                        "type": "string",
+                                                        "example": "uploads/cloth1.jpg"
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Cloth Title"
+                                                    },
+                                                    "length": {
+                                                        "type": "string",
+                                                        "example": "2.5 meters"
+                                                    },
+                                                    "provided_by": {
+                                                        "type": "string",
+                                                        "example": "Supplier Name"
+                                                    },
+                                                    "price": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 500
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-03-03T12:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-03-03T12:00:00Z"
+                                                    }
                                                 },
-                                                "value": {
-                                                    "description": "Measurement value",
-                                                    "type": "number",
-                                                    "format": "float"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Measurement updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Measurement updated"
+                                                "type": "object"
+                                            }
                                         },
-                                        "dress_id": {
-                                            "description": "ID of the updated dress",
-                                            "type": "integer",
-                                            "example": 1
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Dress not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Dress not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/tailors/dresses/{id}/designs": {
-            "get": {
-                "tags": [
-                    "Dresses"
-                ],
-                "summary": "Get images for a dress",
-                "description": "Returns a list of images for a dress based on the dress ID.",
-                "operationId": "getDressImages",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Dress ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of images for the dress",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "images": {
+                                        "designs": {
                                             "type": "array",
                                             "items": {
                                                 "properties": {
@@ -1645,11 +1908,21 @@
                                                     },
                                                     "path": {
                                                         "type": "string",
-                                                        "example": "/images/design1.jpg"
+                                                        "example": "uploads/design1.jpg"
                                                     }
                                                 },
                                                 "type": "object"
                                             }
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2024-03-03T12:00:00Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2024-03-03T12:00:00Z"
                                         }
                                     },
                                     "type": "object"
@@ -1666,359 +1939,6 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Dress not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Dresses"
-                ],
-                "summary": "Upload a Design image",
-                "description": "Stores an image in 'public/dress'.",
-                "operationId": "uploadDressDesign",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Dress ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "designs[]"
-                                ],
-                                "properties": {
-                                    "designs[]": {
-                                        "description": "Array of design Image files",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "format": "binary"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Images uploaded",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Image uploaded"
-                                        },
-                                        "data": {
-                                            "type": "string",
-                                            "example": "storage/dress/image.jpg"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Data validation error"
-                                        },
-                                        "data": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/tailors/dresses/designs/{design_id}": {
-            "delete": {
-                "tags": [
-                    "Dresses"
-                ],
-                "summary": "Delete a design image",
-                "description": "Deletes a design image based on the design ID.",
-                "operationId": "deleteDesign",
-                "parameters": [
-                    {
-                        "name": "design_id",
-                        "in": "path",
-                        "description": "Design ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Design deleted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Design deleted"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Design not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Design not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/tailors/dresses/{id}/clothes": {
-            "get": {
-                "tags": [
-                    "Dresses"
-                ],
-                "summary": "Get clothes for a dress",
-                "description": "Returns all clothes for a dress",
-                "operationId": "getDressClothes",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Dress ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of clothes for the dress",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "clothes": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer"
-                                                    },
-                                                    "dress_id": {
-                                                        "type": "integer"
-                                                    },
-                                                    "title": {
-                                                        "type": "string"
-                                                    },
-                                                    "length": {
-                                                        "type": "integer"
-                                                    },
-                                                    "provided_by": {
-                                                        "type": "string"
-                                                    },
-                                                    "price": {
-                                                        "type": "integer"
-                                                    },
-                                                    "path": {
-                                                        "type": "string"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "format": "date-time"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "format": "date-time"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Dresses"
-                ],
-                "summary": "Create a new cloth for a dress",
-                "description": "Creates a new cloth for a specific dress.",
-                "operationId": "createCloth",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Dress ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "example": "Summer Dress"
-                                    },
-                                    "length": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": 50.5
-                                    },
-                                    "provided_by": {
-                                        "type": "string",
-                                        "example": "Tailor Name"
-                                    },
-                                    "price": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": 100
-                                    },
-                                    "path": {
-                                        "type": "string",
-                                        "example": "/images/cloth.jpg"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Cloth created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Cloth Created Successfully"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "Dress id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Data validation error"
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "title": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The title field is required."
-                                                    }
-                                                },
-                                                "provided_by": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The provided_by field is required."
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -2034,67 +1954,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Cloth could not be created"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/tailors/dresses/clothes/{id}": {
-            "delete": {
-                "tags": [
-                    "Dresses"
-                ],
-                "summary": "Delete a cloth",
-                "description": "Deletes a cloth based on the dress ID and cloth ID.",
-                "operationId": "deleteCloth",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Cloth ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Cloth deleted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Cloth deleted"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Cloth not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Cloth not found"
+                                            "example": "An error occurred while retrieving the dress"
                                         }
                                     },
                                     "type": "object"
@@ -2189,7 +2049,7 @@
             },
             "put": {
                 "tags": [
-                    "Dresses"
+                    "Dresses.edit"
                 ],
                 "summary": "Update basic details for a dress",
                 "description": "Allows a tailor to update basic details for a dress based on the dress ID.",
@@ -2320,7 +2180,7 @@
         "/tailors/dresses/{id}/instructions": {
             "get": {
                 "tags": [
-                    "Dresses"
+                    "Dresses.edit"
                 ],
                 "summary": "Get instructions and audio for a dress",
                 "description": "Allows a tailor to retrieve instructions and audio for a dress based on the dress ID.",
@@ -2382,7 +2242,7 @@
             },
             "put": {
                 "tags": [
-                    "Dresses"
+                    "Dresses.edit"
                 ],
                 "summary": "Update instructions and audio for a dress",
                 "description": "Allows a tailor to update instructions and audio for a dress based on the dress ID.",
@@ -2479,6 +2339,234 @@
                                                 }
                                             },
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/dresses/{id}/designs": {
+            "get": {
+                "tags": [
+                    "Dresses.edit"
+                ],
+                "summary": "Get images for a dress",
+                "description": "Returns a list of images for a dress based on the dress ID.",
+                "operationId": "getDressImages",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Dress ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of images for the dress",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "designs": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "path": {
+                                                        "type": "string",
+                                                        "example": "/images/design1.jpg"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Dress not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Dresses.edit"
+                ],
+                "summary": "Upload a Design image",
+                "description": "Stores an image in 'public/dress'.",
+                "operationId": "uploadDressDesign",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Dress ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "designs[]"
+                                ],
+                                "properties": {
+                                    "designs[]": {
+                                        "description": "Array of design Image files",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Images uploaded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Image uploaded"
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "example": "storage/dress/image.jpg"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/dresses/designs/{design_id}": {
+            "delete": {
+                "tags": [
+                    "Dresses.edit"
+                ],
+                "summary": "Delete a design image",
+                "description": "Deletes a design image based on the design ID.",
+                "operationId": "deleteDesign",
+                "parameters": [
+                    {
+                        "name": "design_id",
+                        "in": "path",
+                        "description": "Design ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Design deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Design deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Design not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Design not found"
                                         }
                                     },
                                     "type": "object"
@@ -2927,6 +3015,197 @@
                                         },
                                         "data": {
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/dresses/{id}/measurement": {
+            "get": {
+                "tags": [
+                    "Dresses.edit"
+                ],
+                "summary": "Get the measurement of a dress",
+                "description": "Allows a tailor to get the measurement of a dress based on dress ID.",
+                "operationId": "getDressMeasurement",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Dress ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dress measurement retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "measurement_values": {
+                                            "type": "array",
+                                            "items": {
+                                                "description": "Measurement values for the dress",
+                                                "properties": {
+                                                    "parameter_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "value": {
+                                                        "type": "number",
+                                                        "format": "float"
+                                                    },
+                                                    "parameter_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "parameter_unit": {
+                                                        "type": "string"
+                                                    },
+                                                    "parameter_type": {
+                                                        "type": "string"
+                                                    },
+                                                    "tailor_cat_parameter_id": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": {
+                                            "description": "Type of the dress",
+                                            "type": "string",
+                                            "example": "stitching"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Dress not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Dresses.edit"
+                ],
+                "summary": "Update the measurement of a dress",
+                "description": "Allows a tailor to update the measurement of a dress based on the dress ID.",
+                "operationId": "updateDressMeasurement",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Dress ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Measurement data to update the dress",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "description": "Type of the dress",
+                                        "type": "string",
+                                        "enum": [
+                                            "stitching",
+                                            "alteration"
+                                        ]
+                                    },
+                                    "measurement_values": {
+                                        "description": "List of measurement values",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "tcp_id": {
+                                                    "description": "ID of the tailoring control point",
+                                                    "type": "integer"
+                                                },
+                                                "value": {
+                                                    "description": "Measurement value",
+                                                    "type": "number",
+                                                    "format": "float"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Measurement updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Measurement updated"
+                                        },
+                                        "dress_id": {
+                                            "description": "ID of the updated dress",
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Dress not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress not found"
                                         }
                                     },
                                     "type": "object"
@@ -5301,6 +5580,235 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tailors/dresses/{id}/questions": {
+            "get": {
+                "tags": [
+                    "Dresses.edit"
+                ],
+                "summary": "Get questions for a dress",
+                "description": "Returns a list of questions for a dress based on the dress ID.",
+                "operationId": "getQuestions",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Dress ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Questions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "questions": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "tailor_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "category_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "dress_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "question": {
+                                                        "type": "string",
+                                                        "example": "What is your favorite color?"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "example": "text"
+                                                    },
+                                                    "options": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string",
+                                                            "example": "Red"
+                                                        }
+                                                    },
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "Red"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-06-01T10:00:00Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-06-01T10:00:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Dress not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Dresses.edit"
+                ],
+                "summary": "Update questions for a dress",
+                "description": "Updates the questions for a dress based on the dress ID.",
+                "operationId": "updateQuestions",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Dress ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "questions": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "Question ID",
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "value": {
+                                                    "description": "Answer value",
+                                                    "type": "string",
+                                                    "example": "Red"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Questions updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress questions updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Dress not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dress not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "questions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The questions field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"

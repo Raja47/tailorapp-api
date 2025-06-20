@@ -14,10 +14,10 @@ class AddColumnsOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function($table) {
-            $table->integer('total_dress_amount')->nullable();
-            $table->integer('total_expenses')->nullable();
-            $table->integer('total_discount')->nullable();
-            $table->integer('total_payment')->nullable();
+            $table->integer('total_dress_amount')->default(0);
+            $table->integer('total_expenses')->default(0);
+            $table->integer('total_discount')->default(0);
+            $table->integer('total_payment')->default(0);
         });
     }
 
