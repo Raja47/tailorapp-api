@@ -29,7 +29,7 @@ use App\Models\Tailor;
 use App\Models\TailorCategory;
 use App\Models\TailorCategoryQuestion;
 
-/*
+/* 
 |--------------------------------------------------------------------------
 | API Routes
 |-------------------------------------------------------------------------- 
