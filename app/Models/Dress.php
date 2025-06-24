@@ -57,4 +57,30 @@ class Dress extends Model
     {
         return $this->hasMany(DressImage::class, 'dress_id', 'id')->where('type', 'design'); 
     }
+
+
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($order) {
+            $shopId = $order->shop_id;
+            $prefix = $shopId . 'DR';
+
+            $latest = self::where('name', 'like', $prefix . '%')
+                        ->where('shop_id', $shopId)
+                        ->orderBy('id', 'desc')
+                        ->first();
+
+            if ($latest && preg_match('/^' . $shopId . 'DR(\d+)$/', $latest->name, $matches)) {
+                $last = (int)$matches[1];
+            } else {
+                $last = 0;
+            }
+
+            $next = $last + 1;
+            $order->name = $prefix . $next;
+        });
+    }
 }
