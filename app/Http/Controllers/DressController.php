@@ -227,6 +227,8 @@ class DressController extends Controller
                     ]);
                 }
 
+                $clothPrice =  (isset($clothImage['price']) && $clothImage['provided_by'] == 'tailor') ? $clothImage['price'] : null;
+
                 $cloth = Cloth::create([
                     'dress_id' => $dress->id,
                     'order_id' => $order_id,
@@ -235,19 +237,22 @@ class DressController extends Controller
                     'dress_image_id' => $dress_image?->id,
                     'length' => $clothImage['length'],
                     'provided_by' => $clothImage['provided_by'],
-                    'price' => (isset($clothImage['price']) && $clothImage['provided_by'] == 'tailor') ? $clothImage['price'] : null
+                    'price' => $clothPrice
                 ]);
 
-                $expense = Expense::create([
-                    'title' => 'Cloth Expense',
-                    'amount' => $clothImage['price'],
-                    'order_id' => $order_id,
-                    'tailor_id' => $tailor_id,
-                    'dress_id' => $dress->id,
-                    'cloth_id' => $cloth->id,
-                ]);
-
-                $order->increment('total_expenses', $expense->amount);
+                if( $clothPrice != null) {
+                    $expense = Expense::create([
+                        'amount' => $clothImage['price'],
+                        'order_id' => $order_id,
+                        'title' => 'Cloth Expense',
+                        'tailor_id' => $tailor_id,
+                        'dress_id' => $dress->id,
+                        'cloth_id' => $cloth->id,
+                    ]);
+                    // @todo: check if we can do this via expense observer
+                    $order->increment('total_expenses', $expense->amount);
+                }
+              
             }
 
             if (!empty($request->audio)) {
