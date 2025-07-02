@@ -218,7 +218,7 @@ class DressController extends Controller
             foreach ($request->clothImages as $clothImage) {
 
                 if (isset($clothImage['path']) && !empty($clothImage['path'])) {
-                    $dress_image = DressImage::create([
+                    $dressImage = DressImage::create([
                         'tailor_id' => $tailor_id,
                         'dress_id' => $dress->id,
                         'order_id' => $order_id,
@@ -234,8 +234,8 @@ class DressController extends Controller
                     'order_id' => $order_id,
                     'tailor_id' => $tailor_id,
                     'title' => $clothImage['title'],
-                    'dress_image_id' => $dress_image?->id,
-                    'length' => $clothImage['length'],
+                    'dress_image_id' => $dressImage ? $dressImage->id : null,
+                    'length' => $clothImage['length'] ?? 0,
                     'provided_by' => $clothImage['provided_by'],
                     'price' => $clothPrice
                 ]);
