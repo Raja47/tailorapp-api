@@ -182,6 +182,7 @@ class TailorCustomerController extends Controller
             ->orderBy('orders.updated_at', 'desc')
             ->get()->map(function ($order) {
                 $order->updated_at = Carbon::parse($order->updated_at)->toIso8601ZuluString();
+                $order->dress_count = (int) $order->dress_count;
                 return $order;
             });
 
