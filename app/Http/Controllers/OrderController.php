@@ -424,7 +424,7 @@ class OrderController extends Controller
         $today = Carbon::today();
 
         $query = DB::table('orders')
-            ->select('orders.id', 'orders.name', 'orders.status', 'orders.created_at', 'orders.total_dress_amount', 'orders.total_payment', 'orders.total_expenses' , 'orders.total_discount' , DB::raw('COUNT(dresses.id) as dress_count'))
+            ->select('orders.id', 'orders.name', 'orders.status', 'orders.created_at', 'orders.total_dress_amount', 'orders.total_payment', 'orders.total_expenses' , 'orders.total_discount' , DB::raw('SUM(dresses.quantity) as dress_count'))
             ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
             ->where([['orders.tailor_id', $tailor_id], ['orders.shop_id', $shop_id]])
             ->groupBy('orders.id');
