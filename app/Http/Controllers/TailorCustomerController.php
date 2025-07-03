@@ -173,7 +173,7 @@ class TailorCustomerController extends Controller
         $tailor_id = auth('sanctum')->user()->id;
 
         $query = DB::table('orders')
-            ->select('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount','orders.total_expenses' , 'orders.total_discount' ,'orders.total_payment', DB::raw('SUM(dresses.id) as dress_count'))
+            ->select('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount','orders.total_expenses' , 'orders.total_discount' ,'orders.total_payment', DB::raw('SUM(dresses.quantity) as dress_count'))
             ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
             ->where([['orders.tailor_id', $tailor_id], ['orders.customer_id', $customer_id]])
             ->groupBy('orders.id');
