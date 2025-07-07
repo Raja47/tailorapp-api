@@ -173,16 +173,16 @@ class TailorCustomerController extends Controller
         $tailor_id = auth('sanctum')->user()->id;
 
         $query = DB::table('orders')
-            ->select('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount', 'tailor_customers.name as customer_name', DB::raw('COUNT(dresses.id) as dress_count'))
+            ->select('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount','orders.total_expenses' , 'orders.total_discount' ,'orders.total_payment', DB::raw('SUM(dresses.quantity) as dress_count'))
             ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
-            ->leftjoin('tailor_customers', 'orders.customer_id', '=', 'tailor_customers.id')
             ->where([['orders.tailor_id', $tailor_id], ['orders.customer_id', $customer_id]])
-            ->groupBy('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount', 'tailor_customers.name');
+            ->groupBy('orders.id');
 
         $orders = $query
             ->orderBy('orders.updated_at', 'desc')
             ->get()->map(function ($order) {
                 $order->updated_at = Carbon::parse($order->updated_at)->toIso8601ZuluString();
+                $order->dress_count = (int) $order->dress_count;
                 return $order;
             });
 

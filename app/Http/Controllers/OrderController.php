@@ -424,10 +424,10 @@ class OrderController extends Controller
         $today = Carbon::today();
 
         $query = DB::table('orders')
-            ->select('orders.id', 'orders.name', 'orders.status', 'orders.created_at', 'orders.total_dress_amount', 'orders.total_payment', DB::raw('COUNT(dresses.id) as dress_count'))
+            ->select('orders.id', 'orders.name', 'orders.status', 'orders.created_at', 'orders.updated_at','orders.total_dress_amount', 'orders.total_payment', 'orders.total_expenses' , 'orders.total_discount' , DB::raw('SUM(dresses.quantity) as dress_count'))
             ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
             ->where([['orders.tailor_id', $tailor_id], ['orders.shop_id', $shop_id]])
-            ->groupBy('orders.id', 'orders.name', 'orders.status', 'orders.created_at', 'orders.total_dress_amount', 'orders.total_payment');
+            ->groupBy('orders.id');
 
         switch ($timeFilter) {
             case 'all':
@@ -446,7 +446,7 @@ class OrderController extends Controller
 
             case 'last15days':
                 if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->where('created_at', '>=', Carbon::now()->subDays(15));
+                    $query->where('orders.status', $statusFilter)->where('orders.created_at', '>=', Carbon::now()->subDays(15));
                 } else {
                     $query->where('orders.created_at', '>=', Carbon::now()->subDays(15));
                 }
@@ -493,9 +493,11 @@ class OrderController extends Controller
         if ($request->filled('searchText')) {
             $query->where('orders.name', 'like', '%' . $searchText . '%');
         }
-        $tailor_orders = $query->orderBy('orders.updated_at', 'desc')->forpage($page, $perpage)->get()
+        $tailor_orders = $query->orderBy('orders.created_at', 'desc')->forpage($page, $perpage)->get()
             ->map(function ($order) {
                 $order->created_at = Carbon::parse($order->created_at)->toIso8601ZuluString();
+                $order->updated_at = Carbon::parse($order->updated_at)->toIso8601ZuluString();
+                $order->dress_count = (int) $order->dress_count;
                 return $order;
             });
 
