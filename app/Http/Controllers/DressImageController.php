@@ -57,7 +57,7 @@ class DressImageController extends Controller
     {
         $designs = DressImage::select(['id' , 'path'])->where(['type' => 'design','dress_id'=> $id])->get();
         foreach($designs as $design) {
-            $design->path = $design->image ? complete_url($design->path) : null;
+            $design->path = $design->path ? complete_url($design->path) : null;
         }
         return response()->json(['designs' => $designs]); // assumes relation images()
     }
