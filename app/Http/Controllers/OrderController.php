@@ -493,9 +493,10 @@ class OrderController extends Controller
         if ($request->filled('searchText')) {
             $query->where('orders.name', 'like', '%' . $searchText . '%');
         }
-        $tailor_orders = $query->orderBy('orders.updated_at', 'desc')->forpage($page, $perpage)->get()
+        $tailor_orders = $query->orderBy('orders.updated_at', 'asc')->forpage($page, $perpage)->get()
             ->map(function ($order) {
                 $order->created_at = Carbon::parse($order->created_at)->toIso8601ZuluString();
+                $order->updated_at = Carbon::parse($order->updated_at)->toIso8601ZuluString();
                 $order->dress_count = (int) $order->dress_count;
                 return $order;
             });
