@@ -56,6 +56,9 @@ class DressImageController extends Controller
     public function designs($id)
     {
         $designs = DressImage::select(['id' , 'path'])->where(['type' => 'design','dress_id'=> $id])->get();
+        foreach($designs as $design) {
+            $design->path = $design->image ? complete_url($design->path) : null;
+        }
         return response()->json(['designs' => $designs]); // assumes relation images()
     }
 
@@ -168,8 +171,7 @@ class DressImageController extends Controller
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/dress', $filename);
 
-            $base_url = url('');
-            $uploadedImage = $base_url . '/storage/dress/' . $filename;
+            $uploadedImage = 'storage/dress/' . $filename;
 
             DressImage::create([
                 'tailor_id' => auth('sanctum')->user()->id,

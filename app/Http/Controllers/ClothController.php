@@ -64,7 +64,7 @@ class ClothController extends Controller
                 'dress_id' => $cloth->dress_id,
                 'order_id' => $cloth->order_id,
                 'tailor_id' => $cloth->tailor_id,
-                'path' => $cloth->image?->path,
+                'path' => $cloth->image?->path ? complete_url($cloth->image->path) : null,
                 'title' => $cloth->title,
                 'length' => $cloth->length,
                 'provided_by' => $cloth->provided_by,

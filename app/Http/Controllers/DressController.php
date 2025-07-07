@@ -331,8 +331,7 @@ class DressController extends Controller
         $filename = time() . '.' . $file->getClientOriginalExtension();
         $file->storeAs('public/dress', $filename);
 
-        $base_url = url('');
-        $path = $base_url . '/storage/dress/' . $filename;
+        $path = '/storage/dress/' . $filename;
 
         return response()->json(['success' => true, 'message' => 'Image uploaded', 'data' => $path], 200);
     }
@@ -391,8 +390,7 @@ class DressController extends Controller
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/dress', $filename);
 
-            $base_url = url('');
-            $uploadedImages[] = $base_url . '/storage/dress/' . $filename;
+            $uploadedImages[] = '/storage/dress/' . $filename;
         }
 
         return response()->json(['success' => true, 'message' => 'Images uploaded succesfully', 'data' => $uploadedImages], 200);
@@ -446,9 +444,7 @@ class DressController extends Controller
         $audioname = time() . '.' . $audio->getClientOriginalExtension();
         $audio->storeAs('public/dress', $audioname);
 
-        $base_url = url('');
-        $path = $base_url . '/storage/dress/' . $audioname;
-
+        $path = '/storage/dress/' . $audioname;
         return response()->json(['success' => true, 'message' => 'Audio uploaded', 'data' => $path], 200);
     }
 
@@ -1154,7 +1150,7 @@ class DressController extends Controller
                     'id'   => $value->id,
                     'parameter_id' => $value->parameter_id,
                     'value' => $value->value,
-                    'image' => $value->parameter?->image,
+                    'image' => $value->parameter?->image ? complete_url($value->parameter->image) : null,
                     'tcp_id' => $value->tcp_id,
                     'measurement_id' => $value->measurement_id,
                     'label' => $value->tailorCatParameter?->label,
@@ -1182,7 +1178,7 @@ class DressController extends Controller
                 return [
                     'id' => $cloth->id,
                     'dress_id' => $cloth->dress_id,
-                    'path' => $cloth->image?->path,
+                    'path' => $cloth->image?->path ? complete_url($cloth->image->path) : null,
                     'title' => $cloth->title,
                     'length' => $cloth->length,
                     'provided_by' => $cloth->provided_by,
@@ -1406,7 +1402,7 @@ class DressController extends Controller
             return response()->json(['instructions' => $dress->notes, 'audio' => null]);
         }
 
-        $recording = Recording::where('dress_id', $id)->value('path');
+        $recording = complete_url(Recording::where('dress_id', $id)->value('path'));
 
         return response()->json(['instructions' => $dress->notes, 'audio' => $recording]);
     }
