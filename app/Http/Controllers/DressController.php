@@ -578,7 +578,7 @@ class DressController extends Controller
         $today = Carbon::today();
 
         $query = DB::table('dresses')
-            ->select('dresses.*', 'orders.status', 'dress_images.path AS image', 'tailor_customers.name AS customername')
+            ->select('dresses.*', 'orders.status', 'images.path AS image', 'tailor_customers.name AS customername')
             ->leftjoin('orders', 'orders.id', '=', 'dresses.order_id')
             ->leftjoin('tailor_customers', 'tailor_customers.id', '=', 'orders.customer_id')
             ->leftJoin(DB::raw('(
@@ -586,7 +586,7 @@ class DressController extends Controller
                     FROM dress_images
                     WHERE type = "design"
                     GROUP BY dress_id
-            ) as design_images'), 'design_images.dress_id', '=', 'dresses.id')
+            ) as images'), 'images.dress_id', '=', 'dresses.id')
             ->where('dresses.tailor_id', $tailor_id)
             ->where('dresses.shop_id', $shop_id);
 
@@ -947,14 +947,14 @@ class DressController extends Controller
         $tailor_id = auth('sanctum')->user()->id;
 
         $order_dresses = DB::table('dresses')
-            ->select('dresses.*', 'tailor_categories.name AS catName', 'dress_images.path AS image')
+            ->select('dresses.*', 'tailor_categories.name AS catName', 'images.path AS image')
             ->leftjoin('tailor_categories', 'tailor_categories.id', '=', 'dresses.category_id')
             ->leftJoin(DB::raw('(
                 SELECT dress_id, path
                 FROM dress_images
                 WHERE type = "design"
                 GROUP BY dress_id
-            ) as design_images'), 'design_images.dress_id', '=', 'dresses.id')
+            ) as images'), 'images.dress_id', '=', 'dresses.id')
             ->where('dresses.tailor_id', $tailor_id)->where('dresses.order_id', $order_id)->get()
             ->map(function ($dress) {
                 $dress->image = $dress->image ? complete_url($dress->image) : null;
