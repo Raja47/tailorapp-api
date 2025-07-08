@@ -664,6 +664,7 @@ class DressController extends Controller
         }
         $tailor_dresses = $query->orderBy('dresses.updated_at', 'desc')->forpage($page, $perpage)->get()
             ->map(function ($dress) {
+                $dress->image = $dress->image ? complete_url($dress->image) : null;
                 $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
                 $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
                 $dress->created_at = Carbon::parse($dress->created_at)->toIso8601ZuluString();
