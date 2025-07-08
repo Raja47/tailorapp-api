@@ -581,10 +581,12 @@ class DressController extends Controller
             ->select('dresses.*', 'orders.status', 'dress_images.path AS image', 'tailor_customers.name AS customername')
             ->leftjoin('orders', 'orders.id', '=', 'dresses.order_id')
             ->leftjoin('tailor_customers', 'tailor_customers.id', '=', 'orders.customer_id')
-            ->leftjoin('dress_images', function ($join) {
-                $join->on('dress_images.dress_id', '=', 'dresses.id');
-                $join->where('dress_images.type', '=', 'design');
-            })
+            ->leftJoin(DB::raw('(
+                    SELECT dress_id, path
+                    FROM dress_images
+                    WHERE type = "design"
+                    GROUP BY dress_id
+            ) as design_images'), 'design_images.dress_id', '=', 'dresses.id')
             ->where('dresses.tailor_id', $tailor_id)
             ->where('dresses.shop_id', $shop_id);
 
@@ -947,12 +949,15 @@ class DressController extends Controller
         $order_dresses = DB::table('dresses')
             ->select('dresses.*', 'tailor_categories.name AS catName', 'dress_images.path AS image')
             ->leftjoin('tailor_categories', 'tailor_categories.id', '=', 'dresses.category_id')
-            ->leftjoin('dress_images', function ($join) {
-                $join->on('dress_images.dress_id', '=', 'dresses.id');
-                $join->where('dress_images.type', '=', 'design');
-            })
+            ->leftJoin(DB::raw('(
+                SELECT dress_id, path
+                FROM dress_images
+                WHERE type = "design"
+                GROUP BY dress_id
+            ) as design_images'), 'design_images.dress_id', '=', 'dresses.id')
             ->where('dresses.tailor_id', $tailor_id)->where('dresses.order_id', $order_id)->get()
             ->map(function ($dress) {
+                $dress->image = $dress->image ? complete_url($dress->image) : null;
                 $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
                 $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
                 return $dress;
