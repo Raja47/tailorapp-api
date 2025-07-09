@@ -336,7 +336,7 @@ class DressController extends Controller
         $filename = time() . '.' . $file->getClientOriginalExtension();
         $file->storeAs('public/dress', $filename);
 
-        $path = 'storage/dress/' . $filename;
+        $path = complete_url('storage/dress/' . $filename);
 
         return response()->json(['success' => true, 'message' => 'Image uploaded', 'data' => $path], 200);
     }
@@ -395,7 +395,7 @@ class DressController extends Controller
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/dress', $filename);
 
-            $uploadedImages[] = 'storage/dress/' . $filename;
+            $uploadedImages[] = complete_url('storage/dress/' . $filename);
         }
 
         return response()->json(['success' => true, 'message' => 'Images uploaded succesfully', 'data' => $uploadedImages], 200);
