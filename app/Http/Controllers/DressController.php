@@ -211,7 +211,7 @@ class DressController extends Controller
                     'dress_id' => $dress->id,
                     'order_id' => $order_id,
                     'type' => 'design',
-                    'path' => $designImage
+                    'path' => relative_url($designImage)
                 ]);
             }
 
@@ -223,7 +223,7 @@ class DressController extends Controller
                         'dress_id' => $dress->id,
                         'order_id' => $order_id,
                         'type' => 'cloth',
-                        'path' => $clothImage['path']
+                        'path' => relative_url($clothImage['path'])
                     ]);
                 }
 
