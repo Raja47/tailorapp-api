@@ -552,6 +552,8 @@ class DressController extends Controller
      * )
      */
 
+
+
     public function getTabDresses(Request $request)
     {
         $rules = [
@@ -819,6 +821,73 @@ class DressController extends Controller
             }
         }
     }
+
+    /**
+     * @OA\Get(
+     *   path="/shops/{shop_id}/dresses-count-by-status",
+     *   summary="Count dresses by status",
+     *   description="Counts the number of dresses by their status for a specific shop.",
+     *   operationId="countDressesByStatus",
+     *   tags={"Dresses"},
+     *   security={{ "bearerAuth": {} }},
+     *   @OA\Parameter(
+     *        name="shop_id",
+     *        in="path",
+     *        required=true,        
+     *        @OA\Schema(type="integer"),
+     *       description="ID of the shop to filter dresses"
+     * *    ),
+     *   @OA\Response(
+     *       response=200,
+     *       description="Count by status retrieved successfully",
+     *       @OA\JsonContent(
+        *           type="object",
+        *           @OA\Property(property="success", type="boolean", example=true),
+        *           @OA\Property(property="message", type="string", example="Count by status retrieved successfully"),
+        *           @OA\Property(property="data", type="array", @OA\Items(
+        *               type="object",
+        *               @OA\Property(property="status", type="string", example="stitching"),
+        *               @OA\Property(property="count", type="integer", example=10)
+        *           ))  
+        *       )
+     *   ),
+     *   @OA\Response(
+    *       response=422,
+    *       description="Validation error",
+    *       @OA\JsonContent(
+    *           type="object",
+    *           @OA\Property(property="success", type="boolean", example=false),
+    *           @OA\Property(property="message", type="string", example="Data validation error"),
+    *           @OA\Property(property="data", type="object")
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=500,
+    *       description="Internal server error",
+    *       @OA\JsonContent(
+    *           type="object",
+    *           @OA\Property(property="success", type="boolean", example=false),
+    *           @OA\Property(property="message", type="string", example="Internal server error"),
+    *           @OA\Property(property="data", type="object")
+    *       )
+    *   )
+    * )
+    */
+    public function countByStatus($shop_id)
+    {   
+        $now = Carbon::now();
+        $time = $now->copy()->subDay(30);
+
+        $dresses = Dress::select('status')
+        ->selectRaw('SUM(quantity) as count')
+        ->where('shop_id', $shop_id)
+        ->where('created_at', '<', $time)
+        ->groupBy('status')
+        ->get();
+
+        return response()->json(['success' => true, 'message' => 'Count by status retrieved successfully', 'data' => $dresses], 200);
+    }
+
 
     public function countDressesByStatus($shop_id, $index)
     {
