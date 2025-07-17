@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 use App\Models\Dress;
 use App\Models\Expense;
 use App\Models\Cloth;
@@ -16,6 +18,7 @@ use App\Models\Tailor;
 use App\Models\TailorCategoryAnswer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+
 
 class DressController extends Controller
 {
@@ -148,7 +151,7 @@ class DressController extends Controller
             return response()->json(['success' => false, 'message' => 'Data validation error', 'error' => $validation->errors()], 422);
         }
 
-        
+
         DB::beginTransaction();
         try {
             $tailor_id = auth('sanctum')->user()->id;
@@ -211,7 +214,9 @@ class DressController extends Controller
                     'dress_id' => $dress->id,
                     'order_id' => $order_id,
                     'type' => 'design',
-                    'path' => $designImage
+                    'path' => '',
+                    'low_res_path' => $designImage['low_res_path'],
+                    'high_res_path' => $designImage['high_res_path']
                 ]);
             }
 
@@ -223,7 +228,9 @@ class DressController extends Controller
                         'dress_id' => $dress->id,
                         'order_id' => $order_id,
                         'type' => 'cloth',
-                        'path' => $clothImage['path']
+                        'path' => '',
+                        'low_res_path' => $clothImage['low_res_path'],
+                        'high_res_path' => $clothImage['high_res_path']
                     ]);
                 }
 
@@ -240,7 +247,7 @@ class DressController extends Controller
                     'price' => $clothPrice
                 ]);
 
-                if( $clothPrice != null) {
+                if ($clothPrice != null) {
                     $expense = Expense::create([
                         'amount' => $clothImage['price'],
                         'order_id' => $order_id,
@@ -252,7 +259,6 @@ class DressController extends Controller
                     // @todo: check if we can do this via expense observer
                     $order->increment('total_expenses', $expense->amount);
                 }
-              
             }
 
             if (!empty($request->audio)) {
@@ -333,12 +339,23 @@ class DressController extends Controller
             return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
         }
         $file = $request->file('image');
-        $filename = time() . '.' . $file->getClientOriginalExtension();
-        $file->storeAs('public/dress', $filename);
+        $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
-        $path = 'storage/dress/' . $filename;
+        $high_res_path = 'storage/dress/high/' . $filename;
+        $file->storeAs('public/dress/high', $filename);
 
-        return response()->json(['success' => true, 'message' => 'Image uploaded', 'data' => $path], 200);
+        $compressed_file = Image::make($file)->resize(300, null, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode($file->getClientOriginalExtension(), 50);
+        $low_res_path = 'storage/dress/low/' . $filename;
+        Storage::put('public/dress/low/' . $filename, $compressed_file);
+
+        $uploadedImage = [
+            'high_res_path' => $high_res_path,
+            'low_res_path' => $low_res_path
+        ];
+
+        return response()->json(['success' => true, 'message' => 'Image uploaded', 'data' => $uploadedImage], 200);
     }
 
     /**
@@ -393,9 +410,20 @@ class DressController extends Controller
 
         foreach ($files as $file) {
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/dress', $filename);
 
-            $uploadedImages[] = 'storage/dress/' . $filename;
+            $high_res_path = 'storage/dress/high/' . $filename;
+            $file->storeAs('public/dress/high', $filename);
+
+            $compressed_file = Image::make($file)->resize(300, null, function ($constraint) {
+                $constraint->aspectRatio();
+            })->encode($file->getClientOriginalExtension(), 50);
+            $low_res_path = 'storage/dress/low/' . $filename;
+            Storage::put('public/dress/low/' . $filename, $compressed_file);
+
+            $uploadedImages[] = [
+                'high_res_path' => $high_res_path,
+                'low_res_path' => $low_res_path
+            ];
         }
 
         return response()->json(['success' => true, 'message' => 'Images uploaded succesfully', 'data' => $uploadedImages], 200);
