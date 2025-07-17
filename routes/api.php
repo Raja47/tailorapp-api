@@ -23,6 +23,7 @@ use App\Http\Controllers\TailorCategoryController;
 use App\Http\Controllers\TailorParameterController;
 use App\Http\Controllers\TailorCategoryParameterController as TalCatParameterController;
 use App\Http\Controllers\TailorCategoryQuestionController;
+use App\Models\Dress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Tailor;
@@ -66,7 +67,7 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors
 Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/shops'], function ($router) {
     $router->post('/index', [ShopController::class, 'index']);
     $router->post('/store', [ShopController::class, 'store']);
-    $router->post('/update', [ShopController::class, 'update']);
+    $router->get('/{shop_id}/dresses-count-by-status', [DressController::class, 'countByStatus']);
 });
 
 Route::group(['middleware' => ['logging'], 'prefix' => '/customers'], function ($router) {

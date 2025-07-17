@@ -688,14 +688,21 @@ class OrderController extends Controller
         }
 
         $order_dresses = DB::table('dresses')
-            ->select('dresses.*', 'tailor_categories.name AS catName', 'dress_images.path AS image')
+            ->select('dresses.*', 'tailor_categories.name AS catName', 'images.path AS image')
             ->leftjoin('tailor_categories', 'tailor_categories.id', '=', 'dresses.category_id')
-            ->leftjoin('dress_images', function ($join) {
-                $join->on('dress_images.dress_id', '=', 'dresses.id');
-                $join->where('dress_images.type', '=', 'design');
-            })
+            ->leftJoin(DB::raw('(
+                SELECT di1.dress_id, di1.path
+                    FROM dress_images di1
+                    INNER JOIN (
+                        SELECT dress_id, MIN(id) AS min_id
+                        FROM dress_images
+                        WHERE type = "design"
+                        GROUP BY dress_id
+                    ) di2 ON di1.id = di2.min_id
+                ) as images'), 'images.dress_id', '=', 'dresses.id')
             ->where('dresses.tailor_id', $tailor_id)->where('dresses.order_id', $order_id)->get()
             ->map(function ($dress) {
+                $dress->image = $dress->image ? complete_url($dress->image) : null;
                 $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
                 $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
                 return $dress;

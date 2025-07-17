@@ -61,8 +61,8 @@ class TailorCategoryParameterController extends Controller
         if (count($parameters) === 0) {
             return response()->json(['category_id' => $category_id,'message' => "Paramater Not Found" , 'parameters' => []]);
         } else {
-            foreach ($parameters as $param) {
-                $param->parameter->image = complete_url($param->parameter->image);
+            foreach ($parameters as $parameter) {
+                $parameter->image = complete_url($parameter->parameter->image);
             }
             return response()->json(['category_id' => $category_id, 'parameters' => $parameters]);
         }

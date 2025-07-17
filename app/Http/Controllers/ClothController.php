@@ -195,7 +195,7 @@ class ClothController extends Controller
             'length' => $cloth->length,
             'provided_by' => $cloth->provided_by,
             'price' => $cloth->price,
-            'path' => $dress_image?->path,
+            'path' => complete_url($dress_image?->path),
             'created_at' => $cloth->created_at->toIso8601ZuluString(),
             'updated_at' => $cloth->updated_at->toIso8601ZuluString(),
         ];

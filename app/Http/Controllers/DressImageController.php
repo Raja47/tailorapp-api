@@ -194,8 +194,8 @@ class DressImageController extends Controller
 
             $uploadedImages[] = [
                 'id' => DressImage::latest()->first()->id,
-                'high_res_path' => $high_res_path,
-                'low_res_path' => $low_res_path
+                'high_res_path' => complete_url($high_res_path),
+                'low_res_path' => complete_url($low_res_path)
             ];
         }
         return response()->json(['message' => 'Design Created Successfully', 'data' => ['designs' => $uploadedImages]], 200);

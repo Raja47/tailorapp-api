@@ -215,8 +215,8 @@ class DressController extends Controller
                     'order_id' => $order_id,
                     'type' => 'design',
                     'path' => '',
-                    'low_res_path' => $designImage['low_res_path'],
-                    'high_res_path' => $designImage['high_res_path']
+                    'low_res_path' => relative_url($designImage['low_res_path']),
+                    'high_res_path' => relative_url($designImage['high_res_path'])
                 ]);
             }
 
@@ -229,8 +229,8 @@ class DressController extends Controller
                         'order_id' => $order_id,
                         'type' => 'cloth',
                         'path' => '',
-                        'low_res_path' => $clothImage['low_res_path'],
-                        'high_res_path' => $clothImage['high_res_path']
+                        'low_res_path' => relative_url($clothImage['low_res_path']),
+                        'high_res_path' => relative_url($clothImage['high_res_path'])
                     ]);
                 }
 
@@ -351,10 +351,9 @@ class DressController extends Controller
         Storage::put('public/dress/low/' . $filename, $compressed_file);
 
         $uploadedImage = [
-            'high_res_path' => $high_res_path,
-            'low_res_path' => $low_res_path
+            'high_res_path' => complete_url($high_res_path),
+            'low_res_path' => complete_url($low_res_path)
         ];
-
         return response()->json(['success' => true, 'message' => 'Image uploaded', 'data' => $uploadedImage], 200);
     }
 
@@ -420,9 +419,9 @@ class DressController extends Controller
             $low_res_path = 'storage/dress/low/' . $filename;
             Storage::put('public/dress/low/' . $filename, $compressed_file);
 
-            $uploadedImages[] = [
-                'high_res_path' => $high_res_path,
-                'low_res_path' => $low_res_path
+            $uploadedImages = [
+                'high_res_path' => complete_url($high_res_path),
+                'low_res_path' => complete_url($low_res_path)
             ];
         }
 
@@ -580,6 +579,8 @@ class DressController extends Controller
      * )
      */
 
+
+
     public function getTabDresses(Request $request)
     {
         $rules = [
@@ -606,13 +607,19 @@ class DressController extends Controller
         $today = Carbon::today();
 
         $query = DB::table('dresses')
-            ->select('dresses.*', 'orders.status', 'dress_images.path AS image', 'tailor_customers.name AS customername')
+            ->select('dresses.*', 'orders.status', 'images.path AS image', 'tailor_customers.name AS customername')
             ->leftjoin('orders', 'orders.id', '=', 'dresses.order_id')
             ->leftjoin('tailor_customers', 'tailor_customers.id', '=', 'orders.customer_id')
-            ->leftjoin('dress_images', function ($join) {
-                $join->on('dress_images.dress_id', '=', 'dresses.id');
-                $join->where('dress_images.type', '=', 'design');
-            })
+            ->leftJoin(DB::raw('(
+                            SELECT di1.dress_id, di1.path
+                    FROM dress_images di1
+                    INNER JOIN (
+                        SELECT dress_id, MIN(id) AS min_id
+                        FROM dress_images
+                        WHERE type = "design"
+                        GROUP BY dress_id
+                    ) di2 ON di1.id = di2.min_id
+                ) as images'), 'images.dress_id', '=', 'dresses.id')
             ->where('dresses.tailor_id', $tailor_id)
             ->where('dresses.shop_id', $shop_id);
 
@@ -692,6 +699,7 @@ class DressController extends Controller
         }
         $tailor_dresses = $query->orderBy('dresses.updated_at', 'desc')->forpage($page, $perpage)->get()
             ->map(function ($dress) {
+                $dress->image = $dress->image ? complete_url($dress->image) : null;
                 $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
                 $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
                 $dress->created_at = Carbon::parse($dress->created_at)->toIso8601ZuluString();
@@ -841,6 +849,73 @@ class DressController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *   path="/shops/{shop_id}/dresses-count-by-status",
+     *   summary="Count dresses by status",
+     *   description="Counts the number of dresses by their status for a specific shop.",
+     *   operationId="countDressesByStatus",
+     *   tags={"Dresses"},
+     *   security={{ "bearerAuth": {} }},
+     *   @OA\Parameter(
+     *        name="shop_id",
+     *        in="path",
+     *        required=true,        
+     *        @OA\Schema(type="integer"),
+     *       description="ID of the shop to filter dresses"
+     * *    ),
+     *   @OA\Response(
+     *       response=200,
+     *       description="Count by status retrieved successfully",
+     *       @OA\JsonContent(
+     *           type="object",
+     *           @OA\Property(property="success", type="boolean", example=true),
+     *           @OA\Property(property="message", type="string", example="Count by status retrieved successfully"),
+     *           @OA\Property(property="data", type="array", @OA\Items(
+     *               type="object",
+     *               @OA\Property(property="status", type="string", example="stitching"),
+     *               @OA\Property(property="count", type="integer", example=10)
+     *           ))  
+     *       )
+     *   ),
+     *   @OA\Response(
+     *       response=422,
+     *       description="Validation error",
+     *       @OA\JsonContent(
+     *           type="object",
+     *           @OA\Property(property="success", type="boolean", example=false),
+     *           @OA\Property(property="message", type="string", example="Data validation error"),
+     *           @OA\Property(property="data", type="object")
+     *       )
+     *   ),
+     *   @OA\Response(
+     *       response=500,
+     *       description="Internal server error",
+     *       @OA\JsonContent(
+     *           type="object",
+     *           @OA\Property(property="success", type="boolean", example=false),
+     *           @OA\Property(property="message", type="string", example="Internal server error"),
+     *           @OA\Property(property="data", type="object")
+     *       )
+     *   )
+     * )
+     */
+    public function countByStatus($shop_id)
+    {
+        $now = Carbon::now();
+        $time = $now->copy()->subDay(30);
+
+        $dresses = Dress::select('status')
+            ->selectRaw('SUM(quantity) as count')
+            ->where('shop_id', $shop_id)
+            ->where('created_at', '<', $time)
+            ->groupBy('status')
+            ->get();
+
+        return response()->json(['success' => true, 'message' => 'Count by status retrieved successfully', 'data' => $dresses], 200);
+    }
+
+
     public function countDressesByStatus($shop_id, $index)
     {
         $now = Carbon::now();
@@ -972,14 +1047,21 @@ class DressController extends Controller
         $tailor_id = auth('sanctum')->user()->id;
 
         $order_dresses = DB::table('dresses')
-            ->select('dresses.*', 'tailor_categories.name AS catName', 'dress_images.path AS image')
+            ->select('dresses.*', 'tailor_categories.name AS catName', 'images.path AS image')
             ->leftjoin('tailor_categories', 'tailor_categories.id', '=', 'dresses.category_id')
-            ->leftjoin('dress_images', function ($join) {
-                $join->on('dress_images.dress_id', '=', 'dresses.id');
-                $join->where('dress_images.type', '=', 'design');
-            })
+            ->leftJoin(DB::raw('(
+                SELECT di1.dress_id, di1.path
+                    FROM dress_images di1
+                    INNER JOIN (
+                        SELECT dress_id, MIN(id) AS min_id
+                        FROM dress_images
+                        WHERE type = "design"
+                        GROUP BY dress_id
+                    ) di2 ON di1.id = di2.min_id
+                ) as images'), 'images.dress_id', '=', 'dresses.id')
             ->where('dresses.tailor_id', $tailor_id)->where('dresses.order_id', $order_id)->get()
             ->map(function ($dress) {
+                $dress->image = $dress->image ? complete_url($dress->image) : null;
                 $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
                 $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
                 return $dress;
