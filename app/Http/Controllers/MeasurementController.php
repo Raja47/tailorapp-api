@@ -290,7 +290,7 @@ class MeasurementController extends Controller
                 'id'   => $value->id,
                 'parameter_id' => $value->parameter_id,
                 'value' => $value->value,
-                'image' => $value->parameter?->image,
+                'image' => complete_url($value->parameter?->image),
                 'tcp_id' => $value->tcp_id,
                 'measurement_id' => $value->measurement_id,
                 'label' => $value->tailorCatParameter?->label,
