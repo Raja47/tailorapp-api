@@ -291,6 +291,8 @@ class MeasurementController extends Controller
                 'parameter_id' => $value->parameter_id,
                 'value' => $value->value,
                 'image' => complete_url($value->parameter?->image),
+
+                
                 'tcp_id' => $value->tcp_id,
                 'measurement_id' => $value->measurement_id,
                 'label' => $value->tailorCatParameter?->label,
@@ -397,7 +399,7 @@ class MeasurementController extends Controller
                 // Update existing measurement values
                 foreach ($measurementValues as $value) {
                     $measurementValue = MeasurementValue::where('measurement_id', $measurementId)
-                        ->where('tcp_id', $value['tcp_id'])
+                        ->where('id', $value['id'])
                         ->first();
 
                     if ($measurementValue) {
