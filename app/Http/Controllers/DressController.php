@@ -419,7 +419,7 @@ class DressController extends Controller
             $low_res_path = 'storage/dress/low/' . $filename;
             Storage::put('public/dress/low/' . $filename, $compressed_file);
 
-            $uploadedImages = [
+            $uploadedImages[] = [
                 'high_res_path' => complete_url($high_res_path),
                 'low_res_path' => complete_url($low_res_path)
             ];
