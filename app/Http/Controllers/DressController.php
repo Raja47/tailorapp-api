@@ -215,7 +215,7 @@ class DressController extends Controller
                     'order_id' => $order_id,
                     'type' => 'design',
                     'path' => relative_url($designImage['path']),
-                    'thumb_path' => relative_thumb_url($clothImage['path']),
+                    'thumb_path' => relative_thumb_url($designImage['path']),
                 ]);
             }
 
@@ -265,6 +265,7 @@ class DressController extends Controller
                     'path' => $request->audio
                 ]);
             }
+        } // <-- This closes the foreach ($request->clothImages as $clothImage) loop
 
             DB::commit();
             return response()->json([
