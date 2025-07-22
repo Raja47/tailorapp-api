@@ -214,9 +214,8 @@ class DressController extends Controller
                     'dress_id' => $dress->id,
                     'order_id' => $order_id,
                     'type' => 'design',
-                    'path' => '',
-                    'low_res_path' => relative_url($designImage['low_res_path']),
-                    'high_res_path' => relative_url($designImage['high_res_path'])
+                    'path' => relative_url($designImage['path']),
+                    'thumb_path' => relative_thumb_url($clothImage['path']),
                 ]);
             }
 
@@ -228,11 +227,9 @@ class DressController extends Controller
                         'dress_id' => $dress->id,
                         'order_id' => $order_id,
                         'type' => 'cloth',
-                        'path' => '',
-                        'low_res_path' => relative_url($clothImage['low_res_path']),
-                        'high_res_path' => relative_url($clothImage['high_res_path'])
+                        'path' => relative_url($clothImage['path']),
+                        'thumb_path' => relative_thumb_url($clothImage['path']),
                     ]);
-                }
 
                 $clothPrice =  (isset($clothImage['price']) && $clothImage['provided_by'] == 'tailor') ? $clothImage['price'] : null;
 
@@ -341,18 +338,18 @@ class DressController extends Controller
         $file = $request->file('image');
         $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
-        $high_res_path = 'storage/dress/high/' . $filename;
-        $file->storeAs('public/dress/high', $filename);
+        $path = 'storage/dress/' . $filename;
+        $file->storeAs('public/dress', $filename);
 
         $compressed_file = Image::make($file)->resize(300, null, function ($constraint) {
             $constraint->aspectRatio();
         })->encode($file->getClientOriginalExtension(), 50);
-        $low_res_path = 'storage/dress/low/' . $filename;
-        Storage::put('public/dress/low/' . $filename, $compressed_file);
+        $thumb_path = 'storage/dress/thumbnails/' . $filename;
+        Storage::put('public/dress/thumbnails' . $filename, $compressed_file);
 
         $uploadedImage = [
-            'high_res_path' => complete_url($high_res_path),
-            'low_res_path' => complete_url($low_res_path)
+            'path' => complete_url($path),
+            'thumb_path' => complete_url($thumb_path)
         ];
         return response()->json(['success' => true, 'message' => 'Image uploaded', 'data' => $uploadedImage], 200);
     }
@@ -410,18 +407,18 @@ class DressController extends Controller
         foreach ($files as $file) {
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
-            $high_res_path = 'storage/dress/high/' . $filename;
-            $file->storeAs('public/dress/high', $filename);
+            $path = 'storage/dress/' . $filename;
+            $file->storeAs('public/dress', $filename);
 
             $compressed_file = Image::make($file)->resize(300, null, function ($constraint) {
                 $constraint->aspectRatio();
             })->encode($file->getClientOriginalExtension(), 50);
-            $low_res_path = 'storage/dress/low/' . $filename;
-            Storage::put('public/dress/low/' . $filename, $compressed_file);
+            $thumb_path = 'storage/dress/thumbnails/' . $filename;
+            Storage::put('public/dress/thumbnails' . $filename, $compressed_file);
 
             $uploadedImages[] = [
-                'high_res_path' => complete_url($high_res_path),
-                'low_res_path' => complete_url($low_res_path)
+                'path' => complete_url($path),
+                'thumb_path' => complete_url($thumb_path)
             ];
         }
 

@@ -15,8 +15,7 @@ class DressImage extends Model
         'order_id',
         'type',
         'path',
-        'high_res_path',
-        'low_res_path'
+        'thumb_path',
     ];
 
     public function dress()
