@@ -179,7 +179,7 @@ class DressImageController extends Controller
                 $constraint->aspectRatio();
             })->encode($file->getClientOriginalExtension(), 50);
             $thumb_path = 'storage/dress/thumbnails/' . $filename;
-            Storage::put('public/dress/thumbnails' . $filename, $compressed_file);
+            Storage::put('public/dress/thumbnails/'. $filename, $compressed_file);
 
 
             DressImage::create([
