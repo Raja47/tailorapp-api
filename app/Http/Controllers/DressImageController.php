@@ -197,6 +197,6 @@ class DressImageController extends Controller
                 'thumb_path' => complete_url($thumb_path)
             ];
         }
-        return response()->json(['message' => 'Design Created Successfully', 'data' => ['designs' => $uploadedImages]], 200);
+        return response()->json(['message' => 'Design Created Successfully', 'data' => $uploadedImages], 200);
     }
 }
