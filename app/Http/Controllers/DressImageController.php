@@ -156,7 +156,7 @@ class DressImageController extends Controller
     {
 
         $validation = Validator::make($request->all(), [
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096', // Validate each image file
+            'designs.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096', // Validate each image file
         ]);
 
         if ($validation->fails()) {
