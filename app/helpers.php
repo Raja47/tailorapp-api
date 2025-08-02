@@ -31,6 +31,6 @@ if (!function_exists('relative_thumb_url')) {
     function relative_thumb_url($fullUrl)
     {
         $relativeUrl = relative_url($fullUrl);
-        return $relativeUrl ? Str::replaceLast('/', 'thumbnails/', $relativeUrl) : null;
+        return $relativeUrl ? Str::replaceLast('/', '/thumbnails/', $relativeUrl) : null;
     }
 }
