@@ -108,7 +108,7 @@ class ClothController extends Controller
      *             type="object",
      *             @OA\Property(property="message", type="string", example="Cloth Created Successfully"),
      *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="Dress id", type="integer", example=1)
+     *                 @OA\Property(property="Cloth Object", type="integer", example=1)
      *             )
      *         )
      *     ),
@@ -159,8 +159,8 @@ class ClothController extends Controller
                 'dress_id' => $id,
                 'order_id' => $dress->order_id,
                 'type' => 'cloth',
-                'path' => $request->path
-            ]);
+                'path' => relative_url($request->path),
+                'thumb_path' => relative_thumb_url($request->path),]);
         }
 
         $cloth = Cloth::create([
@@ -196,11 +196,12 @@ class ClothController extends Controller
             'provided_by' => $cloth->provided_by,
             'price' => $cloth->price,
             'path' => complete_url($dress_image?->path),
+            'thumb_path' => $dress_image?->thumb_path ? complete_url($dress_image->thumb_path) : null,
             'created_at' => $cloth->created_at->toIso8601ZuluString(),
             'updated_at' => $cloth->updated_at->toIso8601ZuluString(),
         ];
 
-        return response()->json(['message' => 'Cloth Created Successfully', 'cloth' => $clothResponse], 200);
+        return response()->json(['message' => 'Cloth Created Successfully', 'data' => $clothResponse], 200);
     }
 
     /**
