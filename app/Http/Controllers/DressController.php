@@ -1357,15 +1357,20 @@ class DressController extends Controller
         $dress = Dress::find($id);
 
         if (empty($dress)) {
-            return response()->json(['message' => 'Dress not found'], 404);
+            return response()->json(['success' => false, 'message' => 'Dress not found'], 404);
         }
 
         return response()->json([
-            'dress_Id' => $dress->id,
-            'delivery_date' => $dress->delivery_date->toIso8601ZuluString(),
-            'trial_date' => $dress->trial_date->toIso8601ZuluString(),
-            'quantity' => $dress->quantity,
-            'price' => $dress->price
+            'success' => true,
+            'message' => 'Basic details for the dress', 
+            'data' => [
+                'dress_Id' => $dress->id,
+                'created_at' => $dress->created_at->toIso8601ZuluString(),
+                'delivery_date' => $dress->delivery_date->toIso8601ZuluString(),
+                'trial_date' => $dress->trial_date->toIso8601ZuluString(),
+                'quantity' => $dress->quantity,
+                'price' => $dress->price
+            ],
         ], 200);
     }
 
