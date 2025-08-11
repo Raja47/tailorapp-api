@@ -160,7 +160,7 @@ class ClothController extends Controller
                 'order_id' => $dress->order_id,
                 'type' => 'cloth',
                 'path' => relative_url($request->path),
-                'thumb_path' => relative_thumb_url($request->path),]);
+                'thumb_path' => relative_thumb_url($request->path),]); 
         }
 
         $cloth = Cloth::create([
