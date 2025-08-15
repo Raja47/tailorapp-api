@@ -1349,7 +1349,7 @@ class DressController extends Controller
      *                 @OA\Property(property="notes", type="string", example="Add lace to the sleeves")
      *             ) 
      *     )
-     *  ),     j
+     *  ), 
      *  @OA\Response(
      *         response=404,
      *         description="Dress not found",
