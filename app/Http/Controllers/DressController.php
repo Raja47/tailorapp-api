@@ -1329,19 +1329,28 @@ class DressController extends Controller
      *         @OA\Schema(type="integer"),
      *         description="Dress ID"        
      *     ),
-     *     @OA\Response(
+     *         @OA\Response(
      *         response=200,
      *         description="Basic details for the dress",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="dress_Id", type="integer", example=1),         
-     *             @OA\Property(property="delivery_date", type="string", format="date", example="2023-09-01"),
-     *             @OA\Property(property="trial_date", type="string", format="date", example="2023-09-01"),
-     *             @OA\Property(property="quantity", type="integer", example=1),
-     *             @OA\Property(property="price", type="number", example=100)
-     *         )
-     *     ),
-     *     @OA\Response(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Basic details for the dress"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="dress_Id", type="integer", example=1),
+     *                 @OA\Property(property="delivery_date", type="string", format="date", example="2023-09-01"),
+     *                 @OA\Property(property="recording", type="string", example="https://example.com/recording.mp4"),
+     *                 @OA\Property(property="trial_date", type="string", format="date", example="2023-09-01"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2023-09-01T10:00:00Z"),
+     *                 @OA\Property(property="quantity", type="integer", example=1),
+     *                 @OA\Property(property="price", type="number", format="float", example=100.00),
+     *                 @OA\Property(property="notes", type="string", example="Add lace to the sleeves")
+     *             ) 
+     *     )
+     *  ),     j
+     *  @OA\Response(
      *         response=404,
      *         description="Dress not found",
      *         @OA\JsonContent(
@@ -1359,6 +1368,10 @@ class DressController extends Controller
         if (empty($dress)) {
             return response()->json(['success' => false, 'message' => 'Dress not found'], 404);
         }
+        $recording = null;
+        if(Recording::where('dress_id', $id)->exists()) {
+            $recording = complete_url(Recording::where('dress_id', $id)->value('path'));
+        }
 
         return response()->json([
             'success' => true,
@@ -1369,7 +1382,9 @@ class DressController extends Controller
                 'delivery_date' => $dress->delivery_date->toIso8601ZuluString(),
                 'trial_date' => $dress->trial_date->toIso8601ZuluString(),
                 'quantity' => $dress->quantity,
-                'price' => $dress->price
+                'price' => $dress->price,
+                'notes' => $dress->notes,
+                'audio' => $recording,
             ],
         ], 200);
     }
@@ -1397,7 +1412,9 @@ class DressController extends Controller
      *                 @OA\Property(property="delivery_date", type="string", format="date", example="2023-09-01"),
      *                 @OA\Property(property="trial_date", type="string", format="date", example="2023-09-01"),  
      *                 @OA\Property(property="quantity", type="integer", example=1),
-     *                 @OA\Property(property="price", type="number", example=100)
+     *                 @OA\Property(property="price", type="number", example=100),
+     *                @OA\Property(property="notes", type="string", example="Add lace to the sleeves"),
+     *                @OA\Property(property="audio", type="string", example="https://example.com/recording.mp4")
      *             )
      *         )
      *     ),
@@ -1441,7 +1458,9 @@ class DressController extends Controller
             'delivery_date' => 'nullable|date',
             'trial_date' => 'nullable|date',
             'quantity' => 'nullable|integer|min:1',
-            'price' => 'nullable|numeric|min:0'
+            'price' => 'nullable|numeric|min:0',
+            'notes' => 'nullable|string',
+            'audio' => 'nullable|string', // Assuming audio is a string path
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -1449,7 +1468,6 @@ class DressController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
 
         if ($request->has('delivery_date') && !empty($request->input('delivery_date'))) {
             $dress->delivery_date = $request->input('delivery_date');
@@ -1465,6 +1483,21 @@ class DressController extends Controller
 
         if ($request->has('price') && !empty($request->input('price'))) {
             $dress->price = $request->input('price');
+        }
+
+        if ($request->has('audio')) {
+            if (!empty($request->input('audio'))) {
+                $recording = Recording::where('dress_id', $id)->first();
+                if ($recording == null) {
+                    $recording = new Recording();
+                    $recording->dress_id = $id;
+                }
+                $recording->path = $request->input('audio');
+                $recording->duration = 0; // Assuming duration is not provided in the request
+                $recording->save();
+            } else {
+                Recording::where('dress_id', $id)->delete();
+            }
         }
 
         $dress->save();
