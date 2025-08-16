@@ -1486,6 +1486,10 @@ class DressController extends Controller
             $dress->price = $request->input('price');
         }
 
+        if ($request->has('notes')) {
+            $dress->notes = $request->input('notes');
+        }
+
         if ($request->has('audio')) {
             if (!empty($request->input('audio'))) {
                 $recording = Recording::where('dress_id', $id)->first();
