@@ -234,7 +234,7 @@ class TailorCategoryQuestionController extends Controller
         *         description="Questions retrieved successfully",
         *         @OA\JsonContent(
         *             type="object",
-        *             @OA\Property(property="questions", type="array",
+        *             @OA\Property(property="data", type="array",
         *                 @OA\Items(
         *                     type="object",
         *                     @OA\Property(property="id", type="integer", example=1),
@@ -281,7 +281,7 @@ class TailorCategoryQuestionController extends Controller
             ];
         });
 
-        return response()->json(['message' => 'Questions retrieved successfully','questions' => $questions] ,200);
+        return response()->json(['message' => 'Questions retrieved successfully','data' => $questions] ,200);
     }
 
     /**
