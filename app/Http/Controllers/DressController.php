@@ -231,32 +231,34 @@ class DressController extends Controller
                         'thumb_path' => relative_thumb_url($clothImage['path']),
                     ]);
 
-                $clothPrice =  (isset($clothImage['price']) && $clothImage['provided_by'] == 'tailor') ? $clothImage['price'] : null;
+                    $clothPrice =  (isset($clothImage['price']) && $clothImage['provided_by'] == 'tailor') ? $clothImage['price'] : null;
 
-                $cloth = Cloth::create([
-                    'dress_id' => $dress->id,
-                    'order_id' => $order_id,
-                    'tailor_id' => $tailor_id,
-                    'title' => $clothImage['title'],
-                    'dress_image_id' => $dressImage?->id,
-                    'length' => $clothImage['length'] ?? 0,
-                    'provided_by' => $clothImage['provided_by'],
-                    'price' => $clothPrice
-                ]);
-
-                if ($clothPrice != null) {
-                    $expense = Expense::create([
-                        'amount' => $clothImage['price'],
-                        'order_id' => $order_id,
-                        'title' => 'Cloth Expense',
-                        'tailor_id' => $tailor_id,
+                    $cloth = Cloth::create([
                         'dress_id' => $dress->id,
-                        'cloth_id' => $cloth->id,
+                        'order_id' => $order_id,
+                        'tailor_id' => $tailor_id,
+                        'title' => $clothImage['title'],
+                        'dress_image_id' => $dressImage?->id,
+                        'length' => $clothImage['length'] ?? 0,
+                        'provided_by' => $clothImage['provided_by'],
+                        'price' => $clothPrice
                     ]);
-                    // @todo: check if we can do this via expense observer
-                    $order->increment('total_expenses', $expense->amount);
+
+                    if ($clothPrice != null) {
+                        $expense = Expense::create([
+                            'amount' => $clothImage['price'],
+                            'order_id' => $order_id,
+                            'title' => 'Cloth Expense',
+                            'tailor_id' => $tailor_id,
+                            'dress_id' => $dress->id,
+                            'cloth_id' => $cloth->id,
+                        ]);
+                        // @todo: check if we can do this via expense observer
+                        $order->increment('total_expenses', $expense->amount);
+                    }
                 }
-            }
+            } // <-- This closes the foreach ($request->clothImages as $clothImage) loop
+
 
             if (!empty($request->audio)) {
                 Recording::create([
@@ -265,7 +267,6 @@ class DressController extends Controller
                     'path' => relative_url($request->audio),
                 ]);
             }
-        } // <-- This closes the foreach ($request->clothImages as $clothImage) loop
 
             DB::commit();
             return response()->json([
