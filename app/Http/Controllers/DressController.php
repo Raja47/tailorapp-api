@@ -144,7 +144,7 @@ class DressController extends Controller
             'questionAnswers' => 'required|array',
             'designImages' => 'nullable|array',
             'clothImages' => 'nullable|array',
-            'audio' => ''
+            'audio' => 'nullable|string',
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -262,7 +262,7 @@ class DressController extends Controller
                 Recording::create([
                     'dress_id' => $dress->id,
                     'duration' => 0,
-                    'path' => $request->audio
+                    'path' => relative_url($request->audio),
                 ]);
             }
         } // <-- This closes the foreach ($request->clothImages as $clothImage) loop
@@ -474,7 +474,7 @@ class DressController extends Controller
         $audioname = time() . '.' . $audio->getClientOriginalExtension();
         $audio->storeAs('public/dress', $audioname);
 
-        $path = 'storage/dress/' . $audioname;
+        $path = complete_url('storage/dress/' . $audioname);
         return response()->json(['success' => true, 'message' => 'Audio uploaded', 'data' => $path], 200);
     }
 
