@@ -94,7 +94,6 @@ class TailorController extends Controller
      *             @OA\Property(property="picture", type="string", description="Picture of the tailor"),
      *             @OA\Property(property="country_code", type="string", description="Country code of the tailor"),
      *             @OA\Property(property="city_id", type="integer", description="City ID of the tailor"),
-     *             @OA\Property(property="status", type="integer", description="Status of the tailor")
      *         )
      *     ),
      *     @OA\Response(
@@ -141,16 +140,15 @@ class TailorController extends Controller
         $tailor->picture            = $request->input('picture');
         $tailor->country_code       = $request->input('country_code');
         $tailor->city_id            = $request->input('city_id');
-        // $tailor->address            = $request->input('address');
-        // $tailor->services_to_gender = $request->input('services_to_gender');
-        $tailor->status             = $request->input('status');
+        $tailor->status             = 1;
 
         if ($tailor->save()) {
             // Tailor is created
             $categories = app('App\Http\Controllers\TailorCategoryController')->default($tailor->id);
             $cat_parameters = app('App\Http\Controllers\TailorCategoryParameterController')->default($tailor->id);
+            $cat_questions = app('App\Http\Controllers\TailorCategoryQuestionController')->default($tailor->id);
             $token = $tailor->createToken('auth_token')->plainTextToken;
-            return response()->json(['success' => true, 'message' => 'Tailor Created Successfully', 'data' => ['id' => $tailor->id ,"token" => $token]], 200);
+            return response()->json(['success' => true, 'message' => 'Tailor Created Successfully', 'data' => ['id' => $tailor->id, "token" => $token]], 200);
         }
     }
 

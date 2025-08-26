@@ -19,7 +19,7 @@ jobs:
         run: |
           echo "${SSH_KEY}" > ssh_key
           chmod 600 ssh_key
-          ssh -o StrictHostKeyChecking=no -i ssh_key ${SSH_USER}@${SSH_HOST} "echo 'Deploying to Dev Environment' && cd /var/www/develop-tailorapp-api && git stash && git pull && composer install && php artisan migrate && php artisan optimize"
+          ssh -o StrictHostKeyChecking=no -i ssh_key ${SSH_USER}@${SSH_HOST} "echo 'Deploying to Dev Environment' && cd /var/www/develop-tailorapp-api && git stash && git pull && composer install && php artisan migrate && php artisan optimize && php artisan l5-swagger:generate"
   deploy_prod:
     if: github.ref == 'refs/heads/master'  # Only run this job on prod branch
     runs-on: ubuntu-latest
@@ -34,4 +34,4 @@ jobs:
         run: |
           echo "${SSH_KEY}" > ssh_key
           chmod 600 ssh_key
-          ssh -o StrictHostKeyChecking=no -i ssh_key ${SSH_USER}@${SSH_HOST} "echo 'Deploying to Prod Environment' && cd /var/www/tailorapp-api && git stash && git pull && composer install && php artisan migrate && php artisan optimize"
+          ssh -o StrictHostKeyChecking=no -i ssh_key ${SSH_USER}@${SSH_HOST} "echo 'Deploying to Prod Environment' && cd /var/www/tailorapp-api && git stash && git pull && composer install && php artisan migrate && php artisan optimize && php artisan l5-swagger:generate"

@@ -63,6 +63,9 @@ class ParameterController extends Controller
         if (count($parameters) === 0) {
             return response()->json(['parameters' => 'No parameters added'], 404);
         } else {
+            foreach ($parameters as $parameter) {
+                $parameter->image = complete_url($parameter->image);
+            }
             return response()->json(['parameters' => $parameters], 200);
         }
     }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTailorParametersTable extends Migration
+class CreateDiscountsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateTailorParametersTable extends Migration
      */
     public function up()
     {
-        Schema::create('tailor_parameters', function (Blueprint $table) {
+        Schema::create('discounts', function (Blueprint $table) {
             $table->id();
+            $table->string('title')->nullable();
+            $table->integer('amount');
             $table->integer('tailor_id');
-            $table->integer('parameter_id')->nullable();
-            $table->string('name');
-            $table->string('label')->nullable();
-            $table->string('image')->nullable();
-            $table->integer('status')->default(1);
+            $table->integer('order_id');
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ class CreateTailorParametersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tailor_parameters');
+        Schema::dropIfExists('discounts');
     }
 }

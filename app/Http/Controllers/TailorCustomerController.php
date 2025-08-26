@@ -5,16 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TailorCustomer;
 use App\Models\Customer;
+use App\Models\Order;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class TailorCustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
 
     // swagger annotation
     /**
@@ -102,7 +101,6 @@ class TailorCustomerController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
         } else {
-
             $tailor_id = auth('sanctum')->user()->id;
             $page = $request->input('page');
             $perpage = $request->input('perpage');
@@ -118,6 +116,132 @@ class TailorCustomerController extends Controller
             } else {
                 return response()->json(['success' => true, 'message' => 'Customers Found', 'data' => ['tailor_id' => $tailor_id, 'customers' => $tailorcustomers]], 200);
             }
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/tailors/customers/{customer_id}/orders",
+     *     summary="Get orders for a specific customer by the authenticated tailor",
+     *     description="Returns a list of orders placed by the specified customer for the currently authenticated tailor",
+     *     operationId="getCustomerOrders",
+     *     tags={"Customers"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="customer_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the customer",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Orders Found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Orders Found"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", description="Order ID", example=1),
+     *                     @OA\Property(property="customer_id", type="integer", description="Customer ID", example=2),
+     *                     @OA\Property(property="tailor_id", type="integer", description="Tailor ID", example=1),
+     *                     @OA\Property(property="shop_id", type="integer", description="Shop ID", example=3),
+     *                     @OA\Property(property="name", type="string", description="Order name", example="Order-1"),
+     *                     @OA\Property(property="status", type="integer", description="Order status", example=0),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", description="Order creation date", example="2023-10-20T15:30:00Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", description="Order update date", example="2023-10-21T10:20:00Z")
+     *                  )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No Orders Found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No Orders Found"),
+     *             @OA\Property(property="data", type="string", example="")
+     *         )
+     *     )
+     * )
+     */
+    public function orders($customer_id)
+    {
+        $tailor_id = auth('sanctum')->user()->id;
+
+        $query = DB::table('orders')
+            ->select('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount','orders.total_expenses' , 'orders.total_discount' ,'orders.total_payment', DB::raw('SUM(dresses.quantity) as dress_count'))
+            ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
+            ->where([['orders.tailor_id', $tailor_id], ['orders.customer_id', $customer_id]])
+            ->groupBy('orders.id');
+
+        $orders = $query
+            ->orderBy('orders.updated_at', 'desc')
+            ->get()->map(function ($order) {
+                $order->updated_at = Carbon::parse($order->updated_at)->toIso8601ZuluString();
+                $order->dress_count = (int) $order->dress_count;
+                return $order;
+            });
+
+
+        if (count($orders) === 0) {
+            return response()->json(['success' => false, 'message' => 'No Orders Found', 'data' => ''], 200);
+        } else {
+            return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => $orders], 200);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/tailors/customers/{customer_id}/payments",
+     *     summary="Get payments for a specific customer by the authenticated tailor",
+     *     description="Returns a list of payments made by the specified customer to the currently authenticated tailor",
+     *     operationId="getCustomerPayments",
+     *     tags={"Customers"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="customer_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the customer",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Payments Found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Payments Found"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(type="object")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No Payments Found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No Payments Found"),
+     *             @OA\Property(property="data", type="string", example="")
+     *         )
+     *     )
+     * )
+     */
+    public function payments($customer_id)
+    {
+        $tailor_id = auth('sanctum')->user()->id;
+        $payments = Payment::select('method', 'amount', 'created_at', 'order_id')->where([['tailor_id', $tailor_id], ['customer_id', $customer_id]])->get();
+
+        if (count($payments) === 0) {
+            return response()->json(['success' => false, 'message' => 'No Payments Found', 'data' => ''], 200);
+        } else {
+            return response()->json(['success' => true, 'message' => 'Payments Found', 'data' => $payments], 200);
         }
     }
 

@@ -11,16 +11,21 @@ class MeasurementValue extends Model
     use HasFactory;
 
     protected $fillable = [
+        'tcp_id',
         'measurement_id',
         'parameter_id',
         'value'
     ];
+
+  
+
 
     public static function newMeasurementValue(array $data)
     {
         $rules = [
             'measurement_id' => 'required',
             'parameter_id' => 'required',
+            'tcp_id' => 'required|integer',
             'value' => 'required',
         ];
 
@@ -34,6 +39,7 @@ class MeasurementValue extends Model
             ];
         } else {
             $measurement_value = self::create([
+                'tcp_id' => $data['tcp_id'],
                 'measurement_id' => $data['measurement_id'],
                 'parameter_id' => $data['parameter_id'],
                 'value' => $data['value'],
@@ -74,5 +80,17 @@ class MeasurementValue extends Model
                 ];
             }
         }
+    }
+
+
+   
+    public function parameter()
+    {
+        return $this->belongsTo(Parameter::class, 'parameter_id');
+    }
+
+    public function tailorCatParameter()
+    {
+        return $this->belongsTo(TailorCategoryParameter::class, 'tcp_id' , 'id');
     }
 }
