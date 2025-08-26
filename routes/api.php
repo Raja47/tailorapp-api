@@ -134,12 +134,12 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors
 });
 
 
-    Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/dresses'], function ($router) {
+Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/dress'], function ($router) {
+    
     $router->post('/create', [DressController::class, 'create']);
     $router->post('/image', [DressController::class, 'uploadImage']);
     $router->post('/images', [DressController::class, 'uploadImages']);
     $router->post('/audio', [DressController::class, 'uploadAudio']);
-    // $router->get('/{dress_id}/measurement', [DressController::class, 'getOrderDressMeasurement']);
     $router->get('/tab', [DressController::class, 'getTabDresses']);
     $router->post('/store', [DressController::class, 'addDress']);
     $router->post('/update', [DressController::class, 'updateDress']);
@@ -150,7 +150,7 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors
     $router->post('/updatestatus', [DressController::class, 'updateStatus']);
 
         // Dress Edit Comonents routes
-        $router->prefix('/{id}')->group(function ($router) {
+    $router->prefix('/{id}')->group(function ($router) {
             // Basic Info
             $router->get('/', [DressController::class, 'show']);
 

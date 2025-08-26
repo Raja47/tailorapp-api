@@ -216,7 +216,7 @@ class TailorCategoryQuestionController extends Controller
 
         /**
      * @OA\Get(
-     *     path="/tailors/dresses/{id}/questions",
+     *     path="/dress/{id}/questions",
      *     summary="Get questions for a dress",
      *     description="Returns a list of questions for a dress based on the dress ID.",
      *     operationId="getQuestions",
@@ -265,7 +265,6 @@ class TailorCategoryQuestionController extends Controller
     {
         
         $answers = TailorCategoryAnswer::with('question')->where('dress_id', $id)->get();
-
         $questions = $answers->map(function ($answer) {
             return [
                 'id' => $answer->question?->id,
@@ -286,7 +285,7 @@ class TailorCategoryQuestionController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/tailors/dresses/{id}/questions",
+     *     path="/dress/{id}/questions",
      *     summary="Update questions for a dress",
      *     description="Updates the questions for a dress based on the dress ID.",
      *     operationId="updateQuestions",

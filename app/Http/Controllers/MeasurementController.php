@@ -115,14 +115,13 @@ class MeasurementController extends Controller
      *     )
      * )
      */
-
     public function newMeasurementWithValues(Request $request)
     {
         $rules = [
             'dress_id' => 'required',
             'measurementBoxes' => 'required|array',
-
         ];
+        
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Measurement data validation error', 'data' => $validation->errors()], 422);
@@ -208,7 +207,7 @@ class MeasurementController extends Controller
     
     /**
      * @OA\Get(
-     *     path="/tailors/dresses/{id}/measurement",
+     *     path="/dress/{id}/measurement",
      *     summary="Get the measurement of a dress",
      *     description="Allows a tailor to get the measurement of a dress based on dress ID.",     
      *     operationId="getDressMeasurement",
@@ -306,7 +305,7 @@ class MeasurementController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/tailors/dresses/{id}/measurement",
+     *     path="/dress/{id}/measurement",
      *     summary="Update the measurement of a dress",
      *     description="Allows a tailor to update the measurement of a dress based on the dress ID.",
      *     operationId="updateDressMeasurement",

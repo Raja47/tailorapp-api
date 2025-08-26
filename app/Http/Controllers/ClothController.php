@@ -18,7 +18,7 @@ class ClothController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/tailors/dresses/{id}/clothes",
+     *     path="/dress/{id}/clothes",
      *     summary="Get clothes for a dress",
      *     description="Returns all clothes for a dress",
      *     operationId="getDressClothes",
@@ -77,7 +77,7 @@ class ClothController extends Controller
     }
     /**
      * @OA\Post(
-     *     path="/tailors/dresses/{id}/clothes",
+     *     path="/dress/{id}/clothes",
      *     summary="Create a new cloth for a dress",
      *     description="Creates a new cloth for a specific dress.",
      *     operationId="createCloth",
@@ -206,7 +206,7 @@ class ClothController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/tailors/dresses/clothes/{id}",
+     *     path="/dress/clothes/{id}",
      *     summary="Delete a cloth",
      *     description="Deletes a cloth based on the dress ID and cloth ID.",
      *     operationId="deleteCloth",

@@ -18,7 +18,7 @@ class DressImageController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/tailors/dresses/{id}/designs",
+     *     path="/dress/{id}/designs",
      *     summary="Get images for a dress",
      *     description="Returns a list of images for a dress based on the dress ID.",
      *     operationId="getDressImages",
@@ -66,7 +66,7 @@ class DressImageController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/tailors/dresses/designs/{design_id}",
+     *     path="/dress/designs/{design_id}",
      *     summary="Delete a design image",
      *     description="Deletes a design image based on the design ID.",
      *     operationId="deleteDesign",
@@ -113,7 +113,7 @@ class DressImageController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/tailors/dresses/{id}/designs",
+     *     path="/dress/{id}/designs",
      *     summary="Upload a Design image",
      *     description="Stores an image in 'public/dress'.",
      *     operationId="uploadDressDesign",
