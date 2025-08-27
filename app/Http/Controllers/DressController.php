@@ -1254,9 +1254,7 @@ class DressController extends Controller
             return response()->json(['message' => 'Dress not found'], 404);
         }
 
-        $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
-        $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
-
+        // Getting measurements for the dress
         $dress->measurement_values = [];
         $values = [];
         if ($dress->measurement?->id) {
@@ -1275,18 +1273,10 @@ class DressController extends Controller
             });
         }
         $dress->measurement_values = $values;
-
-        $dress->clothes = $dress->clothes->map(function ($cloth) {
-            $cloth->created_at = Carbon::parse($cloth->created_at)->toIso8601ZuluString();
-
-            return $cloth;
-        });
-
-
+    
+        // Getting clothes for the dress
         $dress->clothes = [];
-
         $clothes = Cloth::with('image')->where('dress_id', $id)->get();
-
         if ($clothes->isEmpty()) {
             $dress->clothes = [];
         } else {
@@ -1306,13 +1296,37 @@ class DressController extends Controller
             });
         }
 
+        // Getting design images for the dress
         $onlyDesigns = $dress->designs
             ->map(fn($design) => collect($design)->only(['id', 'path', 'thumb_path']))
             ->values();
         $dress->setRelation('designs', $onlyDesigns);  // setRelation is used to replace the designs relation with the modified collection
 
+
+        // Getting Question Answer for the dress
+        $answers = TailorCategoryAnswer::with('question')->where('dress_id', $id)->get();
+        $questions = $answers->map(function ($answer) {
+            return [
+                'id' => $answer->question?->id,
+                'tailor_id' => $answer->tailor_id,
+                'category_id' => $answer->question?->category_id,
+                'dress_id' => $answer->dress_id,
+                'question' => $answer->question?->question,
+                'type' => $answer->question?->type,
+                'options' => $answer->question?->options,
+                'value' => ( $answer && $answer->question?->isMulti()) ? explode(',',$answer->value) : $answer->value, 
+                'created_at' => $answer->created_at?->toIso8601ZuluString(),
+                'updated_at' => $answer->updated_at?->toIso8601ZuluString(),
+            ];
+        });
+        $dress->questions = $questions;
+        
+        // Format date fields to ISO 8601 Zulu string
+        $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
+        $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
         $dress->created_at = Carbon::parse($dress->created_at)->toIso8601ZuluString();
         $dress->updated_at = Carbon::parse($dress->updated_at)->toIso8601ZuluString();
+
 
         return response()->json($dress);
     }
