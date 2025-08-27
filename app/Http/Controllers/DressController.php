@@ -1320,7 +1320,7 @@ class DressController extends Controller
             ];
         });
         $dress->questions = $questions;
-        
+
         // Format date fields to ISO 8601 Zulu string
         $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
         $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
@@ -1328,7 +1328,7 @@ class DressController extends Controller
         $dress->updated_at = Carbon::parse($dress->updated_at)->toIso8601ZuluString();
 
 
-        return response()->json($dress);
+        return response()->json(['success' => true, 'message' => 'Dress Details', 'data' => $dress], 200);
     }
 
 
