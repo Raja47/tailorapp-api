@@ -1297,9 +1297,13 @@ class DressController extends Controller
         }
 
         // Getting design images for the dress
-        $onlyDesigns = $dress->designs
-            ->map(fn($design) => collect($design)->only(['id', 'path', 'thumb_path']))
-            ->values();
+        $onlyDesigns = $dress->designs->map(function ($design) {
+            return [
+                'id'        => $design->id,
+                'path'      => complete_url($design->path),
+                'thumb_path' => complete_url($design->thumb_path),
+            ];
+        })->values();
         $dress->setRelation('designs', $onlyDesigns);  // setRelation is used to replace the designs relation with the modified collection
 
 
