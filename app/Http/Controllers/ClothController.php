@@ -153,6 +153,7 @@ class ClothController extends Controller
             return response()->json(['message' => 'Data validation error', 'data' => $validation->errors()], 422);
         }
 
+        $dress_image = null;
         if (isset($request->path) && !empty($request->path)) {
             $dress_image = DressImage::create([
                 'tailor_id' => $tailor_id,
@@ -196,7 +197,7 @@ class ClothController extends Controller
             'provided_by' => $cloth->provided_by,
             'price' => $cloth->price,
             'path' => complete_url($dress_image?->path),
-            'thumb_path' => $dress_image?->thumb_path ? complete_url($dress_image->thumb_path) : null,
+            'thumb_path' =>  complete_url($dress_image?->thumb_path),
             'created_at' => $cloth->created_at->toIso8601ZuluString(),
             'updated_at' => $cloth->updated_at->toIso8601ZuluString(),
         ];
