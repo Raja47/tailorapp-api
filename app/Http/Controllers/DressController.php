@@ -25,7 +25,7 @@ class DressController extends Controller
     //swagger annotations
     /**
      * @OA\Post(
-     *     path="/tailors/dresses/create",
+     *     path="/dress/create",
      *     summary="Create a dress with related entities",
      *     tags={"Orders"},
      *     security={{"bearerAuth": {}}},
@@ -292,7 +292,7 @@ class DressController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/tailors/dresses/image",
+     *     path="/dress/image",
      *     summary="Upload a dress image",
      *     description="Stores an image in 'public/dress'.",
      *     operationId="uploadDressImage",
@@ -358,7 +358,7 @@ class DressController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/tailors/dresses/images",
+     *     path="/dress/images",
      *     summary="Upload dress images",
      *     description="Stores images in 'public/dress'.",
      *     operationId="uploadDressImages",
@@ -429,7 +429,7 @@ class DressController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/tailors/dresses/audio",
+     *     path="/dress/audio",
      *     summary="Upload audio file for a dress",
      *     description="Uploads an audio file, calculates its duration, and stores it.",
      *     operationId="uploadAudio",
@@ -481,7 +481,7 @@ class DressController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/tailors/dresses/tab",
+     *     path="/dress/tab",
      *     summary="Get a list of tailor dresses based on filters",
      *     tags={"Dresses"},
      *     security={{"bearerAuth":{}}},
@@ -715,7 +715,7 @@ class DressController extends Controller
     //swagger annotations
     /**
      * @OA\Post(
-     *     path="/tailors/dresses/store",
+     *     path="/dress/store",
      *     summary="Create a new dress",
      *     description="Creates a new dress for a specific order and shop.",
      *     tags={"Dresses"},
@@ -991,7 +991,7 @@ class DressController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/tailors/dresses/orders/{order_id}",
+     *     path="/dress/orders/{order_id}",
      *     summary="Get dresses for a specific order",
      *     description="Retrieves a list of dresses associated with a specific order, based on the tailor's authentication.",
      *     operationId="getOrderDresses",
@@ -1076,7 +1076,7 @@ class DressController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/tailors/dresses/updatestatus",
+     *     path="/dress/updatestatus",
      *     summary="Update the status of a dress",
      *     description="Allows a tailor to update the status of a dress based on dress ID.",
      *     operationId="updateDressStatus",
@@ -1152,7 +1152,7 @@ class DressController extends Controller
     /**
      * Get a dress by ID.
      * @OA\Get(
-     *      path="/tailors/dresses/{id}",
+     *      path="/dress/{id}",
      *      summary="Get a dress by ID",
      *      description="Retrieves a dress by its ID, including its measurement, clothes, and images.",
      *      operationId="getDressById",
@@ -1207,10 +1207,14 @@ class DressController extends Controller
      *             @OA\Property(property="id", type="integer", example=1),
      *             @OA\Property(property="dress_id", type="integer", example=1),
      *             @OA\Property(property="path", type="string", example="uploads/cloth1.jpg"),
+     *             @OA\Property(property="thumb_path", type="string", example="uploads/thumb_cloth1.jpg"),
      *             @OA\Property(property="title", type="string", example="Cloth Title"),
      *             @OA\Property(property="length", type="string", example="2.5 meters"),
      *             @OA\Property(property="provided_by", type="string", example="Supplier Name"),
      *             @OA\Property(property="price", type="number", format="float", example=500.00),
+     *             @OA\Property(property="order_name", type="string", example="1OR123"),
+     *             @OA\Property(property="category_name", type="string", example="Shirt"),
+     *             @OA\Property(property="customer_name", type="string", example="Raja Ram"),
      *             @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),
      *             @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-03T12:00:00Z")
      *         )
@@ -1219,7 +1223,8 @@ class DressController extends Controller
      *         @OA\Items(
      *             type="object",
      *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="path", type="string", example="uploads/design1.jpg")
+     *             @OA\Property(property="path", type="string", example="uploads/design1.jpg"),
+     *           @OA\Property(property="thumb_path", type="string", example="uploads/thumb_design1.jpg") 
      *         )
      *     ),
      *     @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),  
@@ -1246,15 +1251,13 @@ class DressController extends Controller
      */
     public function show($id)
     {
-        $dress = Dress::with(['measurement', 'designs'])->find($id);
+        $dress = Dress::with(['order.customer','category', 'measurement', 'designs'])->find($id);
 
         if (empty($dress)) {
             return response()->json(['message' => 'Dress not found'], 404);
         }
 
-        $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
-        $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
-
+        // Getting measurements for the dress
         $dress->measurement_values = [];
         $values = [];
         if ($dress->measurement?->id) {
@@ -1273,18 +1276,10 @@ class DressController extends Controller
             });
         }
         $dress->measurement_values = $values;
-
-        $dress->clothes = $dress->clothes->map(function ($cloth) {
-            $cloth->created_at = Carbon::parse($cloth->created_at)->toIso8601ZuluString();
-
-            return $cloth;
-        });
-
-
+    
+        // Getting clothes for the dress
         $dress->clothes = [];
-
         $clothes = Cloth::with('image')->where('dress_id', $id)->get();
-
         if ($clothes->isEmpty()) {
             $dress->clothes = [];
         } else {
@@ -1293,6 +1288,7 @@ class DressController extends Controller
                     'id' => $cloth->id,
                     'dress_id' => $cloth->dress_id,
                     'path' => $cloth->image?->path ? complete_url($cloth->image->path) : null,
+                    'thumb_path' => $cloth->image?->thumb_path ? complete_url($cloth->image->thumb_path) : null,
                     'title' => $cloth->title,
                     'length' => $cloth->length,
                     'provided_by' => $cloth->provided_by,
@@ -1303,21 +1299,52 @@ class DressController extends Controller
             });
         }
 
-        $onlyDesigns = $dress->designs
-            ->map(fn($design) => collect($design)->only(['id', 'path']))
-            ->values();
+        // Getting design images for the dress
+        $onlyDesigns = $dress->designs->map(function ($design) {
+            return [
+                'id'        => $design->id,
+                'path'      => complete_url($design->path),
+                'thumb_path' => complete_url($design->thumb_path),
+            ];
+        })->values();
         $dress->setRelation('designs', $onlyDesigns);  // setRelation is used to replace the designs relation with the modified collection
 
+
+        // Getting Question Answer for the dress
+        $answers = TailorCategoryAnswer::with('question')->where('dress_id', $id)->get();
+        $questions = $answers->map(function ($answer) {
+            return [
+                'id' => $answer->question?->id,
+                'tailor_id' => $answer->tailor_id,
+                'category_id' => $answer->question?->category_id,
+                'dress_id' => $answer->dress_id,
+                'question' => $answer->question?->question,
+                'type' => $answer->question?->type,
+                'options' => $answer->question?->options,
+                'value' => ( $answer && $answer->question?->isMulti()) ? explode(',',$answer->value) : $answer->value, 
+                'created_at' => $answer->created_at?->toIso8601ZuluString(),
+                'updated_at' => $answer->updated_at?->toIso8601ZuluString(),
+            ];
+        });
+        $dress->questions = $questions;
+
+        // Format date fields to ISO 8601 Zulu string
+        $dress->order_name = $dress->order ? $dress->order->name : null;
+        $dress->customer_name = $dress->order && $dress->order->customer ? $dress->order->customer->name : null;
+        $dress->category_name = $dress->category ? $dress->category->label : null;
+        $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
+        $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
         $dress->created_at = Carbon::parse($dress->created_at)->toIso8601ZuluString();
         $dress->updated_at = Carbon::parse($dress->updated_at)->toIso8601ZuluString();
 
-        return response()->json($dress);
+
+        return response()->json(['success' => true, 'message' => 'Dress Details', 'data' => $dress], 200);
     }
 
 
     /**
      * @OA\Get(
-     *     path="/tailors/dresses/{id}/details",
+     *     path="/dress/{id}/details",
      *     summary="Get basic details for a dress",
      *     description="Returns basic details for a dress based on the dress ID.",
      *     operationId="getBasicDetails",
@@ -1392,7 +1419,7 @@ class DressController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/tailors/dresses/{id}/details",
+     *     path="/dress/{id}/details",
      *     summary="Update basic details for a dress",
      *     description="Allows a tailor to update basic details for a dress based on the dress ID.",
      *     operationId="updateBasicDetails",
