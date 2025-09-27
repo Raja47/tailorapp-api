@@ -53,12 +53,27 @@ class Dress extends Model
         return $this->hasManyThrough(MeasurementValue::class, Measurement::class, 'model_id' ,'measurement_id' , 'id' , 'id');
     }
 
+    public function customer(){
+
+        return $this->hasOneThrough(
+            Customer::class, // Final model
+            Order::class,    // Intermediate model
+            'id',            // Foreign key on orders table (id) <- matched with dresses.order_id
+            'id',            // Foreign key on customers table (id) <- matched with orders.customer_id
+            'order_id',      // Local key on dresses table
+            'customer_id'    // Local key on orders table
+        );
+    }   
+
     public function designs()
     {
         return $this->hasMany(DressImage::class, 'dress_id', 'id')->where('type', 'design'); 
     }
 
-
+    public function category() 
+    { 
+        return $this->belongsTo(Category::class); 
+    } 
 
     protected static function boot()
     {
