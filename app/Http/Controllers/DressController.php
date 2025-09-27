@@ -1331,7 +1331,7 @@ class DressController extends Controller
         // Format date fields to ISO 8601 Zulu string
         $dress->order_name = $dress->order ? $dress->order->name : null;
         $dress->customer_name = $dress->order && $dress->order->customer ? $dress->order->customer->name : null;
-        $dress->category_name = $dress->category ? $dress->category->label : null;
+        $dress->category_name = $dress->category ? $dress->category->name : null;
         $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
         $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
         $dress->created_at = Carbon::parse($dress->created_at)->toIso8601ZuluString();
