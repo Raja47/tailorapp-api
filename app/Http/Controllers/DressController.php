@@ -1212,6 +1212,9 @@ class DressController extends Controller
      *             @OA\Property(property="length", type="string", example="2.5 meters"),
      *             @OA\Property(property="provided_by", type="string", example="Supplier Name"),
      *             @OA\Property(property="price", type="number", format="float", example=500.00),
+     *             @OA\Property(property="order_name", type="string", example="1OR123"),
+     *             @OA\Property(property="category_name", type="string", example="Shirt"),
+     *             @OA\Property(property="customer_name", type="string", example="Raja Ram"),
      *             @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-03T12:00:00Z"),
      *             @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-03T12:00:00Z")
      *         )
