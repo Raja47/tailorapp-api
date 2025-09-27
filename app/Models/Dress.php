@@ -72,7 +72,7 @@ class Dress extends Model
 
     public function category() 
     { 
-        return $this->belongsTo(Category::class); 
+        return $this->belongsTo(TailorCategory::class , 'category_id', 'id'); 
     } 
 
     protected static function boot()
