@@ -16,6 +16,7 @@ class Dress extends Model
             'shop_id',
             'category_id',
             'category_name',
+            'order_name',
             'tailor_customer_id',
             'name',
             'gender',
