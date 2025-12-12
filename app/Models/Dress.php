@@ -11,9 +11,12 @@ class Dress extends Model
 
     protected $fillable = [
             'order_id',
+            'order_name',
             'tailor_id',
             'shop_id',
             'category_id',
+            'category_name',
+            'tailor_customer_id',
             'name',
             'gender',
             'type',
@@ -55,14 +58,7 @@ class Dress extends Model
 
     public function customer(){
 
-        return $this->hasOneThrough(
-            Customer::class, // Final model
-            Order::class,    // Intermediate model
-            'id',            // Foreign key on orders table (id) <- matched with dresses.order_id
-            'id',            // Foreign key on customers table (id) <- matched with orders.customer_id
-            'order_id',      // Local key on dresses table
-            'customer_id'    // Local key on orders table
-        );
+        return $this->hasOne(TailorCustomer::class , 'tailor_customer_id' ,'id');
     }   
 
     public function designs()

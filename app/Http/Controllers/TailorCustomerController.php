@@ -94,6 +94,7 @@ class TailorCustomerController extends Controller
     public function index(Request $request)
     {
         $rules = [
+            'shop_id' => 'required',
             'page' => 'required',
             'perpage' => 'required',
         ];
@@ -106,16 +107,12 @@ class TailorCustomerController extends Controller
             $perpage = $request->input('perpage');
 
             if (empty($page) or empty($perpage)) {
-                $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->get();
+                $tailorcustomers = TailorCustomer::where(['tailor_id' => $tailor_id , 'shop_id' => $request->shop_id ])->get();
             } else {
-                $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->forpage($page, $perpage)->get();
+                $tailorcustomers = TailorCustomer::where(['tailor_id' => $tailor_id , 'shop_id' => $request->shop_id ])->forpage($page, $perpage)->get();
             }
-
-            if (count($tailorcustomers) === 0) {
-                return response()->json(['success' => false, 'message' => 'No Customer Found', 'data' => ['tailor_id' => $tailor_id]], 404);
-            } else {
-                return response()->json(['success' => true, 'message' => 'Customers Found', 'data' => ['tailor_id' => $tailor_id, 'customers' => $tailorcustomers]], 200);
-            }
+            
+            return response()->json(['success' => true, 'message' => 'Customers Found', 'data' => ['tailor_id' => $tailor_id, 'customers' => $tailorcustomers]], 200);
         }
     }
 
@@ -531,6 +528,7 @@ class TailorCustomerController extends Controller
             'name' => 'required',
             'address' => 'max:70',
             'gender' => 'required',
+            'shop_id' => 'required',
             'city_name' => '',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
         ];
@@ -540,7 +538,7 @@ class TailorCustomerController extends Controller
         }
 
         $tailor_id = auth('sanctum')->user()->id;
-        $tailorcustomer = TailorCustomer::where([['number', $request->number], ['tailor_id', $tailor_id]])->first();
+        $tailorcustomer = TailorCustomer::where([['number', $request->number], ['tailor_id', $tailor_id , 'shop_id' => $request->shop_id ]])->first();
         if (!empty($tailorcustomer)) {
             return response()->json(['success' => false, 'message' => 'Customer Already Exists', 'data' => $tailorcustomer->id], 400);
         }
@@ -550,7 +548,6 @@ class TailorCustomerController extends Controller
             $file = $request->file('picture');
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/customers', $filename);
-
             $base_url = url('');
             $path = $base_url . '/storage/customers/' . $filename;
         }
@@ -574,6 +571,7 @@ class TailorCustomerController extends Controller
             'picture' => $path,
             'city_name' => $request->city_name,
             'tailor_id' => $tailor_id,
+            'shop_id' => $request->shop_id,
             'customer_id' => $customer->id,
         ]);
 

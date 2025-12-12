@@ -14,8 +14,6 @@ use OpenApi\Annotations as OA;
 
 class ClothController extends Controller
 {
-
-
     /**
      * @OA\Get(
      *     path="/dress/{id}/clothes",
