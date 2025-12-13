@@ -15,6 +15,7 @@ use App\Models\Recording;
 use App\Models\Measurement;
 use App\Models\MeasurementValue;
 use App\Models\Tailor;
+use App\Models\TailorCategory;
 use App\Models\TailorCategoryAnswer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -170,12 +171,16 @@ class DressController extends Controller
 
             $order = Order::findOrFail($order_id);
 
+            $tailorCategory = TailorCategory::findOrFail($request->category_id);
+
             $dress = Dress::create([
                 'order_id' => $order_id,
                 'tailor_id' => $tailor_id,
                 'shop_id' => $request->shop_id,
                 'category_id' => $request->category_id,
                 'tailor_customer_id' => $request->customer_id,
+                'order_name' => $order->name,
+                'category_name' => $tailorCategory->name, ,
                 'type' => $request->type,
                 'quantity' => $request->quantity,
                 'price' => $request->price,
@@ -184,6 +189,7 @@ class DressController extends Controller
                 'notes' => $request->notes,
                 'status' => 0,
             ]);
+
             $order->increment('total_dress_amount', $request->price);
 
             $measurement = Measurement::create([
