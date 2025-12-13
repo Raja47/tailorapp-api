@@ -180,7 +180,7 @@ class DressController extends Controller
                 'category_id' => $request->category_id,
                 'tailor_customer_id' => $request->customer_id,
                 'order_name' => $order->name,
-                'category_name' => $tailorCategory->name, ,
+                'category_name' => $tailorCategory->name,
                 'type' => $request->type,
                 'quantity' => $request->quantity,
                 'price' => $request->price,
