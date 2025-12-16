@@ -132,7 +132,6 @@ class DressController extends Controller
     {
         $rules = [
             'order_id' => 'nullable|exists:orders,id',
-            'customer_id' => 'required|exists:tailor_customers,id',
             'shop_id' => 'required|exists:shops,id',
             'category_id' => 'required|exists:tailor_categories,id',
             'type' => 'required|in:stitching,alteration',
@@ -178,7 +177,7 @@ class DressController extends Controller
                 'tailor_id' => $tailor_id,
                 'shop_id' => $request->shop_id,
                 'category_id' => $request->category_id,
-                'tailor_customer_id' => $request->customer_id,
+                'tailor_customer_id' => $order->customer_id,
                 'order_name' => $order->name,
                 'category_name' => $tailorCategory->name,
                 'type' => $request->type,
