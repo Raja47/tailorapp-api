@@ -170,7 +170,7 @@ class OrderController extends Controller
         $perpage = $request->input('perpage',10);
 
         $query = DB::table('orders')
-        ->select('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount','tailor_customers.name as customer_name', DB::raw('COUNT(dresses.id) as dress_count'))
+        ->select('orders.id', 'orders.name', 'orders.status','orders.created_at', 'orders.updated_at', 'orders.total_dress_amount','tailor_customers.name as customer_name', DB::raw('COUNT(dresses.id) as dress_count'))
         ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
         ->leftjoin('tailor_customers', 'orders.customer_id','=','tailor_customers.id')
         ->where('orders.tailor_id', $tailor_id)
