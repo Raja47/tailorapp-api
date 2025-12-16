@@ -157,7 +157,7 @@ class DressController extends Controller
             $tailor_id = auth('sanctum')->user()->id;
 
             // if order id is not provided then it mean order is new with first dress being so create order
-            if ($request->has('order_id')) {
+            if ($request->has('order_id') && $request->order_id != null) {
                 $order_id = $request->order_id;
             } else {
                 $order_id = Order::create([
