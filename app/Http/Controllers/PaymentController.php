@@ -87,7 +87,8 @@ class PaymentController extends Controller
         $perpage = $request->input('perpage');
         $today = Carbon::today();
 
-        $query = DB::table('payments')->select('payments.id', 'orders.name AS orderName', 'customers.name AS customerName', 'payments.amount', 'payments.method', 'payments.created_at')
+        $query = DB::table('payments')
+            ->select('payments.id', 'orders.name AS order_name', 'customers.name AS customer_name', 'payments.amount', 'payments.method', 'payments.created_at')
             ->leftjoin('orders', 'orders.id', 'payments.order_id')
             ->leftjoin('customers', 'customers.id', 'payments.customer_id')
             ->where('payments.tailor_id', $tailor_id);
