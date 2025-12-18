@@ -228,7 +228,7 @@ class TailorCustomerController extends Controller
     {
         $tailor_id = auth('sanctum')->user()->id;
          $query = DB::table('payments')
-            ->select('payments.id', 'orders.name AS order_name', 'payments.order_id', 'tailor_customers.name AS customer_name','payments.customer_id', 'payments.amount', 'payments.method', 'payments.created_at')
+            ->select('payments.*','orders.name AS order_name','tailor_customers.name AS customer_name')
             ->leftjoin('orders', 'orders.id', 'payments.order_id')
             ->leftjoin('tailor_customers', 'tailor_customers.id', 'payments.customer_id')
             ->where('payments.customer_id', $customer_id);
