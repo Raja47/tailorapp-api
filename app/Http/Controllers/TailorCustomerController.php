@@ -230,16 +230,25 @@ class TailorCustomerController extends Controller
      *     )
      * )
      */
-    public function payments($customer_id)
+    public function payments($customer_id, $page=1 , $perpage = 20)
     {
         $tailor_id = auth('sanctum')->user()->id;
-        $payments = Payment::select('method', 'amount', 'created_at', 'order_id')->where([['tailor_id', $tailor_id], ['customer_id', $customer_id]])->get();
+         $query = DB::table('payments')
+            ->select('payments.id', 'orders.name AS order_name', 'tailor_customers.name AS customer_name', 'payments.amount', 'payments.method', 'payments.created_at')
+            ->leftjoin('orders', 'orders.id', 'payments.order_id')
+            ->leftjoin('tailor_customers', 'tailor_customers.id', 'payments.customer_id')
+            ->where('payments.customer_id', $customer_id);
+        
+        $payments = $query->orderBy('payments.created_at', 'desc')
+            ->forpage($page, $perpage)
+            ->get()
+            ->map(function ($payment) {
+                $payment->created_at = Carbon::parse($payment->created_at)->toIso8601ZuluString();
+                return $payment;
+        });
 
-        if (count($payments) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Payments Found', 'data' => ''], 200);
-        } else {
-            return response()->json(['success' => true, 'message' => 'Payments Found', 'data' => $payments], 200);
-        }
+        return response()->json(['success' => true, 'message' => 'Payments Found', 'data' => $payments], 200);
+        
     }
 
     //count of customers for specific tailor
