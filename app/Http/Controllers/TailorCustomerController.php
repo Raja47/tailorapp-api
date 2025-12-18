@@ -165,14 +165,13 @@ class TailorCustomerController extends Controller
      *     )
      * )
      */
-    public function orders($customer_id)
+    public function orders($customer_id, $page = 1 , $perpage = 20)
     {
-        $tailor_id = auth('sanctum')->user()->id;
-
         $query = DB::table('orders')
-            ->select('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount','orders.total_expenses' , 'orders.total_discount' ,'orders.total_payment', DB::raw('SUM(dresses.quantity) as dress_count'))
+            ->select('orders.id', 'orders.name','tailor_customers.name as customer_name', 'orders.status', 'orders.created_at', 'orders.updated_at','orders.total_dress_amount', 'orders.total_payment', 'orders.total_expenses' , 'orders.total_discount' , DB::raw('SUM(dresses.quantity) as dress_count'))
+            ->leftjoin('tailor_customers' , 'orders.customer_id','=','tailor_customers.id')
             ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
-            ->where([['orders.tailor_id', $tailor_id], ['orders.customer_id', $customer_id]])
+            ->where('orders.customer_id', $customer_id)
             ->groupBy('orders.id');
 
         $orders = $query
@@ -183,12 +182,7 @@ class TailorCustomerController extends Controller
                 return $order;
             });
 
-
-        if (count($orders) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Orders Found', 'data' => ''], 200);
-        } else {
-            return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => $orders], 200);
-        }
+         response()->json(['success' => true, 'message' => 'Orders Found', 'data' => $orders], 200);        
     }
 
     /**
