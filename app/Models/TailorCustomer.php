@@ -16,6 +16,7 @@ class TailorCustomer extends Model
         'name',
         'address',
         'tailor_id',
+        'customer_id',
         'shop_id',
         'city_name',
         'gender',
