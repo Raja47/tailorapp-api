@@ -153,7 +153,7 @@
                                         },
                                         "data": {
                                             "properties": {
-                                                "Dress id": {
+                                                "Cloth Object": {
                                                     "type": "integer",
                                                     "example": 1
                                                 }
@@ -1472,6 +1472,116 @@
                 ]
             }
         },
+        "/shops/{shop_id}/dresses-count-by-status": {
+            "get": {
+                "tags": [
+                    "Dresses"
+                ],
+                "summary": "Count dresses by status",
+                "description": "Counts the number of dresses by their status for a specific shop.",
+                "operationId": "countDressesByStatus",
+                "parameters": [
+                    {
+                        "name": "shop_id",
+                        "in": "path",
+                        "description": "ID of the shop to filter dresses",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Count by status retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Count by status retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "stitching"
+                                                    },
+                                                    "count": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data validation error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal server error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/tailors/dresses/orders/{order_id}": {
             "get": {
                 "tags": [
@@ -1996,27 +2106,54 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "dress_Id": {
-                                            "type": "integer",
-                                            "example": 1
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
                                         },
-                                        "delivery_date": {
+                                        "message": {
                                             "type": "string",
-                                            "format": "date",
-                                            "example": "2023-09-01"
+                                            "example": "Basic details for the dress"
                                         },
-                                        "trial_date": {
-                                            "type": "string",
-                                            "format": "date",
-                                            "example": "2023-09-01"
-                                        },
-                                        "quantity": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "price": {
-                                            "type": "number",
-                                            "example": 100
+                                        "data": {
+                                            "properties": {
+                                                "dress_Id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "delivery_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2023-09-01"
+                                                },
+                                                "recording": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/recording.mp4"
+                                                },
+                                                "trial_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2023-09-01"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2023-09-01T10:00:00Z"
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "price": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 100
+                                                },
+                                                "notes": {
+                                                    "type": "string",
+                                                    "example": "Add lace to the sleeves"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -2088,6 +2225,14 @@
                                     "price": {
                                         "type": "number",
                                         "example": 100
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "example": "Add lace to the sleeves"
+                                    },
+                                    "audio": {
+                                        "type": "string",
+                                        "example": "https://example.com/recording.mp4"
                                     }
                                 },
                                 "type": "object"

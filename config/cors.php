@@ -15,11 +15,11 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie' , 'storage/*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie' , 'storage/*' , 'parameters/*'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['*' , 'https://web.tailorinch.com' , 'http://localhost*'],
 
     'allowed_origins_patterns' => [],
 

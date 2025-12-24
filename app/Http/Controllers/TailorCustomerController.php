@@ -94,6 +94,7 @@ class TailorCustomerController extends Controller
     public function index(Request $request)
     {
         $rules = [
+            'shop_id' => 'required',
             'page' => 'required',
             'perpage' => 'required',
         ];
@@ -106,16 +107,12 @@ class TailorCustomerController extends Controller
             $perpage = $request->input('perpage');
 
             if (empty($page) or empty($perpage)) {
-                $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->get();
+                $tailorcustomers = TailorCustomer::where(['tailor_id' => $tailor_id , 'shop_id' => $request->shop_id ])->get();
             } else {
-                $tailorcustomers = TailorCustomer::where('tailor_id', $tailor_id)->forpage($page, $perpage)->get();
+                $tailorcustomers = TailorCustomer::where(['tailor_id' => $tailor_id , 'shop_id' => $request->shop_id ])->forpage($page, $perpage)->get();
             }
-
-            if (count($tailorcustomers) === 0) {
-                return response()->json(['success' => false, 'message' => 'No Customer Found', 'data' => ['tailor_id' => $tailor_id]], 404);
-            } else {
-                return response()->json(['success' => true, 'message' => 'Customers Found', 'data' => ['tailor_id' => $tailor_id, 'customers' => $tailorcustomers]], 200);
-            }
+            
+            return response()->json(['success' => true, 'message' => 'Customers Found', 'data' => ['tailor_id' => $tailor_id, 'customers' => $tailorcustomers]], 200);
         }
     }
 
@@ -168,14 +165,13 @@ class TailorCustomerController extends Controller
      *     )
      * )
      */
-    public function orders($customer_id)
+    public function orders($customer_id, $page = 1 , $perpage = 20)
     {
-        $tailor_id = auth('sanctum')->user()->id;
-
         $query = DB::table('orders')
-            ->select('orders.id', 'orders.name', 'orders.status', 'orders.updated_at', 'orders.total_dress_amount','orders.total_expenses' , 'orders.total_discount' ,'orders.total_payment', DB::raw('SUM(dresses.quantity) as dress_count'))
+            ->select('orders.id', 'orders.name','tailor_customers.name as customer_name', 'orders.status', 'orders.created_at', 'orders.updated_at','orders.total_dress_amount', 'orders.total_payment', 'orders.total_expenses' , 'orders.total_discount' , DB::raw('SUM(dresses.quantity) as dress_count'))
+            ->leftjoin('tailor_customers' , 'orders.customer_id','=','tailor_customers.id')
             ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
-            ->where([['orders.tailor_id', $tailor_id], ['orders.customer_id', $customer_id]])
+            ->where('orders.customer_id', $customer_id)
             ->groupBy('orders.id');
 
         $orders = $query
@@ -184,14 +180,9 @@ class TailorCustomerController extends Controller
                 $order->updated_at = Carbon::parse($order->updated_at)->toIso8601ZuluString();
                 $order->dress_count = (int) $order->dress_count;
                 return $order;
-            });
+        });
 
-
-        if (count($orders) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Orders Found', 'data' => ''], 200);
-        } else {
-            return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => $orders], 200);
-        }
+        return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => $orders], 200);        
     }
 
     /**
@@ -233,16 +224,25 @@ class TailorCustomerController extends Controller
      *     )
      * )
      */
-    public function payments($customer_id)
+    public function payments($customer_id, $page=1 , $perpage = 20)
     {
         $tailor_id = auth('sanctum')->user()->id;
-        $payments = Payment::select('method', 'amount', 'created_at', 'order_id')->where([['tailor_id', $tailor_id], ['customer_id', $customer_id]])->get();
+         $query = DB::table('payments')
+            ->select('payments.*','orders.name AS order_name','tailor_customers.name AS customer_name')
+            ->leftjoin('orders', 'orders.id', 'payments.order_id')
+            ->leftjoin('tailor_customers', 'tailor_customers.id', 'payments.customer_id')
+            ->where('payments.customer_id', $customer_id);
+        
+        $payments = $query->orderBy('payments.created_at', 'desc')
+            ->forpage($page, $perpage)
+            ->get()
+            ->map(function ($payment) {
+                $payment->created_at = Carbon::parse($payment->created_at)->toIso8601ZuluString();
+                return $payment;
+        });
 
-        if (count($payments) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Payments Found', 'data' => ''], 200);
-        } else {
-            return response()->json(['success' => true, 'message' => 'Payments Found', 'data' => $payments], 200);
-        }
+        return response()->json(['success' => true, 'message' => 'Payments Found', 'data' => $payments], 200);
+        
     }
 
     //count of customers for specific tailor
@@ -531,6 +531,7 @@ class TailorCustomerController extends Controller
             'name' => 'required',
             'address' => 'max:70',
             'gender' => 'required',
+            'shop_id' => 'required',
             'city_name' => '',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
         ];
@@ -540,7 +541,7 @@ class TailorCustomerController extends Controller
         }
 
         $tailor_id = auth('sanctum')->user()->id;
-        $tailorcustomer = TailorCustomer::where([['number', $request->number], ['tailor_id', $tailor_id]])->first();
+        $tailorcustomer = TailorCustomer::where([['number', $request->number], ['tailor_id', $tailor_id , 'shop_id' => $request->shop_id ]])->first();
         if (!empty($tailorcustomer)) {
             return response()->json(['success' => false, 'message' => 'Customer Already Exists', 'data' => $tailorcustomer->id], 400);
         }
@@ -550,7 +551,6 @@ class TailorCustomerController extends Controller
             $file = $request->file('picture');
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/customers', $filename);
-
             $base_url = url('');
             $path = $base_url . '/storage/customers/' . $filename;
         }
@@ -574,6 +574,7 @@ class TailorCustomerController extends Controller
             'picture' => $path,
             'city_name' => $request->city_name,
             'tailor_id' => $tailor_id,
+            'shop_id' => $request->shop_id,
             'customer_id' => $customer->id,
         ]);
 

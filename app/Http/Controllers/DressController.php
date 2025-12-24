@@ -15,6 +15,7 @@ use App\Models\Recording;
 use App\Models\Measurement;
 use App\Models\MeasurementValue;
 use App\Models\Tailor;
+use App\Models\TailorCategory;
 use App\Models\TailorCategoryAnswer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -131,7 +132,6 @@ class DressController extends Controller
     {
         $rules = [
             'order_id' => 'nullable|exists:orders,id',
-            'customer_id' => 'required|exists:tailor_customers,id',
             'shop_id' => 'required|exists:shops,id',
             'category_id' => 'required|exists:tailor_categories,id',
             'type' => 'required|in:stitching,alteration',
@@ -157,7 +157,7 @@ class DressController extends Controller
             $tailor_id = auth('sanctum')->user()->id;
 
             // if order id is not provided then it mean order is new with first dress being so create order
-            if ($request->has('order_id')) {
+            if ($request->has('order_id') && $request->order_id != null) {
                 $order_id = $request->order_id;
             } else {
                 $order_id = Order::create([
@@ -168,11 +168,18 @@ class DressController extends Controller
                 ])->id;
             }
 
+            $order = Order::findOrFail($order_id);
+
+            $tailorCategory = TailorCategory::findOrFail($request->category_id);
+
             $dress = Dress::create([
                 'order_id' => $order_id,
                 'tailor_id' => $tailor_id,
                 'shop_id' => $request->shop_id,
                 'category_id' => $request->category_id,
+                'tailor_customer_id' => $order->customer_id,
+                'order_name' => $order->name,
+                'category_name' => $tailorCategory->name,
                 'type' => $request->type,
                 'quantity' => $request->quantity,
                 'price' => $request->price,
@@ -181,7 +188,7 @@ class DressController extends Controller
                 'notes' => $request->notes,
                 'status' => 0,
             ]);
-            $order = Order::findOrFail($order_id);
+
             $order->increment('total_dress_amount', $request->price);
 
             $measurement = Measurement::create([
@@ -606,11 +613,11 @@ class DressController extends Controller
         $today = Carbon::today();
 
         $query = DB::table('dresses')
-            ->select('dresses.*', 'orders.status', 'images.path AS image', 'tailor_customers.name AS customername')
+            ->select('dresses.*', 'images.path AS image', 'tailor_customers.name AS customer_name')
             ->leftjoin('orders', 'orders.id', '=', 'dresses.order_id')
-            ->leftjoin('tailor_customers', 'tailor_customers.id', '=', 'orders.customer_id')
+            ->leftjoin('tailor_customers', 'tailor_customers.id', '=', 'dresses.tailor_customer_id')
             ->leftJoin(DB::raw('(
-                            SELECT di1.dress_id, di1.path
+                SELECT di1.dress_id, di1.path
                     FROM dress_images di1
                     INNER JOIN (
                         SELECT dress_id, MIN(id) AS min_id
@@ -625,13 +632,13 @@ class DressController extends Controller
         switch ($timeFilter) {
             case 'all':
                 if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter);
+                    $query->where('dresses.status', $statusFilter);
                 }
                 break;
 
             case 'today':
                 if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->whereDate('dresses.created_at', $today);
+                    $query->where('dresses.status', $statusFilter)->whereDate('dresses.created_at', $today);
                 } else {
                     $query->whereDate('dresses.created_at', $today);
                 }
@@ -648,7 +655,7 @@ class DressController extends Controller
 
             case 'last15days':
                 if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->where('dresses.created_at', '>=', Carbon::now()->subDays(15));
+                    $query->where('dresses.status', $statusFilter)->where('dresses.created_at', '>=', Carbon::now()->subDays(15));
                 } else {
                     $query->where('dresses.created_at', '>=', Carbon::now()->subDays(15));
                 }
@@ -656,7 +663,7 @@ class DressController extends Controller
 
             case 'thismonth':
                 if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->whereMonth('dresses.created_at', $today->month)->whereYear('dresses.created_at', $today->year);
+                    $query->where('dresses.status', $statusFilter)->whereMonth('dresses.created_at', $today->month)->whereYear('dresses.created_at', $today->year);
                 } else {
                     $query->whereMonth('dresses.created_at', $today->month)->whereYear('dresses.created_at', $today->year);
                 }
@@ -665,7 +672,7 @@ class DressController extends Controller
             case 'lastmonth':
                 $last_month = Carbon::today()->subMonth();
                 if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->whereMonth('dresses.created_at', $last_month->month)->whereYear('dresses.created_at', $last_month->year);
+                    $query->where('dresses.status', $statusFilter)->whereMonth('dresses.created_at', $last_month->month)->whereYear('dresses.created_at', $last_month->year);
                 } else {
                     $query->whereMonth('dresses.created_at', $last_month->month)->whereYear('dresses.created_at', $last_month->year);
                 }
@@ -673,7 +680,7 @@ class DressController extends Controller
 
             case 'thisyear':
                 if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->whereYear('dresses.created_at', $today->year);
+                    $query->where('dress.status', $statusFilter)->whereYear('dresses.created_at', $today->year);
                 } else {
                     $query->whereYear('dresses.created_at', $today->year);
                 }
@@ -705,11 +712,7 @@ class DressController extends Controller
                 return $dress;
             });
 
-        if (count($tailor_dresses) === 0) {
-            return response()->json(['success' => true, 'message' => 'No Dresses Found', 'data' => ['Dresses' => $tailor_dresses]], 200);
-        } else {
-            return response()->json(['success' => true, 'message' => 'Dresses Found', 'data' => ['Dresses' => $tailor_dresses]], 200);
-        }
+        return response()->json(['success' => true, 'message' => 'Dresses Found', 'data' => ['dresses' => $tailor_dresses]], 200);
     }
 
     //swagger annotations
@@ -1331,7 +1334,7 @@ class DressController extends Controller
         // Format date fields to ISO 8601 Zulu string
         $dress->order_name = $dress->order ? $dress->order->name : null;
         $dress->customer_name = $dress->order && $dress->order->customer ? $dress->order->customer->name : null;
-        $dress->category_name = $dress->category ? $dress->category->label : null;
+        $dress->category_name = $dress->category ? $dress->category->name : null;
         $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
         $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
         $dress->created_at = Carbon::parse($dress->created_at)->toIso8601ZuluString();
