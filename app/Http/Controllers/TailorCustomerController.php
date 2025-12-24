@@ -180,9 +180,9 @@ class TailorCustomerController extends Controller
                 $order->updated_at = Carbon::parse($order->updated_at)->toIso8601ZuluString();
                 $order->dress_count = (int) $order->dress_count;
                 return $order;
-            });
+        });
 
-         response()->json(['success' => true, 'message' => 'Orders Found', 'data' => $orders], 200);        
+        return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => $orders], 200);        
     }
 
     /**
