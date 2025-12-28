@@ -161,7 +161,7 @@ class TailorController extends Controller
             }
 
             $token = $tailor->createToken('auth_token')->plainTextToken;
-            return response()->json(['success' => true, 'message' => 'Tailor Created Successfully', 'data' => ['id' => $tailor->id, "token" => $token]], 200);
+            return response()->json(['success' => true, 'message' => 'Tailor Created Successfully', 'data' => ['tailor' => $tailor, "token" => $token , 'statuses' => $statuses]], 200);
         }
     }
 
@@ -247,15 +247,13 @@ class TailorController extends Controller
             return response()->json(['success' => false, 'message' => 'Validation failed', 'data' => $validation->errors()], 422);
         }
 
-
-
         $tailorNumber = $request->input('number');
         $password = $request->input('password');
 
         $tailor = Tailor::with('shops')->where('number', $tailorNumber)->where('password', $password)->first();
 
         if (empty($tailor)) {
-            return response()->json(['success' => false, 'message' => 'Incorrect Mobile number password'], 422);
+            return response()->json(['success' => false, 'message' => 'Incorrect Number or Password'], 422);
         }
 
         $token = $tailor->createToken('auth_token')->plainTextToken;
@@ -270,7 +268,7 @@ class TailorController extends Controller
             $statusResponse[$key] = $status->status;
         }           
 
-        return response()->json(['success' => true, 'message' => '', 'data' => ['tailor' => $tailor->toArray(), 'token' => $token , 'status' => $statusResponse]], 200);
+        return response()->json(['success' => true, 'data' => ['tailor' => $tailor->toArray(), 'token' => $token , 'status' => $statusResponse]], 200);
     }
 
 

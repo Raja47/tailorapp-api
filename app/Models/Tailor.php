@@ -21,4 +21,26 @@ class Tailor extends Model
     {
         return $this->hasMany(\App\Models\Shop::class, 'tailor_id');
     }
+
+
+    public function statusSettings()
+    {
+        return $this->hasMany(TailorStatusSetting::class);
+    }
+
+    public function activeStatusSettings()
+    {
+        return $this->hasMany(TailorStatusSetting::class)
+                    ->where('is_active', true)
+                    ->orderBy('sort_order');
+    }
+
+    // To get final status list tailored for this tailor
+    public function getAvailableStatuses()
+    {
+        return Status::with(['tailorSettings' => function($q) {
+                        $q->where('tailor_id', $this->id);
+                    }])
+                    ->get();
+    }
 }

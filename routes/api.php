@@ -40,6 +40,13 @@ use App\Models\TailorCategoryQuestion;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('/test', function (Request $request) {
+    
+    return response()->json(['success' => true, 'message' => 'API is working fine'], 200);
+});
+
+
 Route::post('/try',function(Request $request){
     $tailor_id = $request->tailor_id;
     $categories = app('App\Http\Controllers\TailorCategoryController')->default($tailor_id);
