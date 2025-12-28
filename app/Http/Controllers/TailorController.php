@@ -268,7 +268,6 @@ class TailorController extends Controller
         $statusResponse = [];
         foreach ($statuses as $key => $status) {
             $statusResponse[$key] = $status->status;
-            $statusResponse[$key]['sort_order'] = $status->sort_order;
         }           
 
         return response()->json(['success' => true, 'message' => '', 'data' => ['tailor' => $tailor->toArray(), 'token' => $token , 'status' => $statusResponse]], 200);
