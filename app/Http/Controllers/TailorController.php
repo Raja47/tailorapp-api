@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tailor;
+use App\Models\Status;
+use App\Models\TailorStatusSetting;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Validator;
 
@@ -147,6 +149,17 @@ class TailorController extends Controller
             $categories = app('App\Http\Controllers\TailorCategoryController')->default($tailor->id);
             $cat_parameters = app('App\Http\Controllers\TailorCategoryParameterController')->default($tailor->id);
             $cat_questions = app('App\Http\Controllers\TailorCategoryQuestionController')->default($tailor->id);
+
+            $statuses = Status::all();
+            foreach ($statuses as $status) {
+                TailorStatusSetting::create([
+                    'tailor_id' => $tailor->id,
+                    'status_id' => $status->id,
+                    'is_active' => true,
+                    'sort_order' => $status->sort_order,
+                ]);
+            }
+
             $token = $tailor->createToken('auth_token')->plainTextToken;
             return response()->json(['success' => true, 'message' => 'Tailor Created Successfully', 'data' => ['id' => $tailor->id, "token" => $token]], 200);
         }
@@ -244,8 +257,16 @@ class TailorController extends Controller
         if (empty($tailor)) {
             return response()->json(['success' => false, 'message' => 'Incorrect Mobile number password'], 422);
         }
+
         $token = $tailor->createToken('auth_token')->plainTextToken;
-        return response()->json(['success' => true, 'message' => '', 'data' => ['tailor' => $tailor->toArray(), 'token' => $token]], 200);
+
+        $statuses  = TailorStatusSetting::where('tailor_id', $tailor->id)
+                        ->where('is_active', 1)
+                        ->with('status')
+                        ->orderBy('sort_order')
+                        ->get();
+
+        return response()->json(['success' => true, 'message' => '', 'data' => ['tailor' => $tailor->toArray(), 'token' => $token , 'status' => $statuses]], 200);
     }
 
 
