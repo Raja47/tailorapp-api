@@ -161,7 +161,7 @@ class TailorController extends Controller
             }
 
             $token = $tailor->createToken('auth_token')->plainTextToken;
-            return response()->json(['success' => true, 'message' => 'Tailor Created Successfully', 'data' => ['tailor' => $tailor, "token" => $token , 'statuses' => $statuses]], 200);
+            return response()->json(['success' => true, 'message' => 'Tailor Created Successfully', 'data' => ['tailor' => $tailor->toArray(), "token" => $token , 'statuses' => $statuses]], 200);
         }
     }
 
@@ -268,7 +268,7 @@ class TailorController extends Controller
             $statusResponse[$key] = $status->status;
         }           
 
-        return response()->json(['success' => true, 'data' => ['tailor' => $tailor->toArray(), 'token' => $token , 'status' => $statusResponse]], 200);
+        return response()->json(['success' => true, 'data' => ['tailor' => $tailor->toArray(), 'token' => $token , 'statuses' => $statusResponse]], 200);
     }
 
 
