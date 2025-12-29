@@ -277,6 +277,7 @@ class TailorController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
+     * 
      * @return \Illuminate\Http\Response
      */
     public function changePassword(Request $request)
