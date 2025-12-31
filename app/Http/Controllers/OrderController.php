@@ -403,6 +403,7 @@ class OrderController extends Controller
         $rules = [
             'timeFilter' => 'required|string',
             'statusFilter' => 'nullable|integer',
+            'paymentFilter' => 'nullable|integer',
             'searchText' => 'nullable|string',
             'shop_id' => 'required|integer|exists:shops,id',
             'page' => 'required|numeric|min:1',

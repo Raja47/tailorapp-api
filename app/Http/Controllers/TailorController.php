@@ -62,6 +62,7 @@ class TailorController extends Controller
      *     ),
      * )
      */
+    
     public function if_username($username)
     {
         $username = Tailor::where('username', $username)->first();
@@ -261,7 +262,7 @@ class TailorController extends Controller
         $statuses  = TailorStatusSetting::where('tailor_id', $tailor->id)
                         ->where('is_active', 1)
                         ->with('status')
-                        ->orderBy('sort_order')
+                        ->orderBy('status.sort_order' ,'asc')
                         ->get();
         $statusResponse = [];
         foreach ($statuses as $key => $status) {

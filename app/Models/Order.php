@@ -17,6 +17,7 @@ class Order extends Model
         'name',
         'discount',
         'notes',
+        'payment_status',
         'status',
         'total_dress_amount',
         'total_expenses',
