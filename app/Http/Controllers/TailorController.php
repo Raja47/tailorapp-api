@@ -259,11 +259,10 @@ class TailorController extends Controller
 
         $token = $tailor->createToken('auth_token')->plainTextToken;
 
-        $statuses = TailorStatusSetting::select('statuses.* ')->where('tailor_id', $tailor->id)
+        $statuses = TailorStatusSetting::select('statuses.*')->where('tailor_id', $tailor->id)
                 ->where('is_active', 1)
                 ->join('statuses', 'statuses.id', '=', 'tailor_status_settings.status_id')
                 ->orderBy('statuses.sort_order')
-                ->with('status') // keep relationship for use
                 ->get();
 
         return response()->json(['success' => true, 'data' => ['tailor' => $tailor->toArray(), 'token' => $token , 'statuses' => $statuses]], 200);
