@@ -403,7 +403,7 @@ class OrderController extends Controller
         $rules = [
             'timeFilter' => 'required|string',
             'statusFilter' => 'nullable|integer',
-            'paymentFilter' => 'nullable|integer',
+            'paymentStatusFilter' => 'nullable|integer',
             'searchText' => 'nullable|string',
             'shop_id' => 'required|integer|exists:shops,id',
             'page' => 'required|numeric|min:1',
@@ -417,6 +417,7 @@ class OrderController extends Controller
         $tailor_id = auth('sanctum')->user()->id;
         $timeFilter = $request->input('timeFilter');
         $statusFilter = $request->input('statusFilter');
+        $paymentStatusFilter = $request->input('paymentStatusFilter');
         $searchText = $request->input('searchText');
         $shop_id = $request->input('shop_id');
         $page = $request->input('page');
@@ -425,69 +426,42 @@ class OrderController extends Controller
         $today = Carbon::today();
 
         $query = DB::table('orders')
-            ->select('orders.id', 'orders.name','tailor_customers.name as customer_name', 'orders.status', 'orders.created_at', 'orders.updated_at','orders.total_dress_amount', 'orders.total_payment', 'orders.total_expenses' , 'orders.total_discount' , DB::raw('SUM(dresses.quantity) as dress_count'))
+            ->select('orders.id', 'orders.name','tailor_customers.name as customer_name', 'orders.status','orders.payment_status', 'orders.created_at', 'orders.updated_at','orders.total_dress_amount', 'orders.total_payment', 'orders.total_expenses' , 'orders.total_discount' , DB::raw('SUM(dresses.quantity) as dress_count'))
             ->leftjoin('tailor_customers' , 'orders.customer_id','=','tailor_customers.id')
             ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
             ->where([['orders.tailor_id', $tailor_id], ['orders.shop_id', $shop_id]])
             ->groupBy('orders.id');
 
+        if ($request->filled('statusFilter')) {
+            $query->where('orders.status', $statusFilter);
+        }
+        if ($request->filled('paymentStatusFilter')) {
+            $query->where('orders.payment_status', $paymentStatusFilter);
+        }
+
         switch ($timeFilter) {
             case 'all':
-                if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter);
-                }
                 break;
-
             case 'today':
-                if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->whereDate('orders.created_at', $today);
-                } else {
-                    $query->whereDate('orders.created_at', $today);
-                }
+                $query->whereDate('orders.created_at', $today);
                 break;
-
             case 'last15days':
-                if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->where('orders.created_at', '>=', Carbon::now()->subDays(15));
-                } else {
-                    $query->where('orders.created_at', '>=', Carbon::now()->subDays(15));
-                }
+                $query->where('orders.created_at', '>=', Carbon::now()->subDays(15));
                 break;
-
             case 'thismonth':
-                if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->whereMonth('orders.created_at', $today->month)->whereYear('orders.created_at', $today->year);
-                } else {
-                    $query->whereMonth('orders.created_at', $today->month)->whereYear('orders.created_at', $today->year);
-                }
+                $query->whereMonth('orders.created_at', $today->month)->whereYear('orders.created_at', $today->year);
                 break;
-
             case 'lastmonth':
                 $last_month = Carbon::today()->subMonth();
-                if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->whereMonth('orders.created_at', $last_month->month)->whereYear('created_at', $last_month->year);
-                } else {
-                    $query->whereMonth('orders.created_at', $last_month->month)->whereYear('orders.created_at', $last_month->year);
-                }
+                $query->whereMonth('orders.created_at', $last_month->month)->whereYear('orders.created_at', $last_month->year);
                 break;
-
             case 'thisyear':
-                if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->whereYear('orders.created_at', $today->year);
-                } else {
-                    $query->whereYear('orders.created_at', $today->year);
-                }
+                $query->whereYear('orders.created_at', $today->year);
                 break;
-
             case 'lastyear':
                 $last_year = Carbon::today()->subYear();
-                if ($request->filled('statusFilter')) {
-                    $query->where('orders.status', $statusFilter)->whereYear('orders.created_at', $last_year->year);
-                } else {
-                    $query->whereYear('orders.created_at', $last_year->year);
-                }
+                $query->whereYear('orders.created_at', $last_year->year);
                 break;
-
             default:
                 return response()->json(['success' => false, 'message' => 'Invalid time filter'], 500);
         }
@@ -495,6 +469,7 @@ class OrderController extends Controller
         if ($request->filled('searchText')) {
             $query->where('orders.name', 'like', '%' . $searchText . '%');
         }
+
         $tailor_orders = $query->orderBy('orders.created_at', 'desc')->forpage($page, $perpage)->get()
             ->map(function ($order) {
                 $order->created_at = Carbon::parse($order->created_at)->toIso8601ZuluString();
@@ -503,11 +478,7 @@ class OrderController extends Controller
                 return $order;
             });
 
-        if (count($tailor_orders) === 0) {
-            return response()->json(['success' => true, 'message' => 'No Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
-        } else {
-            return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
-        }
+        return response()->json(['success' => true, 'message' => 'Orders Found', 'data' => ['Orders' => $tailor_orders]], 200);
     }
 
     /**
