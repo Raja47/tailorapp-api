@@ -154,7 +154,7 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/dress']
     $router->get('/count', [DressController::class, 'countDresses']);
     $router->get('/{dress_id}/delete', [DressController::class, 'delete']);
     $router->get('/orders/{order_id}', [DressController::class, 'getOrderDresses']);
-    $router->post('/updatestatus', [DressController::class, 'updateStatus']);
+    $router->post('/update-status', [DressController::class, 'updateStatus']);
 
         // Dress Edit Comonents routes
     $router->prefix('/{id}')->group(function ($router) {
