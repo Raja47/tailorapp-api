@@ -46,7 +46,7 @@ class CreateStatusesTable extends Migration
             ['in_progress', 'In Progress', 'order', 'order_flow', 4, '#FFF', '#2196F3', '#E3F2FD', '#0D47A1', 'loader'],
             ['trial_ready', 'Ready for Trial', 'order', 'order_flow', 5, '#FFF', '#673AB7', '#EDE7F6', '#311B92', 'user-check'],
             ['adjustments', 'Adjustments', 'order', 'order_flow', 6, '#FFF', '#FF5722', '#FBE9E7', '#BF360C', 'settings'],
-            ['ready_for_delivery', 'Ready for Delivery / Pickup', 'order', 'order_flow', 7, '#FFF', '#009688', '#E0F2F1', '#004D40', 'truck'],
+            ['ready_for_delivery', 'Ready for Delivery', 'order', 'order_flow', 7, '#FFF', '#009688', '#E0F2F1', '#004D40', 'truck'],
             ['delivered', 'Delivered', 'order', 'order_flow', 8, '#FFF', '#4CAF50', '#E8F5E9', '#1B5E20', 'check'],
             ['cancelled', 'Cancelled', 'order', 'order_flow', 9, '#FFF', '#F44336', '#FFEBEE', '#B71C1C', 'x'],
 

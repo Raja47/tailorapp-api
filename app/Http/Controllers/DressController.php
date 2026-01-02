@@ -1131,7 +1131,7 @@ class DressController extends Controller
     {
         $rules = [
             'dress_id' => 'required',
-            'status' => 'required'
+            'status_id' => 'required'
         ];
 
         $validation = Validator::make($request->all(), $rules);
@@ -1141,7 +1141,12 @@ class DressController extends Controller
         } else {
             $tailor_id = auth('sanctum')->user()->id;
             $dress = Dress::where([['id', $request->dress_id], ['tailor_id', $tailor_id]])->first();
-            $dress->status = $request->status;
+
+            if (!$dress) {
+                return response()->json(['success' => false, 'message' => 'Dress not found'], 404);
+            }
+
+            $dress->status = $request->status_id;
 
             if ($dress->save()) {
                 return response()->json(['success' => true, 'message' => 'Dress Status Updated Successfully', 'data' => ['Dress id' => $request->dress_id]], 200);
@@ -1541,4 +1546,5 @@ class DressController extends Controller
             'message' => 'Dress updated successfully',
         ]);
     }
+
 }

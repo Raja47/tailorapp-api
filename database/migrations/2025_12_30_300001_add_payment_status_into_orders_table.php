@@ -13,7 +13,7 @@ class AddPaymentStatusIntoOrdersTable  extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->tinyInteger('payment_status')->default(0)->after('status');
+            $table->tinyInteger('payment_status')->default(19)->after('status');
         });
     }
 
