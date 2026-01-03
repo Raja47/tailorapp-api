@@ -910,7 +910,7 @@ class DressController extends Controller
         $dresses = Dress::select('status')
             ->selectRaw('SUM(quantity) as count')
             ->where('shop_id', $shop_id)
-            ->where('created_at', '<', $time)
+            ->where('created_at', '>', $time)
             ->groupBy('status')
             ->get();
 
