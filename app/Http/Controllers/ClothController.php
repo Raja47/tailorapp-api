@@ -195,6 +195,7 @@ class ClothController extends Controller
             'tailor_id' => $cloth->tailor_id,
             'title' => $cloth->title,
             'length' => $cloth->length,
+            'unit' => $cloth->unit, 
             'provided_by' => $cloth->provided_by,
             'price' => $cloth->price,
             'path' => complete_url($dress_image?->path),
