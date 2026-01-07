@@ -65,6 +65,7 @@ class ClothController extends Controller
                 'path' => $cloth->image?->path ? complete_url($cloth->image->path) : null,
                 'title' => $cloth->title,
                 'length' => $cloth->length,
+                'unit' => $cloth->unit,
                 'provided_by' => $cloth->provided_by,
                 'price' => $cloth->price,
                 'created_at' => $cloth->created_at->toIso8601ZuluString(),
@@ -140,6 +141,7 @@ class ClothController extends Controller
         $rules = [
             'title' => 'nullable|string|max:255',
             'length' => 'nullable|numeric',
+            'unit' => 'nullable|string|max:255',
             'provided_by' => 'required|string|max:255',
             'price' => 'nullable|numeric',
             'path' => 'nullable|string'
@@ -169,6 +171,7 @@ class ClothController extends Controller
             'title' => $request->title,
             'dress_image_id' => $dress_image?->id,
             'length' => $request->length,
+            'unit' => $request->unit,
             'provided_by' => $request->provided_by,
             'price' => (isset($request->price) && $request->provided_by == 'tailor') ? $request->price : null,
         ]);

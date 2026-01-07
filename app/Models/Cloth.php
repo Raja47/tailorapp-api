@@ -16,6 +16,7 @@ class Cloth extends Model
         'title',
         'dress_image_id',
         'length',
+        'unit',
         'provided_by',
         'price'
     ];
@@ -31,6 +32,7 @@ class Cloth extends Model
             'dress_image_id' => fn($cloth) => $cloth->image ? $cloth->image->path : null,
             'title' => 'title',
             'length' => 'length',
+            'unit' => 'unit',
             'provided_by' => 'provided_by',
             'price' => 'price',
         ];

@@ -247,6 +247,7 @@ class DressController extends Controller
                         'title' => $clothImage['title'],
                         'dress_image_id' => $dressImage?->id,
                         'length' => $clothImage['length'] ?? 0,
+                        'unit'  => $clothImage['unit'],
                         'provided_by' => $clothImage['provided_by'],
                         'price' => $clothPrice
                     ]);
@@ -1299,6 +1300,7 @@ class DressController extends Controller
                     'thumb_path' => $cloth->image?->thumb_path ? complete_url($cloth->image->thumb_path) : null,
                     'title' => $cloth->title,
                     'length' => $cloth->length,
+                    'unit' => $cloth->unit, 
                     'provided_by' => $cloth->provided_by,
                     'price' => $cloth->price,
                     'created_at' => $cloth->created_at->toIso8601ZuluString(),
