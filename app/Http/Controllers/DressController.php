@@ -75,7 +75,7 @@ class DressController extends Controller
      *                 @OA\Items(type="string", example="public\dress\image1.png")
      *             ),
      *             @OA\Property(
-     *                 property="clothImages",
+     *                 property="clothes",
      *                 type="array",
      *                 description="Array of cloth image objects",
      *                 @OA\Items(
@@ -143,7 +143,7 @@ class DressController extends Controller
             'measurement_values' => 'required|array',
             'questionAnswers' => 'required|array',
             'designImages' => 'nullable|array',
-            'clothImages' => 'nullable|array',
+            'clothes' => 'nullable|array',
             'audio' => 'nullable|string',
         ];
         $validation = Validator::make($request->all(), $rules);
@@ -226,46 +226,46 @@ class DressController extends Controller
                 ]);
             }
 
-            foreach ($request->clothImages as $clothImage) {
+            foreach ($request->clothes as $cloth) {
                 $dressImage = null;
-                if (isset($clothImage['path']) && !empty($clothImage['path'])) {
+                if (isset($cloth['path']) && !empty($cloth['path'])) {
                     $dressImage = DressImage::create([
                         'tailor_id' => $tailor_id,
                         'dress_id' => $dress->id,
                         'order_id' => $order_id,
                         'type' => 'cloth',
-                        'path' => relative_url($clothImage['path']),
-                        'thumb_path' => relative_thumb_url($clothImage['path']),
+                        'path' => relative_url($cloth['path']),
+                        'thumb_path' => relative_thumb_url($cloth['path']),
                     ]);
 
-                    $clothPrice =  (isset($clothImage['price']) && $clothImage['provided_by'] == 'tailor') ? $clothImage['price'] : null;
+                    $clothPrice =  (isset($clothImage['price']) && $cloth['provided_by'] == 'tailor') ? $clothImage['price'] : null;
 
-                    $cloth = Cloth::create([
+                    $clothRecord = Cloth::create([
                         'dress_id' => $dress->id,
                         'order_id' => $order_id,
                         'tailor_id' => $tailor_id,
-                        'title' => $clothImage['title'],
+                        'title' => $cloth['title'],
                         'dress_image_id' => $dressImage?->id,
-                        'length' => $clothImage['length'] ?? 0,
-                        'unit'  => $clothImage['unit'],
-                        'provided_by' => $clothImage['provided_by'],
+                        'length' => $cloth['length'] ?? 0,
+                        'unit'  => $cloth['unit'],
+                        'provided_by' => $cloth['provided_by'],
                         'price' => $clothPrice
                     ]);
 
                     if ($clothPrice != null) {
                         $expense = Expense::create([
-                            'amount' => $clothImage['price'],
+                            'amount' => $cloth['price'],
                             'order_id' => $order_id,
                             'title' => 'Cloth Expense',
                             'tailor_id' => $tailor_id,
                             'dress_id' => $dress->id,
-                            'cloth_id' => $cloth->id,
+                            'cloth_id' => $clothRecord->id,
                         ]);
                         // @todo: check if we can do this via expense observer
                         $order->increment('total_expenses', $expense->amount);
                     }
                 }
-            } // <-- This closes the foreach ($request->clothImages as $clothImage) loop
+            } // <-- This closes the foreach ($request->clothes as $clothImage) loop
 
 
             if (!empty($request->audio)) {
