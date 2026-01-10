@@ -193,7 +193,7 @@ class TailorCategoryController extends Controller
         }
         // Load now custom categories;
         foreach ($talCategories as $category) {
-           if(empty($catgegory->category_id)){
+           if(empty($category->category_id)){
                $allCategories[] = $category;
            }
         }
