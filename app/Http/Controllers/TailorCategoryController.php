@@ -186,11 +186,18 @@ class TailorCategoryController extends Controller
         $talCategoryIds = $talCategories->pluck('category_id')->toArray();
         foreach ($categories as $category) {
             if (in_array($category->id, $talCategoryIds)) {
-            $allCategories[] = $talCategories->firstWhere('category_id', $category->id);
+                $allCategories[] = $talCategories->firstWhere('category_id', $category->id);
             } else {
-            $allCategories[] = $category;
+                $allCategories[] = $category;
             }
         }
+        // Load now custom categories;
+        foreach ($talCategories as $category) {
+           if(empty($catgegory->category_id)){
+               $allCategories[] = $category;
+           }
+        }
+        
         return response()->json(['success' => true, 'data' => ['categories' => $allCategories ]], 200);
     }
 
