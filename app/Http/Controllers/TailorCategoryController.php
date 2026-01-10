@@ -181,15 +181,17 @@ class TailorCategoryController extends Controller
     {
         $tailor_id = auth('sanctum')->user()->id;
         $categories = Category::all();
-        $talCategories = TailorCategory::where('tailor_id', $tailor_id)->pluck('category_id')->toArray();
+        $talCategories = TailorCategory::where('tailor_id', $tailor_id)->get();
+        $allCategories = [];
+        $talCategoryIds = $talCategories->pluck('category_id')->toArray();
         foreach ($categories as $category) {
-            if (in_array($category->id, $talCategories)) {
-                $category['exists'] = true;
+            if (in_array($category->id, $talCategoryIds)) {
+            $allCategories[] = $talCategories->firstWhere('category_id', $category->id);
             } else {
-                $category['exists'] = false;
+            $allCategories[] = $category;
             }
         }
-        return response()->json(['success' => true, 'data' => $categories], 200);
+        return response()->json(['success' => true, 'data' => ['categories' => $allCategories ]], 200);
     }
 
     /**
