@@ -125,7 +125,7 @@ class TailorCategoryController extends Controller
      * )
      */
 
-    public function updateStatus($category_id)
+    public function updateStatus(Request $request,$category_id)
     {
         $tailor_id = auth('sanctum')->user()->id;
         $category = TailorCategory::where([['id', $category_id], ['tailor_id', $tailor_id]])->first();
@@ -133,10 +133,10 @@ class TailorCategoryController extends Controller
             return response()->json(['success' => false, 'message' => 'Category Not Found'], 404);
         } else {
             $category->status = $category->status == 1 ? 0 : 1;
-            $tal_cat_params = TalCatParameter::where('category_id', $category->id)->get();
-            foreach ($tal_cat_params as $tal_cat_param) {
-                $tal_cat_param->status = $tal_cat_param->status == 1 ? 0 : 1;
-            }
+            // $tal_cat_params = TalCatParameter::where('category_id', $category->id)->get();
+            // foreach ($tal_cat_params as $tal_cat_param) {
+            //     $tal_cat_param->status = $tal_cat_param->status == 1 ? 0 : 1;
+            // }
 
             if ($category->save()) {
                 return response()->json(['success' => true, 'message' => 'Status updated.'], 200);
