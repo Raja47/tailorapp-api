@@ -120,14 +120,16 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors
     $router->post('/store', [TailorCategoryController::class, 'store']);
     $router->post('/{category_id}/update', [TailorCategoryController::class, 'update']);
     $router->get('/{category_id}', [TailorCategoryController::class, 'show']);
-    $router->put('/{category_id}/status', [TailorCategoryController::class, 'updateStatus']);
-    $router->post('/{category_id}/delete', [TailorCategoryController::class, 'destroy']);
+    $router->put('/{id}/update-status', [TailorCategoryController::class, 'updateStatus']);
+    $router->post('/{id}/delete', [TailorCategoryController::class, 'destroy']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/categories/{category_id}/parameters'], function ($router) {
     $router->get('/', [TalCatParameterController::class, 'index']);
     $router->post('/', [TalCatParameterController::class, 'default']);
     $router->post('/update', [TalCatParameterController::class, 'update']);
+    $router->delete('/{id}/destroy', [TalCatParameterController::class, 'destroy']);
+    $router->put('/{id}/update-status', [TalCatParameterController::class, 'updateStatus']);
 });
 Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/categories/parameters'], function ($router) {
     $router->post('/destroy', [TalCatParameterController::class, 'destroy']);

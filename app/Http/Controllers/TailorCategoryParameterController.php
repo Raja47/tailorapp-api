@@ -200,9 +200,12 @@ class TailorCategoryParameterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function updateStatus(Request $request, $id)
     {
-        //
+        $TCategoryParameter = TalCatParameter::find($id);
+        $TCategoryParameter->status = $TCategoryParameter->status == 1 ? 0 : 1 ;
+        $TCategoryParameter->save();
+        return response()->json(['success' => true, 'message' => 'Category Parameter Status Updated Successfully', 'data' => []], 200); 
     }
 
     /**
@@ -253,28 +256,14 @@ class TailorCategoryParameterController extends Controller
      *     )
      * )
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, $id)
     {
-        $rules = [
-            'category_id' => 'required',
-            'parameter_id' => 'required',
-        ];
-
-        $validation = Validator::make($request->all(), $rules);
-
-        if ($validation->fails()) {
-            return response()->json(['success' => false, 'message' => 'Paramter Validation Error', 'data' => $validation->errors()], 422);
+        $categoryParameter = TalCatParameter::find($id);
+        if (empty($categoryParameter)) {
+            return response()->json(['success' => false, 'message' => 'Parameter Not Found'], 404);
         } else {
-            $tailor_id = auth('sanctum')->user()->id;
-            $category_id = $request->category_id;
-            $parameter_id = $request->parameter_id;
-            $category_parameter = TalCatParameter::where([['category_id', $category_id], ['tailor_id', $tailor_id], ['parameter_id', $parameter_id]])->first();
-            if (empty($category_parameter)) {
-                return response()->json(['success' => false, 'message' => 'Parameter Not Found'], 404);
-            } else {
-                $category_parameter->delete();
-                return response()->json(['success' => true, 'message' => 'Parameter deleted succesfully'], 200);
-            }
+            $categoryParameter->delete();
+            return response()->json(['success' => true, 'message' => 'Parameter deleted succesfully'], 200);
         }
     }
 }
