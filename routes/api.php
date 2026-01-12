@@ -46,7 +46,6 @@ Route::get('/test', function (Request $request) {
     return response()->json(['success' => true, 'message' => 'API is working fine'], 200);
 });
 
-
 Route::post('/try',function(Request $request){
     $tailor_id = $request->tailor_id;
     $categories = app('App\Http\Controllers\TailorCategoryController')->default($tailor_id);
@@ -128,16 +127,18 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors
     $router->get('/', [TalCatParameterController::class, 'index']);
     $router->post('/', [TalCatParameterController::class, 'default']);
     $router->post('/update', [TalCatParameterController::class, 'update']);
+});
+
+Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/categories/parameters'], function ($router) {
+    $router->post('/store', [TalCatParameterController::class, 'store']);
     $router->delete('/{id}/destroy', [TalCatParameterController::class, 'destroy']);
     $router->put('/{id}/update-status', [TalCatParameterController::class, 'updateStatus']);
 });
-Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/categories/parameters'], function ($router) {
-    $router->post('/destroy', [TalCatParameterController::class, 'destroy']);
-    $router->post('/store', [TalCatParameterController::class, 'store']);
-});
+
 Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/questions'], function ($router) {
     $router->get('/', [TailorCategoryQuestionController::class, 'index']);
 });
+
 Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/categories/{category_id}/questions'], function ($router) {
     $router->get('/', [TailorCategoryQuestionController::class, 'tailorCatQuestions']);
 });
