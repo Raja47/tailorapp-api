@@ -121,7 +121,7 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors
     $router->post('/{category_id}/update', [TailorCategoryController::class, 'update']);
     $router->get('/{category_id}', [TailorCategoryController::class, 'show']);
     $router->put('/{id}/update-status', [TailorCategoryController::class, 'updateStatus']);
-    $router->post('/{id}/delete', [TailorCategoryController::class, 'destroy']);
+    $router->delete('/{id}/delete', [TailorCategoryController::class, 'destroy']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/categories/{category_id}/parameters'], function ($router) {
