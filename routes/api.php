@@ -112,38 +112,51 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/categor
     $router->post('/store', [CategoryParameterController::class, 'store']);
 });
 
-Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/categories'], function ($router) {
-    $router->get('/', [TailorCategoryController::class, 'index']);
-    $router->post('/', [TailorCategoryController::class, 'default']);
-    $router->get('/exists', [TailorCategoryController::class, 'allCategoriesWithExistStatus']);
-    $router->post('/store', [TailorCategoryController::class, 'store']);
-    $router->post('/{category_id}/update', [TailorCategoryController::class, 'update']);
-    $router->get('/{category_id}', [TailorCategoryController::class, 'show']);
-    $router->put('/{id}/update-status', [TailorCategoryController::class, 'updateStatus']);
-    $router->delete('/{id}/delete', [TailorCategoryController::class, 'destroy']);
-});
 
-Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/categories/{category_id}/parameters'], function ($router) {
-    $router->get('/', [TalCatParameterController::class, 'index']);
-    $router->post('/', [TalCatParameterController::class, 'default']);
-    $router->post('/update', [TalCatParameterController::class, 'update']);
-});
+Route::group([
+    'middleware' => ['auth:sanctum', 'logging'],
+    'prefix' => 'tailors/categories'
+], function () {
 
-Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/categories/parameters'], function ($router) {
-    $router->post('/store', [TalCatParameterController::class, 'store']);
-    $router->delete('/{id}/destroy', [TalCatParameterController::class, 'destroy']);
-    $router->put('/{id}/update-status', [TalCatParameterController::class, 'updateStatus']);
-});
+    /* =======================
+     |  Tailor Categories
+     |=======================*/
+    Route::get('/', [TailorCategoryController::class, 'index']);
+    Route::post('/', [TailorCategoryController::class, 'default']);
+    Route::get('/exists', [TailorCategoryController::class, 'allCategoriesWithExistStatus']);
+    Route::post('/store', [TailorCategoryController::class, 'store']);
+    Route::post('/{category_id}/update', [TailorCategoryController::class, 'update']);
+    Route::get('/{category_id}', [TailorCategoryController::class, 'show']);
+    Route::put('/{id}/update-status', [TailorCategoryController::class, 'updateStatus']);
+    Route::delete('/{id}/delete', [TailorCategoryController::class, 'destroy']);
 
-Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/questions'], function ($router) {
-    $router->get('/', [TailorCategoryQuestionController::class, 'index']);
-    $router->put('/{id}/update-status' , [TailorCategoryQuestionController::class, 'updateStatus']);
-});
+    /* =======================
+     |  Category Parameters
+     |=======================*/
+    Route::group(['prefix' => '{category_id}/parameters'], function () {
+        Route::get('/', [TalCatParameterController::class, 'index']);
+        Route::post('/', [TalCatParameterController::class, 'default']);
+        Route::post('/update', [TalCatParameterController::class, 'update']);
+    });
 
-Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/categories/{category_id}/questions'], function ($router) {
-    $router->get('/', [TailorCategoryQuestionController::class, 'tailorCatQuestions']);
-});
+    Route::group(['prefix' => 'parameters'], function () {
+        Route::post('/store', [TalCatParameterController::class, 'store']);
+        Route::delete('/{id}/destroy', [TalCatParameterController::class, 'destroy']);
+        Route::put('/{id}/update-status', [TalCatParameterController::class, 'updateStatus']);
+    });
 
+    /* =======================
+     |  Category Questions
+     |=======================*/
+    Route::group(['prefix' => '{category_id}/questions'], function () {
+        Route::get('/', [TailorCategoryQuestionController::class, 'tailorCatQuestions']);
+    });
+
+    Route::group(['prefix' => 'questions' ], function () {
+        Route::get('/', [TailorCategoryQuestionController::class, 'index']);
+        Route::put('/{id}/update-status', [TailorCategoryQuestionController::class, 'updateStatus']);
+    });
+});
 
 Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/dress'], function ($router) {
     
