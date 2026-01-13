@@ -137,6 +137,7 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors
 
 Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/questions'], function ($router) {
     $router->get('/', [TailorCategoryQuestionController::class, 'index']);
+    $router->put('/{id}/update-status' , [TailorCategoryQuestionController::class, 'updateStatus']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors/categories/{category_id}/questions'], function ($router) {

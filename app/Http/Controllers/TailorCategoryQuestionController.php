@@ -385,6 +385,24 @@ class TailorCategoryQuestionController extends Controller
         return response()->json(['message' => 'Dress questions updated successfully']);
     }
 
+    /**
+     * 
+     */
+    public function updateStatus(Request $request, $id){
+        
+        $question = TailorCategoryQuestion::find($id);
+        if(empty($question)){
+            return response()->json(['success' => false, 'message' => 'Question not found'], 404);
+        }
+
+        $question->status = $question->status == 1 ? 0 : 1;
+        if ($question->save()) {
+            return response()->json(['success' => true, 'message' => 'Question status updated successfully'], 200);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Question status update failed'], 404);
+        }
+    }
+
 
     /**
      * Display the specified resource.
