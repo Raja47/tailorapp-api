@@ -168,7 +168,7 @@ class TailorCustomerController extends Controller
     public function orders($customer_id, $page = 1 , $perpage = 20)
     {
         $query = DB::table('orders')
-            ->select('orders.id', 'orders.name','tailor_customers.name as customer_name', 'order.payment_status','orders.status', 'orders.created_at', 'orders.updated_at','orders.total_dress_amount', 'orders.total_payment', 'orders.total_expenses' , 'orders.total_discount' , DB::raw('SUM(dresses.quantity) as dress_count'))
+            ->select('orders.id', 'orders.name','tailor_customers.name as customer_name', 'orders.payment_status','orders.status', 'orders.created_at', 'orders.updated_at','orders.total_dress_amount', 'orders.total_payment', 'orders.total_expenses' , 'orders.total_discount' , DB::raw('SUM(dresses.quantity) as dress_count'))
             ->leftjoin('tailor_customers' , 'orders.customer_id','=','tailor_customers.id')
             ->leftjoin('dresses', 'orders.id', '=', 'dresses.order_id')
             ->where('orders.customer_id', $customer_id)
