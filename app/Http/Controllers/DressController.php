@@ -164,7 +164,8 @@ class DressController extends Controller
                     'customer_id' => $request->customer_id,
                     'tailor_id' => $tailor_id,
                     'shop_id' => $request->shop_id,
-                    'status' => 0,
+                    'payment_status' => 19,
+                    'status' => 1,
                 ])->id;
             }
 
@@ -186,7 +187,7 @@ class DressController extends Controller
                 'delivery_date' => $request->delivery_date,
                 'trial_date' => $request->trial_date,
                 'notes' => $request->notes,
-                'status' => 0,
+                'status' => 8,
             ]);
 
             $order->increment('total_dress_amount', $request->price);
