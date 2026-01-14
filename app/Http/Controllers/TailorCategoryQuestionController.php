@@ -139,7 +139,7 @@ class TailorCategoryQuestionController extends Controller
           return response()->json(['success' => false , 'message' => 'Category not Found'] , 404);  
         }
 
-        $tal_cat_questions = TailorCategoryQuestion::where([['tailor_id', $tailor_id], ['category_id', $category_id]])->get();
+        $tal_cat_questions = TailorCategoryQuestion::where(['tailor_id' => $tailor_id , 'category_id'=> $category_id , 'status' => 1])->get();
 
         if (count($tal_cat_questions) === 0) {
             return response()->json(['success' => false, 'message' => 'No Questions to show in this category'], 404);
