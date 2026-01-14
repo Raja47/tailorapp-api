@@ -78,6 +78,27 @@ class TailorCategoryQuestionController extends Controller
         }
     }
 
+    public function tailorCatQuestions($category_id)
+    {
+        $tailor_id = auth('sanctum')->user()->id;
+        $category =  TailorCategory::find($category_id);
+        
+        if(empty($category)){
+          return response()->json(['success' => false , 'message' => 'Category not Found'] , 404);  
+        }
+
+        $tal_cat_questions = TailorCategoryQuestion::where(['tailor_id' => $tailor_id , 'category_id'=> $category_id])->get();
+
+        if (count($tal_cat_questions) === 0) {
+            return response()->json(['success' => false, 'message' => 'No Questions to show in this category'], 404);
+        } else {
+            foreach ($tal_cat_questions as $tal_cat_question) {
+                $tal_cat_question->options = json_decode($tal_cat_question->options);
+            }
+            return response()->json(['success' => true, 'message' => 'error', 'data' => ['category' => $category,'questions' => $tal_cat_questions], 200]);
+        }
+    }
+
     //swagger annotations
     /**
      * @OA\Get(
@@ -130,7 +151,7 @@ class TailorCategoryQuestionController extends Controller
      *     )
      * )
      */
-    public function tailorCatQuestions($category_id)
+    public function tailorCatActiveQuestions($category_id)
     {
         $tailor_id = auth('sanctum')->user()->id;
         $category =  TailorCategory::find($category_id);

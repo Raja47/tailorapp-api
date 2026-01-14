@@ -135,6 +135,7 @@ Route::group([
      |=======================*/
     Route::group(['prefix' => '{category_id}/parameters'], function () {
         Route::get('/', [TalCatParameterController::class, 'index']);
+        Route::get('/active', [TalCatParameterController::class, 'active']);        
         Route::post('/', [TalCatParameterController::class, 'default']);
         Route::post('/update', [TalCatParameterController::class, 'update']);
     });
@@ -150,6 +151,7 @@ Route::group([
      |=======================*/
     Route::group(['prefix' => '{category_id}/questions'], function () {
         Route::get('/', [TailorCategoryQuestionController::class, 'tailorCatQuestions']);
+        Route::get('/active', [TailorCategoryQuestionController::class, 'tailorCatActiveQuestions']);
     });
 
     Route::group(['prefix' => 'questions' ], function () {

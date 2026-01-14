@@ -62,6 +62,23 @@ class TailorCategoryParameterController extends Controller
         if(empty($TCategory)){
             return response()->json(['category_id' => $category_id,'message' => "Category Does not exist" , 'parameters' => []] , 404);
         }
+        $parameters = TalCatParameter::with('parameter')->where(['category_id' => $category_id , 'tailor_id'=> $tailor_id])->get();
+    
+        foreach ($parameters as $parameter) {
+            $parameter->image = complete_url($parameter->parameter->image);
+        }
+        return response()->json(['category' => $TCategory, 'parameters' => $parameters]);
+    
+    }
+
+    public function active($category_id)
+    {
+        $tailor_id = auth('sanctum')->user()->id;
+        $TCategory = TailorCategory::find($category_id);
+
+        if(empty($TCategory)){
+            return response()->json(['category_id' => $category_id,'message' => "Category Does not exist" , 'parameters' => []] , 404);
+        }
         $parameters = TalCatParameter::with('parameter')->where(['category_id' => $category_id , 'tailor_id'=> $tailor_id, 'status' => 1])->get();
     
         foreach ($parameters as $parameter) {
