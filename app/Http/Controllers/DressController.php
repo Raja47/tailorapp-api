@@ -615,7 +615,7 @@ class DressController extends Controller
         $today = Carbon::today();
 
         $query = DB::table('dresses')
-            ->select('dresses.*', 'images.path AS image', 'tailor_customers.name AS customer_name')
+            ->select('dresses.*', 'images.thumb_path AS image', 'tailor_customers.name AS customer_name')
             ->leftjoin('orders', 'orders.id', '=', 'dresses.order_id')
             ->leftjoin('tailor_customers', 'tailor_customers.id', '=', 'dresses.tailor_customer_id')
             ->leftJoin(DB::raw('(
