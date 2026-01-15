@@ -619,7 +619,7 @@ class DressController extends Controller
             ->leftjoin('orders', 'orders.id', '=', 'dresses.order_id')
             ->leftjoin('tailor_customers', 'tailor_customers.id', '=', 'dresses.tailor_customer_id')
             ->leftJoin(DB::raw('(
-                SELECT di1.dress_id, di1.path
+                SELECT di1.dress_id, di1.thumb_path
                     FROM dress_images di1
                     INNER JOIN (
                         SELECT dress_id, MIN(id) AS min_id
