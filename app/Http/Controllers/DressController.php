@@ -701,7 +701,7 @@ class DressController extends Controller
                 return response()->json(['success' => false, 'message' => 'Invalid time filter'], 500);
                 break;
         }
-
+ 
         if ($request->filled('searchText')) {
             $query->where('dresses.name', 'like', '%' . $searchText . '%');
         }
