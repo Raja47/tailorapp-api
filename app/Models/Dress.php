@@ -59,7 +59,7 @@ class Dress extends Model
 
     public function customer(){
 
-        return $this->hasOne(TailorCustomer::class , 'tailor_customer_id' ,'id');
+        return $this->hasOne(TailorCustomer::class , 'id' , 'tailor_customer_id');
     }   
 
     public function designs()
