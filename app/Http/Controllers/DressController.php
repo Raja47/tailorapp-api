@@ -776,52 +776,52 @@ class DressController extends Controller
      * )
      */
 
-    public function addDress(Request $request)
-    {
-        $rules = [
-            'order_id' => 'required',
-            'shop_id' => 'required',
-            'category_id' => 'required',
-            'type' => 'required',
-            'quantity' => 'required',
-            'price' => 'required',
-            'name' => '',
-            'delivery_date' => '',
-            'trial_date' => '',
-            'is_urgent' => '',
-        ];
-        $validation = Validator::make($request->all(), $rules);
+    // public function addDress(Request $request)
+    // {
+    //     $rules = [
+    //         'order_id' => 'required',
+    //         'shop_id' => 'required',
+    //         'category_id' => 'required',
+    //         'type' => 'required',
+    //         'quantity' => 'required',
+    //         'price' => 'required',
+    //         'name' => '',
+    //         'delivery_date' => '',
+    //         'trial_date' => '',
+    //         'is_urgent' => '',
+    //     ];
+    //     $validation = Validator::make($request->all(), $rules);
 
-        if ($validation->fails()) {
-            return response()->json(['success' => false, 'message' => 'Dress data validation error', 'data' => $validation->errors()], 422);
-        } else {
-            $tailor_id = auth('sanctum')->user()->id;
-            $dress = Dress::create([
-                'order_id' => $request->order_id,
-                'tailor_id' => $tailor_id,
-                'shop_id' => $request->shop_id,
-                'category_id' => $request->category_id,
-                'name' => '',
-                'type' => $request->type,
-                'quantity' => $request->quantity,
-                'price' => $request->price,
-                'delivery_date' => $request->delivery_date,
-                'trial_date' => $request->trial_date,
-                'is_urgent' => $request->is_urgent,
-                'status' => 0,
-                'notes' => $request->notes,
+    //     if ($validation->fails()) {
+    //         return response()->json(['success' => false, 'message' => 'Dress data validation error', 'data' => $validation->errors()], 422);
+    //     } else {
+    //         $tailor_id = auth('sanctum')->user()->id;
+    //         $dress = Dress::create([
+    //             'order_id' => $request->order_id,
+    //             'tailor_id' => $tailor_id,
+    //             'shop_id' => $request->shop_id,
+    //             'category_id' => $request->category_id,
+    //             'name' => '',
+    //             'type' => $request->type,
+    //             'quantity' => $request->quantity,
+    //             'price' => $request->price,
+    //             'delivery_date' => $request->delivery_date,
+    //             'trial_date' => $request->trial_date,
+    //             'is_urgent' => $request->is_urgent,
+    //             'status' => 0,
+    //             'notes' => $request->notes,
 
-            ]);
+    //         ]);
 
-            if ($dress->save()) {
-                $dress_name = Dress::where('id', $dress->id)->first();
-                $dress_name->name = '#D-' . $dress->category_id . '-' . $dress->id;
-                return response()->json(['success' => true, 'message' => 'Dress Created Successfully', 'data' => ['Dress id' => $dress->id]], 200);
-            } else {
-                return response()->json(['success' => false, 'message' => 'Dress could bot be created'], 500);
-            }
-        }
-    }
+    //         if ($dress->save()) {
+    //             $dress_name = Dress::where('id', $dress->id)->first();
+    //             $dress_name->name = '#D-' . $dress->category_id . '-' . $dress->id;
+    //             return response()->json(['success' => true, 'message' => 'Dress Created Successfully', 'data' => ['Dress id' => $dress->id]], 200);
+    //         } else {
+    //             return response()->json(['success' => false, 'message' => 'Dress could bot be created'], 500);
+    //         }
+    //     }
+    // }
 
     public function updateDress(Request $request)
     {
@@ -1261,7 +1261,7 @@ class DressController extends Controller
      */
     public function show($id)
     {
-        $dress = Dress::with(['order.customer','category', 'measurement', 'designs'])->find($id);
+        $dress = Dress::with(['order','customer','category', 'measurement', 'designs'])->find($id);
 
         if (empty($dress)) {
             return response()->json(['message' => 'Dress not found'], 404);
@@ -1341,7 +1341,7 @@ class DressController extends Controller
 
         // Format date fields to ISO 8601 Zulu string
         $dress->order_name = $dress->order ? $dress->order->name : null;
-        $dress->customer_name = $dress->order && $dress->order->customer ? $dress->order->customer->name : null;
+        $dress->customer_name = $dress->customer ? $dress->customer->name : null;
         $dress->category_name = $dress->category ? $dress->category->name : null;
         $dress->delivery_date = Carbon::parse($dress->delivery_date)->toIso8601ZuluString();
         $dress->trial_date = Carbon::parse($dress->trial_date)->toIso8601ZuluString();
