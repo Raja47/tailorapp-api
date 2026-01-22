@@ -228,10 +228,13 @@ class TailorCustomerController extends Controller
      *     )
      * )
      */
-    public function payments($customer_id, $page=1 , $perpage = 20)
+    public function payments(Request $request, $customer_id)
     {
+        $page = $request->input('page');
+        $perpage = $request->input('perpage');
+
         $tailor_id = auth('sanctum')->user()->id;
-         $query = DB::table('payments')
+        $query = DB::table('payments')
             ->select('payments.*','orders.name AS order_name','tailor_customers.name AS customer_name')
             ->leftjoin('orders', 'orders.id', 'payments.order_id')
             ->leftjoin('tailor_customers', 'tailor_customers.id', 'payments.customer_id')
