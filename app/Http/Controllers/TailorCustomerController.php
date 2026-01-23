@@ -338,7 +338,7 @@ class TailorCustomerController extends Controller
         if (empty($customer)) {
             return response()->json(['success' => false, 'message' => 'Customer Not Found', 'data' => []], 404);
         } else {
-            return response()->json(['success' => true, 'message' => 'Customer Found', 'data' => [$customer]], 200);
+            return response()->json(['success' => true, 'message' => 'Customer Found', 'data' => ['customer' => $customer]], 200);
         }
     }
 
