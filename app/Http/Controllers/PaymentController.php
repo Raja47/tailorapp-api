@@ -202,16 +202,14 @@ class PaymentController extends Controller
     {
         $tailor_id = auth('sanctum')->user()->id;
         $order = Order::where([['id', $order_id], ['tailor_id', $tailor_id]])->first();
+        
         if (!$order) {
             return response()->json(['success' => true, 'message' => 'Invalid Order ID'], 500);
         }
 
         $order_payments = Payment::where('order_id', $order_id)->get();
-        if (count($order_payments) === 0) {
-            return response()->json(['success' => true, 'data' => [],'message' => 'No Payments Found'], 200);
-        } else {
-            return response()->json(['success' => true, 'message' => 'Order Payments Found', 'data' => $order_payments], 200);
-        }
+        
+        return response()->json(['success' => true, 'message' => 'Order Payments Found', 'data' => ['payments' => $order_payments]], 200);
     }
 
     /**

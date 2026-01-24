@@ -70,7 +70,8 @@ class ExpenseController extends Controller
             return response()->json(['success' => true, 'message' => 'Invalid Order ID'], 200);
         }
         $expenses = Expense::where('order_id', $order_id)->get();
-        return response()->json(['success' => true, 'message' => 'Order Expenses', 'data' => [$expenses]], 200);
+        
+        return response()->json(['success' => true, 'message' => 'Order Expenses', 'data' => ['expenses' => $expenses]], 200);
     }
 
     /**

@@ -68,7 +68,7 @@ class DiscountController extends Controller
             return response()->json(['success' => true, 'message' => 'Invalid Order ID'], 200);
         }
         $discounts = Discount::where('order_id', $order_id)->get();
-        return response()->json(['success' => true, 'message' => 'Order Discounts', 'data' => [$discounts]], 200);
+        return response()->json(['success' => true, 'message' => 'Order Discounts', 'data' => ['discounts' => $discounts]], 200);
     }
 
     /**
