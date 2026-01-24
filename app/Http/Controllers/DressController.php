@@ -190,7 +190,7 @@ class DressController extends Controller
                 'status' => 8,
             ]);
 
-            $order->increment('total_dress_amount', $request->price);
+            $order->increment('total_dress_amount', $request->price * $request->quantity);
 
             $measurement = Measurement::create([
                 'model' => 'dress',
