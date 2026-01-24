@@ -33,15 +33,16 @@ class Order extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::creating(function ($dress) {
-            $shopId = $dress->shop_id;
+        
+        // Generate unique order name before creating
+        static::creating(function ($order) {
+            $shopId = $order->shop_id;
             $prefix = $shopId . 'OR';
 
             $latest = self::where('name', 'like', $prefix . '%')
-                        ->where('shop_id', $dress->shop_id)
-                        ->orderBy('id', 'desc')
-                        ->first();
+                ->where('shop_id', $order->shop_id)
+                ->orderBy('id', 'desc')
+                ->first();
 
             if ($latest && preg_match('/^' . $shopId . 'OR(\d+)$/', $latest->name, $matches)) {
                 $last = (int)$matches[1];
@@ -50,8 +51,30 @@ class Order extends Model
             }
 
             $next = $last + 1;
-            $dress->name = $prefix . $next;
+            $order->name = $prefix . $next;
         });
+
+        static::updated(function ($order) {
+            $order->updatePaymentStatus();
+        });
+
+
+    }
+
+
+    public function updatePaymentStatus()
+    {
+        if($this->total_payment == 0 ) {
+            $this->payment_status = 19;
+        }
+
+        if($this->total_payment > 0 ) {
+            $this->payment_status = 20;
+        }
+
+        if ( ($this->total_payment + $this->total_discount) == ($this->total_dress_amount + $this->total_expenses)){ 
+            $this->payment_status = 21;
+        }
     }
 
     public function discounts()
