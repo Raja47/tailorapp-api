@@ -54,28 +54,24 @@ class Order extends Model
             $order->name = $prefix . $next;
         });
 
-        static::updated(function ($order) {
-            $order->updatePaymentStatus();
+        static::updating(function ($order) {
+           
+            if($order->total_payment == 0 ) {
+                $this->payment_status = 19;
+            }
+
+            if($order->total_payment > 0 ) {
+                $order->payment_status = 20;
+            }
+
+            if ( ($order->total_payment + $order->total_discount) == ($order->total_dress_amount + $order->total_expenses)){ 
+                $order->payment_status = 21;
+            }
         });
-
-
+    
     }
 
 
-    public function updatePaymentStatus()
-    {
-        if($this->total_payment == 0 ) {
-            $this->payment_status = 19;
-        }
-
-        if($this->total_payment > 0 ) {
-            $this->payment_status = 20;
-        }
-
-        if ( ($this->total_payment + $this->total_discount) == ($this->total_dress_amount + $this->total_expenses)){ 
-            $this->payment_status = 21;
-        }
-    }
 
     public function discounts()
     {
