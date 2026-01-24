@@ -54,7 +54,7 @@ class Order extends Model
             $order->name = $prefix . $next;
         });
 
-        static::updated(function ($order) {
+        static::updating(function ($order) {
             if ($order === null) {
                 throw new \InvalidArgumentException('Argument $order cannot be null');
             }
