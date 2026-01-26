@@ -700,14 +700,6 @@ class OrderController extends Controller
         $payment_total = (Float) Payment::where('order_id', $order_id)->sum('amount');
         $payments = Payment::where('order_id', $order_id)->select('title', 'method', 'amount')->get();
 
-        //@todo we dont need to update here the totals we should upate it while any transaction being added or deleted.
-        $order->update([
-            'total_dress_amount' => $dress_total,
-            'total_expenses' => $expense_total,
-            'total_discount' => $discount_total,
-            'total_payment' => $payment_total,
-        ]);
-
         return response()->json([
             'success' => true,
             'message' => 'Order Found',
@@ -723,6 +715,28 @@ class OrderController extends Controller
                 'payment_total' => $payment_total,
             ]
         ], 200);
+    }
+
+    public function summary($order_id)
+    {   
+        $tailor_id = auth('sanctum')->user()->id;
+
+        $dresses = Dress::where('order_id', $order_id)->get();    
+        $expenses = Expense::where('order_id', $order_id)->select('title', 'amount')->get();
+        $discounts = Discount::where('order_id', $order_id)->select('title', 'amount')->get();
+        $payments = Payment::where('order_id', $order_id)->select('title', 'method', 'amount')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order Summary',
+            'data' => [
+                'dresses' => $dresses,
+                'expenses' => $expenses,
+                'discounts' => $discounts,
+                'payments' => $payments,
+            ]
+        ], 200);
+
     }
 
     public function countCustomerOrders(Request $request)
