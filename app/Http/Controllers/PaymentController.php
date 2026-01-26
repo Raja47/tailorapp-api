@@ -396,8 +396,10 @@ class PaymentController extends Controller
         if (!$payment) {
             return response()->json(['success' => false, 'message' => 'Payment already deleted'], 200);
         }
-
+        $payment_order = $payment->order;
         $payment->delete();
+        $payment_order->decrement('total_payment', $payment->amount);
+        
         return response()->json(['success' => true, 'message' => 'Payment deleted successfully'], 200);
     }
 }
