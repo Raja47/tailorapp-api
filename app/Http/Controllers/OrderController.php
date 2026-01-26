@@ -682,37 +682,28 @@ class OrderController extends Controller
             });
 
         if (count($order_dresses) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Dresses Found'], 200);
+            return response()->json(['success' => false, 'message' => 'No Dresses In Order'], 200);
         }
 
-
-        $dress_total = (Float) Dress::where('order_id', $order_id)->sum('price');
-
         //expense_amounts
-        $expense_total = (Float) Expense::where('order_id', $order_id)->sum('amount');
         $expenses = Expense::where('order_id', $order_id)->select('*')->get();
 
         //discount_amounts
-        $discount_total = (Float) Discount::where('order_id', $order_id)->sum('amount');
         $discounts = Discount::where('order_id', $order_id)->select('*')->get();
 
         //payment_amounts
-        $payment_total = (Float) Payment::where('order_id', $order_id)->sum('amount');
         $payments = Payment::where('order_id', $order_id)->select('*')->get();
+
+        $order->dresses = $order_dresses;
+        $order->expenses = $expenses;
+        $order->discounts = $discounts;
+        $order->payments = $payments;
 
         return response()->json([
             'success' => true,
             'message' => 'Order Found',
             'data' => [
-                'order' => $order,
-                'dresses' => $order_dresses,
-                'dress_total' => $dress_total,
-                'expenses' => $expenses,
-                'expense_total' => $expense_total,
-                'discounts' => $discounts,
-                'discount_total' => $discount_total,
-                'payments' => $payments,
-                'payment_total' => $payment_total,
+                'order' => $order
             ]
         ], 200);
     }
@@ -721,19 +712,29 @@ class OrderController extends Controller
     {   
         $tailorId = auth('sanctum')->user()->id;
 
+        $order = Order::where([['id', $order_id], ['tailor_id', $tailorId]])->first();
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => 'Invalid Order ID'], 200);
+        }
         $dresses =   Dress::where('order_id', $order_id)->get();    
         $expenses =  Expense::where('order_id', $order_id)->select('*')->get();
         $discounts = Discount::where('order_id', $order_id)->select('*')->get();
         $payments =  Payment::where('order_id', $order_id)->select('*')->get();
 
+        if (count($dresses) === 0) {
+            return response()->json(['success' => false, 'message' => 'No Dresses In Order'], 200);
+        }
+
+        $order->dresses = $dresses;
+        $order->expenses = $expenses;
+        $order->discounts = $discounts;
+        $order->payments = $payments;
+
         return response()->json([
             'success' => true,
             'message' => 'Order Summary',
             'data' => [
-                'dresses' => $dresses,
-                'expenses' => $expenses,
-                'discounts' => $discounts,
-                'payments' => $payments,
+                'order' => $order
             ]
         ], 200);
 
