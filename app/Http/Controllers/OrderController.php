@@ -690,15 +690,15 @@ class OrderController extends Controller
 
         //expense_amounts
         $expense_total = (Float) Expense::where('order_id', $order_id)->sum('amount');
-        $expenses = Expense::where('order_id', $order_id)->select('title', 'amount')->get();
+        $expenses = Expense::where('order_id', $order_id)->select('*')->get();
 
         //discount_amounts
         $discount_total = (Float) Discount::where('order_id', $order_id)->sum('amount');
-        $discounts = Discount::where('order_id', $order_id)->select('title', 'amount')->get();
+        $discounts = Discount::where('order_id', $order_id)->select('*')->get();
 
         //payment_amounts
         $payment_total = (Float) Payment::where('order_id', $order_id)->sum('amount');
-        $payments = Payment::where('order_id', $order_id)->select('title', 'method', 'amount')->get();
+        $payments = Payment::where('order_id', $order_id)->select('*')->get();
 
         return response()->json([
             'success' => true,
@@ -719,12 +719,12 @@ class OrderController extends Controller
 
     public function summary($order_id)
     {   
-        $tailor_id = auth('sanctum')->user()->id;
+        $tailorId = auth('sanctum')->user()->id;
 
-        $dresses = Dress::where('order_id', $order_id)->get();    
-        $expenses = Expense::where('order_id', $order_id)->select('*')->get();
+        $dresses =   Dress::where('order_id', $order_id)->get();    
+        $expenses =  Expense::where('order_id', $order_id)->select('*')->get();
         $discounts = Discount::where('order_id', $order_id)->select('*')->get();
-        $payments = Payment::where('order_id', $order_id)->select('*')->get();
+        $payments =  Payment::where('order_id', $order_id)->select('*')->get();
 
         return response()->json([
             'success' => true,
