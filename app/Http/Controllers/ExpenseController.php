@@ -262,8 +262,10 @@ class ExpenseController extends Controller
         if (!$expense) {
             return response()->json(['success' => false, 'message' => 'Expense already deleted'], 200);
         }
-
+        $expense_order = $expense->order;
         $expense->delete();
+        $expense_order->decrement('total_expenses', $expense->amount);
+        
         return response()->json(['success' => true, 'message' => 'Expense deleted successfully'], 200);
     }
 }

@@ -249,8 +249,11 @@ class DiscountController extends Controller
         if (!$discount) {
             return response()->json(['success' => false, 'message' => 'Discount already deleted'], 200);
         }
-
+        $discount_order = $discount->order;
+        
         $discount->delete();
+        $discount_order->decrement('total_discount', $discount->amount);
+
         return response()->json(['success' => true, 'message' => 'Discount deleted successfully'], 200);
     }
 }
