@@ -722,9 +722,9 @@ class OrderController extends Controller
         $tailor_id = auth('sanctum')->user()->id;
 
         $dresses = Dress::where('order_id', $order_id)->get();    
-        $expenses = Expense::where('order_id', $order_id)->select('title', 'amount')->get();
-        $discounts = Discount::where('order_id', $order_id)->select('title', 'amount')->get();
-        $payments = Payment::where('order_id', $order_id)->select('title', 'method', 'amount')->get();
+        $expenses = Expense::where('order_id', $order_id)->select('*')->get();
+        $discounts = Discount::where('order_id', $order_id)->select('*')->get();
+        $payments = Payment::where('order_id', $order_id)->select('*')->get();
 
         return response()->json([
             'success' => true,
