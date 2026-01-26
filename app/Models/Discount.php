@@ -16,6 +16,11 @@ class Discount extends Model
         'tailor_id'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d\TH:i:s.v\Z',
+        'updated_at' => 'datetime:Y-m-d\TH:i:s.v\Z',
+    ];
+
     public function order()
     {
         return $this->belongsTo(Order::class, 'order_id');
