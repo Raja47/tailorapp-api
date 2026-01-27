@@ -285,12 +285,16 @@ class PaymentController extends Controller
             'method' => 'string',
             'amount' => 'required',
             'order_id' => 'required',
-            'customer_id' => 'required',
         ];
 
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Payment data validation error', 'data' => $validation->errors()], 422);
+        }
+
+        $order = Order::where([['id', $request->order_id]])->first();
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => 'Invalid Order ID'], 500);
         }
 
         $tailor_id = auth('sanctum')->user()->id;
@@ -302,7 +306,7 @@ class PaymentController extends Controller
             'date' => now(),
             'order_id' => $request->order_id,
             'tailor_id' => $tailor_id,
-            'customer_id' => $request->customer_id,
+            'customer_id' => $order->customer_id,
         ]);
 
         if ($payment->save()) {
