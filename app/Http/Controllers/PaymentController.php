@@ -284,7 +284,6 @@ class PaymentController extends Controller
             'title' => 'string',
             'method' => 'string',
             'amount' => 'required',
-            'date' => 'required',
             'order_id' => 'required',
             'customer_id' => 'required',
         ];
@@ -300,7 +299,7 @@ class PaymentController extends Controller
             'title' => $request->title,
             'method' => $request->method,
             'amount' => $request->amount,
-            'date' => $request->date,
+            'date' => now(),
             'order_id' => $request->order_id,
             'tailor_id' => $tailor_id,
             'customer_id' => $request->customer_id,
