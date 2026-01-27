@@ -73,6 +73,11 @@ class Order extends Model
         return $this->save();
     }
 
+    public function balanceAmount()
+    {
+        return $this->total_dress_amount + $this->total_expenses - $this->total_discount - $this->total_payment;
+    }
+
     public function discounts()
     {
         return $this->hasMany(Discount::class, 'order_id');

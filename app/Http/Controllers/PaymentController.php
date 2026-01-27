@@ -297,6 +297,10 @@ class PaymentController extends Controller
             return response()->json(['success' => false, 'message' => 'Invalid Order ID'], 500);
         }
 
+        if ($request->amount > $order->balanceAmount()) {
+            return response()->json(['success' => false, 'message' => 'Payment amount cannot be greater than Outstanding'], 422);
+        }
+
         $tailor_id = auth('sanctum')->user()->id;
 
         $payment = Payment::create([
@@ -310,9 +314,8 @@ class PaymentController extends Controller
         ]);
 
         if ($payment->save()) {
-            $payment_order = $payment->order;
-            $payment_order->increment('total_payment', $request->amount);
-            $payment_order->refreshFinancialStatus();
+            $order->increment('total_payment', $request->amount);
+            $order->refreshFinancialStatus();
             return response()->json(['success' => true, 'message' => 'Payment Added Successfully'], 200);
         } else {
             return response()->json(['success' => false, 'message' => 'Payment cannot be added'], 500);

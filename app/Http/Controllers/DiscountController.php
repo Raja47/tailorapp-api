@@ -148,8 +148,19 @@ class DiscountController extends Controller
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Discount data validation error', 'data' => $validation->errors()], 422);
         }
+        
+        $order = Order::where([['id', $request->order_id], ['tailor_id', auth('sanctum')->user()->id]])->first();
+        if($order == null){
+            return response()->json(['success' => false, 'message' => 'Invalid Order ID'], 200);
+        }
+
+        if( $request->amount > $order->balanceAmount() ){
+            return response()->json(['success' => false, 'message' => 'Discount amount cannot be greater than order balance'], 422);
+        }
 
         $tailor_id = auth('sanctum')->user()->id;
+
+
 
         $discount = Discount::create([
             'title' => $request->title,
@@ -159,10 +170,8 @@ class DiscountController extends Controller
         ]);
 
         if ($discount->save()) {
-            $discount_order = $discount->order;
-            $discount_order->increment('total_discount', $request->amount);
-            $discount_order->refreshFinancialStatus();
-
+            $order->increment('total_discount', $request->amount);
+            $order->refreshFinancialStatus();
             return response()->json(['success' => true, 'message' => 'Discount Added Successfully'], 200);
         } else {
             return response()->json(['success' => false, 'message' => 'Discount cannot be added'], 500);
