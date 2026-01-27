@@ -187,6 +187,8 @@ class ClothController extends Controller
 
         $expense_order = $expense->order;
         $expense_order->increment('total_expenses', $request->price);
+        $expense_order->refreshFinancialStatus();
+
 
         $clothResponse = [
             'id' => $cloth->id,
