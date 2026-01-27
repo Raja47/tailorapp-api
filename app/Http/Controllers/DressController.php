@@ -268,6 +268,8 @@ class DressController extends Controller
                 }
             } // <-- This closes the foreach ($request->clothes as $clothImage) loop
 
+            $order->refreshFinancialStatus();
+
 
             if (!empty($request->audio)) {
                 Recording::create([

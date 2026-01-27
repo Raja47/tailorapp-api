@@ -174,6 +174,7 @@ class ExpenseController extends Controller
         if ($expense->save()) {
             $expense_order = $expense->order;
             $expense_order->increment('total_expenses', $request->amount);
+            $expense_order->refreshFinancialStatus();
 
             return response()->json(['success' => true, 'message' => 'Expense Added Successfullyy'], 200);
         } else {
@@ -265,6 +266,7 @@ class ExpenseController extends Controller
         $expense_order = $expense->order;
         $expense->delete();
         $expense_order->decrement('total_expenses', $expense->amount);
+        $expense_order->refreshFinancialStatus();
         
         return response()->json(['success' => true, 'message' => 'Expense deleted successfully'], 200);
     }

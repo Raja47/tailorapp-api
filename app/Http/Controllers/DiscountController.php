@@ -161,6 +161,7 @@ class DiscountController extends Controller
         if ($discount->save()) {
             $discount_order = $discount->order;
             $discount_order->increment('total_discount', $request->amount);
+            $discount_order->refreshFinancialStatus();
 
             return response()->json(['success' => true, 'message' => 'Discount Added Successfully'], 200);
         } else {
@@ -253,6 +254,7 @@ class DiscountController extends Controller
         
         $discount->delete();
         $discount_order->decrement('total_discount', $discount->amount);
+        $discount_order->refreshFinancialStatus();
 
         return response()->json(['success' => true, 'message' => 'Discount deleted successfully'], 200);
     }

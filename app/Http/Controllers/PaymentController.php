@@ -309,6 +309,7 @@ class PaymentController extends Controller
         if ($payment->save()) {
             $payment_order = $payment->order;
             $payment_order->increment('total_payment', $request->amount);
+            $payment_order->refreshFinancialStatus();
             return response()->json(['success' => true, 'message' => 'Payment Added Successfully'], 200);
         } else {
             return response()->json(['success' => false, 'message' => 'Payment cannot be added'], 500);
@@ -399,6 +400,7 @@ class PaymentController extends Controller
         $payment_order = $payment->order;
         $payment->delete();
         $payment_order->decrement('total_payment', $payment->amount);
+        $payment_order->refreshFinancialStatus();
         
         return response()->json(['success' => true, 'message' => 'Payment deleted successfully'], 200);
     }

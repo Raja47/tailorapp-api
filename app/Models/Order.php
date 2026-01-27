@@ -53,32 +53,25 @@ class Order extends Model
             $next = $last + 1;
             $order->name = $prefix . $next;
         });
-
-        static::updating(function ($order) {
-            if ($order === null) {
-                throw new \InvalidArgumentException('Argument $order cannot be null');
-            }
-
-            try {
-                if ($order->total_payment === 0) {
-                    $order->payment_status = 19;
-                }
-
-                if ($order->total_payment > 0) {
-                    $order->payment_status = 20;
-                }
-
-                if ( $order->total_dress_amount + $order->total_expenses - $order->total_discount - $order->total_payment <= 0 ) { 
-                    $order->payment_status = 21;
-                }
-            } catch (\Throwable $th) {
-                throw new \RuntimeException('Error updating order payment status: ' . $th->getMessage());
-            }
-        });
     }
 
 
+    public function refreshFinancialStatus()
+    {
+        if ($this->total_payment === 0) {
+            $this->payment_status = 19;
+        }
 
+        if ($this->total_payment > 0) {
+            $this->payment_status = 20;
+        }
+
+        if ($this->total_dress_amount + $this->total_expenses - $this->total_discount - $this->total_payment <= 0) {
+            $this->payment_status = 21;
+        }
+
+        return $this->save();
+    }
 
     public function discounts()
     {
