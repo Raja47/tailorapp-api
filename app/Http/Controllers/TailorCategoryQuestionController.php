@@ -216,7 +216,6 @@ class TailorCategoryQuestionController extends Controller
             'category_id' => 'required',
             'question' => 'required',
             'type' => 'required',
-            'options' => 'required',
         ];
 
         $validation = Validator::make($request->all(), $rules);
