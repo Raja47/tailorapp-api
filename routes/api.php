@@ -152,6 +152,7 @@ Route::group([
     Route::group(['prefix' => '{category_id}/questions'], function () {
         Route::get('/', [TailorCategoryQuestionController::class, 'tailorCatQuestions']);
         Route::get('/active', [TailorCategoryQuestionController::class, 'tailorCatActiveQuestions']);
+        Route::post('/store', [TailorCategoryQuestionController::class, 'store']);
     });
 
     Route::group(['prefix' => 'questions' ], function () {

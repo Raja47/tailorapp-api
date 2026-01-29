@@ -213,7 +213,7 @@ class TailorCategoryQuestionController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'category_question_id' => 'required',
+            'category_id' => 'required',
             'question' => 'required',
             'type' => 'required',
             'options' => 'required',
@@ -225,7 +225,7 @@ class TailorCategoryQuestionController extends Controller
         } else {
             $tailor_id = auth('sanctum')->user()->id;
             $tal_cat_question = TailorCategoryQuestion::create([
-                'category_question_id' => $request->category_question_id,
+                'category_id' => $request->category_id,
                 'question' => $request->question,
                 'type' => $request->type,
                 'options' => $request->options,
