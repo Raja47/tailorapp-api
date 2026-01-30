@@ -227,7 +227,7 @@ class TailorCategoryQuestionController extends Controller
                 'category_id' => $request->category_id,
                 'question' => $request->question,
                 'type' => $request->type,
-                'options' => $request->options,
+                'options' => json_encode($request->options),
                 'tailor_id' => $tailor_id,
                 'status' => 1,
             ]);
