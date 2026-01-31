@@ -239,6 +239,40 @@ class TailorCategoryQuestionController extends Controller
         }
     }
 
+    /**
+     * 
+     */
+    public function update(Request $request, $id)
+    {
+        
+        $rules = [
+            'category_id' => 'required',
+            'question' => 'required',
+            'type' => 'required',
+        ];
+
+        $validation = Validator::make($request->all(), $rules);
+        if ($validation->fails()) {
+            return response()->json(['success' => false, 'message' => 'Question data validation error', 'data' => $validation->errors()], 422);
+        }
+
+        $tal_cat_question = TailorCategoryQuestion::find($id);
+
+        if (empty($tal_cat_question)) {
+            return response()->json(['success' => false, 'message' => 'Question not found'], 404);
+        }
+        
+        $tal_cat_question->question = $request->question;
+        $tal_cat_question->type = $request->type;
+        $tal_cat_question->options = json_encode($request->options);
+        $tal_cat_question->status = $request->status;
+        if ($tal_cat_question->save()) {
+            return response()->json(['success' => true, 'data' => $tal_cat_question], 200);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Question update failed'], 500);
+        }
+    }
+
 
 
         /**
@@ -447,18 +481,6 @@ class TailorCategoryQuestionController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -466,6 +488,20 @@ class TailorCategoryQuestionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $question = TailorCategoryQuestion::find($id);
+
+        if(empty($question)){
+            return response()->json(['success' => false, 'message' => 'Question deleted successfully'], 200);
+        }
+
+        if(!$question->isCustom()){
+            return response()->json(['success' => false, 'message' => 'Question can be deactived only but not deleted'], 200);
+        }
+
+        if($question->delete()){
+            return response()->json(['success' => true, 'message' => 'Question deleted successfully'], 200);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Question delete failed'], 500);
     }
 }

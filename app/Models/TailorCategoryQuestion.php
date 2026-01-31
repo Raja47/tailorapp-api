@@ -34,4 +34,8 @@ class TailorCategoryQuestion extends Model
         return $this->type === 'multi-select' || $this->type === 'multi-icon';
     }
 
+    public function isCustom() :bool {
+        return $this->question_id == null;
+    }
+
 }

@@ -157,7 +157,9 @@ Route::group([
 
     Route::group(['prefix' => 'questions' ], function () {
         Route::get('/', [TailorCategoryQuestionController::class, 'index']);
+        Route::put('/update', [TailorCategoryQuestionController::class, 'update']);
         Route::put('/{id}/update-status', [TailorCategoryQuestionController::class, 'updateStatus']);
+        Route::delete('/{id}/destroy', [TailorCategoryQuestionController::class, 'destroy']);
     });
 });
 
