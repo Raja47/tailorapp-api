@@ -234,7 +234,7 @@ class TailorCategoryQuestionController extends Controller
             if ($tal_cat_question->save()) {
                 return response()->json(['success' => true, 'data' => $tal_cat_question], 200);
             } else {
-                return response()->json(['success' => false, 'message' => 'Question creation failed'], 404);
+                return response()->json(['success' => false, 'message' => 'Question creation failed'], 500);
             }
         }
     }
