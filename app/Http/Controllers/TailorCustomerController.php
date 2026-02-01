@@ -701,14 +701,16 @@ class TailorCustomerController extends Controller
     public function update(Request $request)
     {
         $rules = [
-            'customer_id' => 'required',
+            'id' => 'required',
             'number' => 'max:12',
             'name' => 'required',
             'gender' => 'required',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
             'city_name' => '',
         ];
+
         $validation = Validator::make($request->all(), $rules);
+
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
         } else {
@@ -724,7 +726,7 @@ class TailorCustomerController extends Controller
                 $path = $base_url . '/storage/customers/' . $filename;
             }
 
-            $tailorcustomer = TailorCustomer::where([['customer_id', $request->customer_id], ['tailor_id', $tailor_id]])->first();
+            $tailorcustomer = TailorCustomer::where([['id', $request->id], ['tailor_id', $tailor_id]])->first();
             if (empty($tailorcustomer)) {
                 return response()->json(['success' => false, 'message' => 'Customer does not exist.', 'data' => []], 404);
             } else {
