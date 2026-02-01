@@ -704,7 +704,6 @@ class TailorCustomerController extends Controller
             'customer_id' => 'required',
             'number' => 'max:12',
             'name' => 'required',
-            'address' => 'max:70',
             'gender' => 'required',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
             'city_name' => '',
