@@ -238,33 +238,33 @@ class DressController extends Controller
                         'path' => relative_url($cloth['path']),
                         'thumb_path' => relative_thumb_url($cloth['path']),
                     ]);
+                }
 
-                    $clothPrice =  (isset($clothImage['price']) && $cloth['provided_by'] == 'tailor') ? $clothImage['price'] : null;
+                $clothPrice =  (isset($cloth['price']) && $cloth['provided_by'] == 'tailor') ? $cloth['price'] : null;
 
-                    $clothRecord = Cloth::create([
-                        'dress_id' => $dress->id,
+                $clothRecord = Cloth::create([
+                    'dress_id' => $dress->id,
+                    'order_id' => $order_id,
+                    'tailor_id' => $tailor_id,
+                    'title' => $cloth['title'],
+                    'dress_image_id' => $dressImage?->id,
+                    'length' => $cloth['length'] ?? 0,
+                    'unit'  => $cloth['unit'],
+                    'provided_by' => $cloth['provided_by'],
+                    'price' => $clothPrice
+                ]);
+
+                if ($clothPrice != null) {
+                    $expense = Expense::create([
+                        'amount' => $cloth['price'],
                         'order_id' => $order_id,
+                        'title' => 'Cloth Expense',
                         'tailor_id' => $tailor_id,
-                        'title' => $cloth['title'],
-                        'dress_image_id' => $dressImage?->id,
-                        'length' => $cloth['length'] ?? 0,
-                        'unit'  => $cloth['unit'],
-                        'provided_by' => $cloth['provided_by'],
-                        'price' => $clothPrice
+                        'dress_id' => $dress->id,
+                        'cloth_id' => $clothRecord->id,
                     ]);
-
-                    if ($clothPrice != null) {
-                        $expense = Expense::create([
-                            'amount' => $cloth['price'],
-                            'order_id' => $order_id,
-                            'title' => 'Cloth Expense',
-                            'tailor_id' => $tailor_id,
-                            'dress_id' => $dress->id,
-                            'cloth_id' => $clothRecord->id,
-                        ]);
-                        // @todo: check if we can do this via expense observer
-                        $order->increment('total_expenses', $expense->amount);
-                    }
+                    // @todo: check if we can do this via expense observer
+                    $order->increment('total_expenses', $expense->amount);
                 }
             } // <-- This closes the foreach ($request->clothes as $clothImage) loop
 
