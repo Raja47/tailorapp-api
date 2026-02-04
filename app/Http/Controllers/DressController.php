@@ -705,7 +705,7 @@ class DressController extends Controller
         }
  
         if ($request->filled('searchText')) {
-            $query->where('dresses.name', 'like', '%' . $searchText . '%')->orWhere('tailor_customers.name', 'like', '%' . $searchText . '%')->orWhere('dresses.customer_name', 'like', '%' . $searchText . '%');
+            $query->where('dresses.name', 'like', '%' . $searchText . '%')->orWhere('tailor_customers.name', 'like', '%' . $searchText . '%');
         }
         $tailor_dresses = $query->orderBy('dresses.updated_at', 'desc')->forpage($page, $perpage)->get()
             ->map(function ($dress) {
