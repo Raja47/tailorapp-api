@@ -467,7 +467,7 @@ class OrderController extends Controller
         }
 
         if ($request->filled('searchText')) {
-            $query->where('orders.name', 'like', '%' . $searchText . '%');
+            $query->where('orders.name', 'like', '%' . $searchText . '%')->orWhere('customer_name', 'like', '%' . $searchText . '%');
         }
 
         $tailor_orders = $query->orderBy('orders.created_at', 'desc')->forpage($page, $perpage)->get()

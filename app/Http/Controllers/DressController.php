@@ -617,9 +617,8 @@ class DressController extends Controller
         $today = Carbon::today();
 
         $query = DB::table('dresses')
-            ->select('dresses.*', 'images.thumb_path AS image', 'tailor_customers.name AS customer_name')
+            ->select('dresses.*', 'images.thumb_path AS image')
             ->leftjoin('orders', 'orders.id', '=', 'dresses.order_id')
-            ->leftjoin('tailor_customers', 'tailor_customers.id', '=', 'dresses.tailor_customer_id')
             ->leftJoin(DB::raw('(
                 SELECT di1.dress_id, di1.thumb_path
                     FROM dress_images di1
@@ -705,7 +704,7 @@ class DressController extends Controller
         }
  
         if ($request->filled('searchText')) {
-            $query->where('dresses.name', 'like', '%' . $searchText . '%');
+            $query->where('dresses.name', 'like', '%' . $searchText . '%')->orWhere('customer_name', 'like', '%' . $searchText . '%');
         }
         $tailor_dresses = $query->orderBy('dresses.updated_at', 'desc')->forpage($page, $perpage)->get()
             ->map(function ($dress) {
