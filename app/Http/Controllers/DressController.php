@@ -209,7 +209,7 @@ class DressController extends Controller
                     'tailor_id' => $tailor_id,
                     'dress_id' => $dress->id,
                     'tcq_id' => $questionAnswer['id'], // Assuming tcq_id is the same as question_id   
-                    'question_id' => $questionAnswer['question_id'],
+                    'question_id' => $questionAnswer['id'],
                     'value' => is_array($questionAnswer['value']) ? implode(",", $questionAnswer['value']) : $questionAnswer['value'],
                 ];
             }
