@@ -1421,7 +1421,7 @@ class DressController extends Controller
                 'dress_Id' => $dress->id,
                 'created_at' => $dress->created_at->toIso8601ZuluString(),
                 'delivery_date' => $dress->delivery_date->toIso8601ZuluString(),
-                'trial_date' => $dress->trial_date->toIso8601ZuluString(),
+                'trial_date' => $dress->trial_date ? $dress->trial_date->toIso8601ZuluString() : null,
                 'quantity' => $dress->quantity,
                 'price' => $dress->price,
                 'notes' => $dress->notes,
