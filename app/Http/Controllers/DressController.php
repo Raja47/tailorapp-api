@@ -1278,7 +1278,7 @@ class DressController extends Controller
                 return [
                     'id'   => $value->id,
                     'parameter_id' => $value->parameter_id,
-                    'value' => $value->value,
+                    'value' => $value->value ?? '',
                     'image' => $value->parameter?->image ? complete_url($value->parameter->image) : null,
                     'tcp_id' => $value->tcp_id,
                     'measurement_id' => $value->measurement_id,
