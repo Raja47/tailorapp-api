@@ -26,7 +26,6 @@ class MeasurementValue extends Model
             'measurement_id' => 'required',
             'parameter_id' => 'required',
             'tcp_id' => 'required|integer',
-            'value' => 'required',
         ];
 
         $validation = Validator::make($data, $rules);
@@ -42,7 +41,7 @@ class MeasurementValue extends Model
                 'tcp_id' => $data['tcp_id'],
                 'measurement_id' => $data['measurement_id'],
                 'parameter_id' => $data['parameter_id'],
-                'value' => $data['value'],
+                'value' => $data['value'] ?? '',
             ]);
             if ($measurement_value->save()) {
                 return [$measurement_value->id];
