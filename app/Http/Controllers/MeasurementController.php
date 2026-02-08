@@ -402,7 +402,7 @@ class MeasurementController extends Controller
                         ->first();
 
                     if ($measurementValue) {
-                        $measurementValue->value = $value['value'];
+                        $measurementValue->value = $value['value'] ?? '';
                         $measurementValue->save();
                     } 
                 }
