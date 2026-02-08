@@ -72,7 +72,7 @@ class MeasurementValue extends Model
                     'message' => 'Measurement does not exist'
                 ];
             } else {
-                $measurement->value = $data['value'];
+                $measurement->value = $data['value'] ?? '';
                 $measurement->save();
                 return [
                     $measurement->id
