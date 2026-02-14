@@ -654,7 +654,9 @@ class OrderController extends Controller
     {
         $tailor_id = auth('sanctum')->user()->id;
 
-        $order = Order::where([['id', $order_id], ['tailor_id', $tailor_id]])->first();
+        $order = Order::select('orders.* , tailor_customers.name as customer_name')
+                ->leftJoin('tailor_customers', 'tailor_customers.id', '=', 'orders.customer_id')
+                ->where([['id', $order_id], ['tailor_id', $tailor_id]])->first();
 
         if (!$order) {
             return response()->json(['success' => false, 'message' => 'Invalid Order ID'], 200);
