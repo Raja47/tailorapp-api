@@ -656,7 +656,7 @@ class OrderController extends Controller
 
         $order = Order::with('customer')
             ->where([['id', $order_id], ['tailor_id', $tailor_id]])->first();
-        $order->customer_name =  $order->customer()->name;
+        $order->customer_name =  $order->customer->name;
 
         if (!$order) {
             return response()->json(['success' => false, 'message' => 'Invalid Order ID'], 200);
