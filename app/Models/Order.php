@@ -78,16 +78,18 @@ class Order extends Model
         return $this->total_dress_amount + $this->total_expenses - $this->total_discount - $this->total_payment;
     }
 
+    // @todo keys doesnt seems to rightly mapped
     public function discounts()
     {
         return $this->hasMany(Discount::class, 'order_id');
     }
 
+    // @todo keys doesnt seems to rightly mapped
     public function payments()
     {
         return $this->hasMany(Payment::class, 'order_id');
     }
-
+    // @todo keys doesnt seems to rightly mapped
     public function expenses()
     {
         return $this->hasMany(Expense::class, 'order_id');
