@@ -94,6 +94,7 @@ class Order extends Model
     }
 
    public function customer(){
-        return $this->hasOne(TailorCustomer::class , 'customer_id');
+    
+        return $this->hasOne(TailorCustomer::class , 'id' , 'customer_id');
     }   
 }

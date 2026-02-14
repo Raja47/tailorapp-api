@@ -655,7 +655,7 @@ class OrderController extends Controller
         $tailor_id = auth('sanctum')->user()->id;
 
         $order = Order::with('customer')
-            ->where([['id', $order_id], ['tailor_id', $tailor_id]])->first();
+            ->where(['id' => $order_id, 'tailor_id'=> $tailor_id])->first();
         $order->customer_name =  $order->customer->name;
 
         if (!$order) {
