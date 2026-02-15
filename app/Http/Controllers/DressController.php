@@ -987,10 +987,13 @@ class DressController extends Controller
         return $dress;
     }
 
-    public function delete($dress_id)
+    public function destroy($dress_id)
     {
         $tailor_id = auth('sanctum')->user()->id;
         $dress = Dress::where([['id', $dress_id], ['tailor_id', $tailor_id]])->get();
+        if(empty($dress)){
+            return response()->json(['success' => false, 'message' => 'Dress not found'], 404);
+        }
         $dress->delete();
         return response()->json(['success' => true, 'message' => 'Dress Deleted', 'data' => ['countDeletes' => $dress->count()]], 200);
     }

@@ -174,11 +174,11 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/dress']
     $router->post('/update', [DressController::class, 'updateDress']);
     $router->get('/countbystatus/{shop_id}/{index}', [DressController::class, 'countDressesByStatus']);
     $router->get('/count', [DressController::class, 'countDresses']);
-    $router->get('/{dress_id}/delete', [DressController::class, 'delete']);
+    $router->delete('/{dress_id}/delete', [DressController::class, 'destroy']);
     $router->get('/orders/{order_id}', [DressController::class, 'getOrderDresses']);
     $router->post('/update-status', [DressController::class, 'updateStatus']);
 
-        // Dress Edit Comonents routes
+    // Dress Edit Comonents routes
     $router->prefix('/{id}')->group(function ($router) {
             // Basic Info
             $router->get('/', [DressController::class, 'show']);
