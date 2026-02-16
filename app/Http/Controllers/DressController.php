@@ -1008,6 +1008,7 @@ class DressController extends Controller
             $order = $dress->order;
             if($dress->delete()) {
                 $order->decrement('total_dress_amount', $dress->price * $dress->quantity);
+                $order->refreshFinancialStatus();
             }
             DB::commit();
 
