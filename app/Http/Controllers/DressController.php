@@ -626,7 +626,7 @@ class DressController extends Controller
                     INNER JOIN (
                         SELECT dress_id, MIN(id) AS min_id
                         FROM dress_images
-                        WHERE type = "design"
+                        WHERE type = "cloth"
                         GROUP BY dress_id
                     ) di2 ON di1.id = di2.min_id
                 ) as images'), 'images.dress_id', '=', 'dresses.id')
@@ -1076,7 +1076,7 @@ class DressController extends Controller
                     INNER JOIN (
                         SELECT dress_id, MIN(id) AS min_id
                         FROM dress_images
-                        WHERE type = "design"
+                        WHERE type = "cloth"
                         GROUP BY dress_id
                     ) di2 ON di1.id = di2.min_id
                 ) as images'), 'images.dress_id', '=', 'dresses.id')
