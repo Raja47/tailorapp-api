@@ -990,10 +990,11 @@ class DressController extends Controller
     public function destroy($id)
     {
         $tailor_id = auth('sanctum')->user()->id;
-
-        $dress = Dress::where('id', $id)
+            
+        $dress = Dress::with('order')->where('id', $id)
                     ->where('tailor_id', $tailor_id)
                     ->first();
+
 
         if (!$dress) {
             return response()->json([
@@ -1001,8 +1002,21 @@ class DressController extends Controller
                 'message' => 'Dress not found'
             ], 404);
         }
+        DB::beginTransaction();
+        try {
 
-        $dress->delete();
+            $order = $dress->order;
+            if($dress->delete()) {
+                $order->decrement('total_dress_amount', $dress->price * $dress->quantity);
+            }
+            DB::commit();
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                
+            ]);
+        }
 
         return response()->json([
             'success' => true,
