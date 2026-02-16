@@ -180,7 +180,7 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/dress']
     // Dress Edit Comonents routes
     $router->prefix('/{id}')->group(function ($router) {
             // Basic Info
-            $router->delete('/delete', [DressController::class, 'destroy']);
+            $router->delete('/destroy', [DressController::class, 'destroy']);
             $router->get('/', [DressController::class, 'show']);
 
             
