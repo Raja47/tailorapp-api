@@ -683,9 +683,7 @@ class OrderController extends Controller
                 return $dress;
             });
 
-        if (count($order_dresses) === 0) {
-            return response()->json(['success' => false, 'message' => 'No Dresses In Order'], 200);
-        }
+        
 
         //expense_amounts
         $expenses = Expense::where('order_id', $order_id)->select('*')->get();
