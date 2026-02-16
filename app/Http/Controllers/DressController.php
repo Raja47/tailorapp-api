@@ -990,7 +990,7 @@ class DressController extends Controller
     public function destroy($id)
     {
         $tailor_id = auth('sanctum')->user()->id;
-        $dress = Dress::where([['id', $id], ['tailor_id', $tailor_id]])->get();
+        $dress = Dress::find(['id'=> $id ,'tailor_id'=> $tailor_id]);
         if(empty($dress)){
             return response()->json(['success' => false, 'message' => 'Dress not found'], 404);
         }
