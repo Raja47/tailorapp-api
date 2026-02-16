@@ -995,13 +995,13 @@ class DressController extends Controller
                     ->where('tailor_id', $tailor_id)
                     ->first();
 
-
         if (!$dress) {
             return response()->json([
                 'success' => false,
                 'message' => 'Dress not found'
             ], 404);
         }
+
         DB::beginTransaction();
         try {
 
@@ -1010,12 +1010,13 @@ class DressController extends Controller
                 $order->decrement('total_dress_amount', $dress->price * $dress->quantity);
             }
             DB::commit();
-            
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
-                
-            ]);
+                'success' => false,
+                'message' => 'Dress could not be deleted'
+            ] ,500);
         }
 
         return response()->json([
