@@ -1455,8 +1455,6 @@ class DressController extends Controller
                 'trial_date' => $dress->trial_date ? $dress->trial_date->toIso8601ZuluString() : null,
                 'quantity' => $dress->quantity,
                 'price' => $dress->price,
-                'notes' => $dress->notes,
-                'audio' => $recording,
             ],
         ], 200);
     }

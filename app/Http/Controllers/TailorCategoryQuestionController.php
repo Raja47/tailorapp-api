@@ -326,7 +326,12 @@ class TailorCategoryQuestionController extends Controller
      */
     public function getDressQuestions($id)
     {
+        $dress = Dress::find($id);
         
+        if (empty($dress)) {
+            return response()->json(['message' => 'Dress not found'], 404);
+        }
+
         $answers = TailorCategoryAnswer::with('question')->where('dress_id', $id)->get();
         $questions = $answers->map(function ($answer) {
             return [
@@ -343,7 +348,13 @@ class TailorCategoryQuestionController extends Controller
             ];
         });
 
-        return response()->json(['message' => 'Questions retrieved successfully','data' => $questions] ,200);
+        return response()->json(['message' => 'Questions retrieved successfully',
+                'data' => [
+                    'questions' => $questions ,
+                    'notes' => $dress->notes,
+                    'audio' => $dress->recording ] 
+                ],
+            200);
     }
 
     /**
