@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\CategoryQuestion;
 use App\Models\TailorCategory;
+use App\Models\Dress;
+use App\Models\Recording;
 use App\Models\TailorCategoryQuestion;
 use App\Models\TailorCategoryAnswer;
 use Illuminate\Http\Request;
@@ -422,7 +424,15 @@ class TailorCategoryQuestionController extends Controller
             'questions' => 'required|array|min:1',
             'questions.*.id' => 'required|integer|exists:tailor_category_questions,id',
             'questions.*.value' => 'nullable|string|max:1000',
+            'notes' => 'nullable|string',
+            'audio' => 'nullable|string', // Assuming audio is a string path
         ];
+
+        $dress = Dress::find($id);
+
+        if (!$dress) {
+            return response()->json(['message' => 'Dress not found'], 404);
+        }
 
         if ($request->has('questions')) {
 
@@ -436,6 +446,25 @@ class TailorCategoryQuestionController extends Controller
             });
         }    
         
+        if ($request->has('notes')) {
+            $dress->notes = $request->input('notes');
+        }
+
+        if ($request->has('audio')) {
+            if (!empty($request->input('audio'))) {
+                $recording = Recording::where('dress_id', $id)->first();
+                if ($recording == null) {
+                    $recording = new Recording();
+                    $recording->dress_id = $id;
+                }
+                $recording->path = relative_url($request->input('audio'));
+                $recording->duration = 0; // Assuming duration is not provided in the request
+                $recording->save();
+            } else {
+                Recording::where('dress_id', $id)->delete();
+            }
+        }
+
         return response()->json(['message' => 'Dress questions updated successfully']);
     }
 

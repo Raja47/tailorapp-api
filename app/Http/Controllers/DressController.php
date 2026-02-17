@@ -1528,11 +1528,9 @@ class DressController extends Controller
 
         $rules = [
             'delivery_date' => 'nullable|date',
-            'trial_date' => 'nullable|date',
+            //'trial_date' => 'nullable|date',
             'quantity' => 'nullable|integer|min:1',
             'price' => 'nullable|numeric|min:0',
-            'notes' => 'nullable|string',
-            'audio' => 'nullable|string', // Assuming audio is a string path
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -1555,25 +1553,6 @@ class DressController extends Controller
 
         if ($request->has('price') && !empty($request->input('price'))) {
             $dress->price = $request->input('price');
-        }
-
-        if ($request->has('notes')) {
-            $dress->notes = $request->input('notes');
-        }
-
-        if ($request->has('audio')) {
-            if (!empty($request->input('audio'))) {
-                $recording = Recording::where('dress_id', $id)->first();
-                if ($recording == null) {
-                    $recording = new Recording();
-                    $recording->dress_id = $id;
-                }
-                $recording->path = relative_url($request->input('audio'));
-                $recording->duration = 0; // Assuming duration is not provided in the request
-                $recording->save();
-            } else {
-                Recording::where('dress_id', $id)->delete();
-            }
         }
 
         $dress->save();
