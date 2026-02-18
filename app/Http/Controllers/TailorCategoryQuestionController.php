@@ -459,6 +459,7 @@ class TailorCategoryQuestionController extends Controller
         
         if ($request->has('notes')) {
             $dress->notes = $request->input('notes');
+            $dress->save();
         }
 
         if ($request->has('audio')) {
