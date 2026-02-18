@@ -665,7 +665,7 @@ class OrderController extends Controller
         $order_dresses = DB::table('dresses')
             ->select('dresses.*', 'tailor_categories.name AS catName', 'images.path AS image' , 'tailor_customers.name as customer_name')
             ->leftjoin('tailor_categories', 'tailor_categories.id', '=', 'dresses.category_id')
-            ->leftjoin('tailor_customers', 'tailor_customers.id', '=', 'dresses.customer_id')
+            ->leftjoin('tailor_customers', 'tailor_customers.id', '=', 'dresses.tailor_customer_id')
             ->leftJoin(DB::raw('(
                 SELECT di1.dress_id, di1.path
                     FROM dress_images di1
