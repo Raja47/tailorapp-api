@@ -934,7 +934,8 @@ class DressController extends Controller
             ->whereBetween('delivery_date', [$start, $end])
             ->where('status', '!=', 'cancelled')
             ->groupBy('delivery_date')
-            ->pluck('total', 'delivery_date');
+            ->pluck('total', 'delivery_date')
+            ->map(fn ($value) => (int) $value);
         
         return response()->json($counts);
     }
