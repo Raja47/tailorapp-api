@@ -929,7 +929,7 @@ class DressController extends Controller
         $start = now()->startOfDay();
         $end = now()->addDays(30)->endOfDay();
 
-        $counts = Dress::selectRaw('delivery_date, COUNT(*) as total')
+        $counts = Dress::selectRaw('delivery_date, sum(quantity) as total')
             ->where('tailor_id', $shop_id)
             ->whereBetween('delivery_date', [$start, $end])
             ->where('status', '!=', 'cancelled')
