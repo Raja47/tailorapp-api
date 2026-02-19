@@ -922,6 +922,24 @@ class DressController extends Controller
     }
 
 
+
+
+    public function getMonthlyStatsOfDressesToBeDelivered($shop_id)
+    {
+        $start = now()->startOfDay();
+        $end = now()->addDays(30)->endOfDay();
+
+        $counts = Dress::selectRaw('delivery_date, COUNT(*) as total')
+            ->where('tailor_id', $shop_id)
+            ->whereBetween('delivery_date', [$start, $end])
+            ->where('status', '!=', 'cancelled')
+            ->groupBy('delivery_date')
+            ->pluck('total', 'delivery_date');
+        
+        return response()->json($counts);
+    }
+
+
     public function countDressesByStatus($shop_id, $index)
     {
         $now = Carbon::now();
