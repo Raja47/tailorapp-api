@@ -1459,10 +1459,6 @@ class DressController extends Controller
         if (empty($dress)) {
             return response()->json(['success' => false, 'message' => 'Dress not found'], 404);
         }
-        $recording = null;
-        if(Recording::where('dress_id', $id)->exists()) {
-            $recording = complete_url(Recording::where('dress_id', $id)->value('path'));
-        }
 
         return response()->json([
             'success' => true,
@@ -1474,7 +1470,7 @@ class DressController extends Controller
                 'trial_date' => $dress->trial_date ? $dress->trial_date->toIso8601ZuluString() : null,
                 'quantity' => $dress->quantity,
                 'price' => $dress->price,
-            ],
+            ]
         ], 200);
     }
 
