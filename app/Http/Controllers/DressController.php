@@ -478,7 +478,7 @@ class DressController extends Controller
      */
     public function uploadAudio(Request $request)
     {
-        $validation = Validator::make($request->all(), ['audio' => 'required|mimes:aac,midi,mid,mp3,ogg,opus,wav,weba,aif,aiff,m4a,wma,au,snd,flac,adts,amr,ra,ram,asf']);
+        $validation = Validator::make($request->all(), ['audio' => 'required']);
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
         }
