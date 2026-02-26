@@ -1390,7 +1390,14 @@ class DressController extends Controller
             ];
         });
         $dress->questions = $questions;
-
+        
+        // Getting recording for the dress
+        $recording = null;
+        if(Recording::where('dress_id', $id)->exists()) {
+            $recording = complete_url(Recording::where('dress_id', $id)->value('path'));
+        }
+    
+        $dress->recording = $recording;
         // Format date fields to ISO 8601 Zulu string
         $dress->order_name = $dress->order ? $dress->order->name : null;
         $dress->customer_name = $dress->customer ? $dress->customer->name : null;
