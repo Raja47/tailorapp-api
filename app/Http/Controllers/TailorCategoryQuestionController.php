@@ -348,11 +348,16 @@ class TailorCategoryQuestionController extends Controller
             ];
         });
 
+        $recording = null;
+        if(Recording::where('dress_id', $id)->exists()) {
+            $recording = complete_url(Recording::where('dress_id', $id)->value('path'));
+        }
+
         return response()->json(['message' => 'Questions retrieved successfully',
                 'data' => [
                     'questions' => $questions ,
                     'notes' => $dress->notes,
-                    'audio' => $dress->recording ] 
+                    'audio' => $recording ] 
                 ],
             200);
     }
