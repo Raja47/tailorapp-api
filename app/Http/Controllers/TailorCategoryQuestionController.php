@@ -357,7 +357,7 @@ class TailorCategoryQuestionController extends Controller
                 'data' => [
                     'questions' => $questions ,
                     'notes' => $dress->notes,
-                    'audio' => $recording ] 
+                    'recording' => $recording ] 
                 ],
             200);
     }
@@ -441,7 +441,7 @@ class TailorCategoryQuestionController extends Controller
             'questions.*.id' => 'required|integer|exists:tailor_category_questions,id',
             'questions.*.value' => 'nullable|string|max:1000',
             'notes' => 'nullable|string',
-            'audio' => 'nullable|string', // Assuming audio is a string path
+            'recording' => 'nullable|string', // Assuming recording is a string path
         ];
 
         $dress = Dress::find($id);
@@ -467,14 +467,14 @@ class TailorCategoryQuestionController extends Controller
             $dress->save();
         }
 
-        if ($request->has('audio')) {
-            if (!empty($request->input('audio'))) {
+        if ($request->has('recording')) {
+            if (!empty($request->input('recording'))) {
                 $recording = Recording::where('dress_id', $id)->first();
                 if ($recording == null) {
                     $recording = new Recording();
                     $recording->dress_id = $id;
                 }
-                $recording->path = relative_url($request->input('audio'));
+                $recording->path = relative_url($request->input('recording'));
                 $recording->duration = 0; // Assuming duration is not provided in the request
                 $recording->save();
             } else {

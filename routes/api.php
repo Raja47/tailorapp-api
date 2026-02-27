@@ -169,7 +169,7 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/dress']
     $router->post('/create', [DressController::class, 'create']);
     $router->post('/image', [DressController::class, 'uploadImage']);
     $router->post('/images', [DressController::class, 'uploadImages']);
-    $router->post('/audio', [DressController::class, 'uploadAudio']);
+    $router->post('/recording', [DressController::class, 'uploadAudio']);
     $router->get('/tab', [DressController::class, 'getTabDresses']);
     $router->post('/store', [DressController::class, 'addDress']);
     $router->post('/update', [DressController::class, 'updateDress']);

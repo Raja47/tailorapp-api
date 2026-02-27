@@ -87,7 +87,7 @@ class DressController extends Controller
      *                     @OA\Property(property="price", type="number", example=4, description="Price of the cloth")
      *                 )
      *             ),
-     *             @OA\Property(property="audio", type="string", description="Path of audio recording", example="string")
+     *             @OA\Property(property="recording", type="string", description="Path of recording recording", example="string")
      *         )
      *     ),
      *     @OA\Response(
@@ -144,7 +144,7 @@ class DressController extends Controller
             'questionAnswers' => 'nullable|array',
             'designImages' => 'nullable|array',
             'clothes' => 'nullable|array',
-            'audio' => 'nullable|string',
+            'recording' => 'nullable|string',
         ];
         $validation = Validator::make($request->all(), $rules);
         if ($validation->fails()) {
@@ -271,11 +271,11 @@ class DressController extends Controller
             $order->refreshFinancialStatus();
 
 
-            if (!empty($request->audio)) {
+            if (!empty($request->recording)) {
                 Recording::create([
                     'dress_id' => $dress->id,
                     'duration' => 0,
-                    'path' => relative_url($request->audio),
+                    'path' => relative_url($request->recording),
                 ]);
             }
 
@@ -440,31 +440,31 @@ class DressController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/dress/audio",
-     *     summary="Upload audio file for a dress",
-     *     description="Uploads an audio file, calculates its duration, and stores it.",
+     *     path="/dress/recording",
+     *     summary="Upload recording file for a dress",
+     *     description="Uploads an recording file, calculates its duration, and stores it.",
      *     operationId="uploadAudio",
      *     tags={"Dresses"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(required=true,
      *         @OA\MediaType(mediaType="multipart/form-data",
-     *             @OA\Schema(required={"audio"},
-     *                 @OA\Property(property="audio", type="string", format="binary", description="Audio file to upload")
+     *             @OA\Schema(required={"recording"},
+     *                 @OA\Property(property="recording", type="string", format="binary", description="Recording file to upload")
      *             )
      *         )
      *     ),
-     *     @OA\Response(response=200, description="Audio uploaded successfully",
+     *     @OA\Response(response=200, description="Recording uploaded successfully",
      *         @OA\JsonContent(type="object",
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Audio uploaded"),
-     *             @OA\Property(property="data", type="string", example="00:03:45", description="Duration of the uploaded audio in HH:mm:ss format")
+     *             @OA\Property(property="message", type="string", example="Recording uploaded"),
+     *             @OA\Property(property="data", type="string", example="00:03:45", description="Duration of the uploaded recording in HH:mm:ss format")
      *         )
      *     ),
      *     @OA\Response(response=422, description="Validation error",
      *         @OA\JsonContent(type="object",
      *             @OA\Property(property="success", type="boolean", example=false),
      *             @OA\Property(property="message", type="string", example="Data validation error"),
-     *             @OA\Property(property="data", type="object", example={"audio": {"The audio field is required."}})
+     *             @OA\Property(property="data", type="object", example={"recording": {"The recording field is required."}})
      *         )
      *     ),
      *     @OA\Response(response=500, description="Internal server error",
@@ -478,16 +478,16 @@ class DressController extends Controller
      */
     public function uploadAudio(Request $request)
     {
-        $validation = Validator::make($request->all(), ['audio' => 'required']);
+        $validation = Validator::make($request->all(), ['recording' => 'required']);
         if ($validation->fails()) {
             return response()->json(['success' => false, 'message' => 'Data validation error', 'data' => $validation->errors()], 422);
         }
-        $audio = $request->file('audio');
-        $audioname = time() . '.' . $audio->getClientOriginalExtension();
-        $audio->storeAs('public/dress', $audioname);
+        $recording = $request->file('recording');
+        $audioname = time() . '.' . $recording->getClientOriginalExtension();
+        $recording->storeAs('public/dress', $audioname);
 
         $path = complete_url('storage/dress/' . $audioname);
-        return response()->json(['success' => true, 'message' => 'Audio uploaded', 'data' => $path], 200);
+        return response()->json(['success' => true, 'message' => 'Recording uploaded', 'data' => $path], 200);
     }
 
     /**
@@ -1506,7 +1506,7 @@ class DressController extends Controller
      *                 @OA\Property(property="quantity", type="integer", example=1),
      *                 @OA\Property(property="price", type="number", example=100),
      *                @OA\Property(property="notes", type="string", example="Add lace to the sleeves"),
-     *                @OA\Property(property="audio", type="string", example="https://example.com/recording.mp4")
+     *                @OA\Property(property="recording", type="string", example="https://example.com/recording.mp4")
      *             )
      *         )
      *     ),

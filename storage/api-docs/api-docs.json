@@ -717,8 +717,8 @@
                                             "type": "object"
                                         }
                                     },
-                                    "audio": {
-                                        "description": "Path of audio recording",
+                                    "recording": {
+                                        "description": "Path of recording recording",
                                         "type": "string",
                                         "example": "string"
                                     }
@@ -994,13 +994,13 @@
                 ]
             }
         },
-        "/tailors/dresses/audio": {
+        "/tailors/dresses/recording": {
             "post": {
                 "tags": [
                     "Dresses"
                 ],
-                "summary": "Upload audio file for a dress",
-                "description": "Uploads an audio file, calculates its duration, and stores it.",
+                "summary": "Upload recording file for a dress",
+                "description": "Uploads an recording file, calculates its duration, and stores it.",
                 "operationId": "uploadAudio",
                 "requestBody": {
                     "required": true,
@@ -1008,11 +1008,11 @@
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
-                                    "audio"
+                                    "recording"
                                 ],
                                 "properties": {
-                                    "audio": {
-                                        "description": "Audio file to upload",
+                                    "recording": {
+                                        "description": "Recording file to upload",
                                         "type": "string",
                                         "format": "binary"
                                     }
@@ -1024,7 +1024,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Audio uploaded successfully",
+                        "description": "Recording uploaded successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1035,10 +1035,10 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Audio uploaded"
+                                            "example": "Recording uploaded"
                                         },
                                         "data": {
-                                            "description": "Duration of the uploaded audio in HH:mm:ss format",
+                                            "description": "Duration of the uploaded recording in HH:mm:ss format",
                                             "type": "string",
                                             "example": "00:03:45"
                                         }
@@ -1065,8 +1065,8 @@
                                         "data": {
                                             "type": "object",
                                             "example": {
-                                                "audio": [
-                                                    "The audio field is required."
+                                                "recording": [
+                                                    "The recording field is required."
                                                 ]
                                             }
                                         }
@@ -2230,7 +2230,7 @@
                                         "type": "string",
                                         "example": "Add lace to the sleeves"
                                     },
-                                    "audio": {
+                                    "recording": {
                                         "type": "string",
                                         "example": "https://example.com/recording.mp4"
                                     }
@@ -2327,8 +2327,8 @@
                 "tags": [
                     "Dresses.edit"
                 ],
-                "summary": "Get instructions and audio for a dress",
-                "description": "Allows a tailor to retrieve instructions and audio for a dress based on the dress ID.",
+                "summary": "Get instructions and recording for a dress",
+                "description": "Allows a tailor to retrieve instructions and recording for a dress based on the dress ID.",
                 "operationId": "getInstructions",
                 "parameters": [
                     {
@@ -2343,7 +2343,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Instructions and audio retrieved successfully",
+                        "description": "Instructions and recording retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2352,9 +2352,9 @@
                                             "type": "string",
                                             "example": "Instructions for the dress"
                                         },
-                                        "audio": {
+                                        "recording": {
                                             "type": "string",
-                                            "example": "Audio file path"
+                                            "example": "Recording file path"
                                         }
                                     },
                                     "type": "object"
@@ -2389,8 +2389,8 @@
                 "tags": [
                     "Dresses.edit"
                 ],
-                "summary": "Update instructions and audio for a dress",
-                "description": "Allows a tailor to update instructions and audio for a dress based on the dress ID.",
+                "summary": "Update instructions and recording for a dress",
+                "description": "Allows a tailor to update instructions and recording for a dress based on the dress ID.",
                 "operationId": "updateInstructions",
                 "parameters": [
                     {
@@ -2413,9 +2413,9 @@
                                         "type": "string",
                                         "example": "Updated instructions for the dress"
                                     },
-                                    "audio": {
+                                    "recording": {
                                         "type": "string",
-                                        "example": "Updated audio file path"
+                                        "example": "Updated recording file path"
                                     }
                                 },
                                 "type": "object"
@@ -2425,7 +2425,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Instructions and audio updated successfully",
+                        "description": "Instructions and recording updated successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2475,11 +2475,11 @@
                                                         "example": "The notes field is required."
                                                     }
                                                 },
-                                                "audio": {
+                                                "recording": {
                                                     "type": "array",
                                                     "items": {
                                                         "type": "string",
-                                                        "example": "The audio field is required."
+                                                        "example": "The recording field is required."
                                                     }
                                                 }
                                             },
