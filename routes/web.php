@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Place;
-
+use Illuminate\Support\Facades\Mail;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,6 +19,16 @@ Route::get('/' , function (){
 
 
 
+Route::get('/test', function () {
+
+    Mail::raw('SES working!', function ($message) {
+        $message->to('rajexhkumar123@gmail.com')
+                ->subject('Test SES Email')
+                ;
+    });
+
+    return "Email sent";
+});
 
 //web.php
 Route::fallback(function () {
