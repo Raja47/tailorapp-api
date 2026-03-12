@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,13 +23,17 @@ Route::get('/' , function (){
 
 Route::get('/test', function () {
 
-    Mail::raw('SES working!', function ($message) {
-        $message->to('rajexhkumar123@gmail.com')
-                ->subject('Test SES Email')
-                ;
-    });
+    Redis::set('name', 'TailorApp');
+    $name = Redis::get('name');
+    return $name;
 
-    return "Email sent";
+    // Mail::raw('SES working!', function ($message) {
+    //     $message->to('rajexhkumar123@gmail.com')
+    //             ->subject('Test SES Email')
+    //             ;
+    // });
+
+    // return "Email sent";
 });
 
 //web.php
