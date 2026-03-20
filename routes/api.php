@@ -16,6 +16,7 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\MeasurementController;
 use App\Http\Controllers\MeasurementValueController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\OtpController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\QuestionController;
@@ -29,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Tailor;
 use App\Models\TailorCategory;
 use App\Models\TailorCategoryQuestion;
+use Predis\Command\Redis\ZRANGE;
 
 /* 
 |--------------------------------------------------------------------------
@@ -169,7 +171,7 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/dress']
     $router->post('/create', [DressController::class, 'create']);
     $router->post('/image', [DressController::class, 'uploadImage']);
     $router->post('/images', [DressController::class, 'uploadImages']);
-    $router->post('/recording', [DressController::class, 'uploadAudio']);
+    $router->post('/pweding', [DressController::class, 'uploadAudio']);
     $router->get('/tab', [DressController::class, 'getTabDresses']);
     $router->post('/store', [DressController::class, 'addDress']);
     $router->post('/update', [DressController::class, 'updateDress']);
@@ -262,4 +264,9 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::prefix('otp')->group(function () {
+    Route::post('/send', [OtpController::class, 'sendOtp']);
+    Route::post('/verify', [OtpController::class, 'verifyOtp']);
 });
