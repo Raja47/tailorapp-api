@@ -21,9 +21,26 @@ class OtpController extends Controller
     public function sendOtp(Request $request)
     {
         $request->validate([
+            'new_registration' => 'required|boolean',
             'type' => 'required|in:email,phone',
             'identifier' => 'required'
         ]);
+
+        if($request->type === 'email'){
+            $exists = \App\Models\Tailor::where('email', $request->identifier)->exists();
+        } else {
+            $exists = \App\Models\Tailor::where('number', $request->identifier)->exists();
+        }
+
+        if($request->new_registration && $exists){
+            return response()->json(['success'=>false, 'message'=>'Tailor already exists with this identifier'], 422);
+        }
+
+        if(!$request->new_registration && !$exists){
+            return response()->json(['success'=>false, 'message'=>'No tailor found with this identifier'], 422);
+        }
+
+        
 
         $result = $this->otpService->createOtp($request->type, $request->identifier);
 
