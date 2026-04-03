@@ -33,11 +33,11 @@ class OtpController extends Controller
         }
 
         if($request->new_registration && $exists){
-            return response()->json(['success'=>false, 'message'=>'Tailor already exists with this identifier'], 422);
+            return response()->json(['success'=>false, 'message'=>'Tailor already exists with this ${$request->type}'], 422);
         }
 
         if(!$request->new_registration && !$exists){
-            return response()->json(['success'=>false, 'message'=>'No tailor found with this identifier'], 422);
+            return response()->json(['success'=>false, 'message'=>'No tailor found with this ${$request->type}'], 422);
         }
 
         
