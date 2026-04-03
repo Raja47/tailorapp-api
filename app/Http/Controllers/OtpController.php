@@ -20,11 +20,30 @@ class OtpController extends Controller
 
     public function sendOtp(Request $request)
     {
+        
         $request->validate([
             'new_registration' => 'required|boolean',
             'type' => 'required|in:email,phone',
-            'identifier' => 'required'
+            'identifier' => [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+
+                    if ($request->type === 'email') {
+                        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                            $fail('InValid Email format.');
+                        }
+                    }
+
+                    if ($request->type === 'phone') {
+                        // E.164 format: +923001234567
+                        if (!preg_match('/^\+[1-9]\d{7,14}$/', $value)) {
+                            $fail('Invalid Mobile Number , see (e.g. +923001234567).');
+                        }
+                    }
+                }
+            ],
         ]);
+
         $type = $request->type;
         if($type == 'email'){
             $exists = \App\Models\Tailor::where('email', $request->identifier)->exists();
