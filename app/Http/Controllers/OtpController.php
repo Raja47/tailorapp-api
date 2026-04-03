@@ -25,19 +25,19 @@ class OtpController extends Controller
             'type' => 'required|in:email,phone',
             'identifier' => 'required'
         ]);
-
-        if($request->type === 'email'){
+        $type = $request->type === 'email';
+        if($type){
             $exists = \App\Models\Tailor::where('email', $request->identifier)->exists();
         } else {
             $exists = \App\Models\Tailor::where('number', $request->identifier)->exists();
         }
 
         if($request->new_registration && $exists){
-            return response()->json(['success'=>false, 'message'=>'Tailor already exists with this ${$request->type}'], 422);
+            return response()->json(['success'=>false, 'message'=>"Tailor already exists with this $type"], 422);
         }
 
         if(!$request->new_registration && !$exists){
-            return response()->json(['success'=>false, 'message'=>'No tailor found with this ${$request->type}'], 422);
+            return response()->json(['success'=>false, 'message'=>"No tailor found with this $type"], 422);
         }
 
         
