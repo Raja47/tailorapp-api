@@ -25,8 +25,8 @@ class OtpController extends Controller
             'type' => 'required|in:email,phone',
             'identifier' => 'required'
         ]);
-        $type = $request->type === 'email';
-        if($type){
+        $type = $request->type;
+        if($type == 'email'){
             $exists = \App\Models\Tailor::where('email', $request->identifier)->exists();
         } else {
             $exists = \App\Models\Tailor::where('number', $request->identifier)->exists();
