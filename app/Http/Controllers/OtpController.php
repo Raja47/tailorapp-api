@@ -22,7 +22,7 @@ class OtpController extends Controller
     {
         
         $request->validate([
-            'new_registration' => 'required|boolean',
+            'purpose' => 'required|in:registration,forget_password',
             'type' => 'required|in:email,phone',
             'identifier' => [
                 'required',
@@ -51,12 +51,12 @@ class OtpController extends Controller
             $exists = \App\Models\Tailor::where('number', $request->identifier)->exists();
         }
 
-        if($request->new_registration && $exists){
+        if($request->purpose === 'registration' && $exists){
             return response()->json(['success'=>false, 'message'=>"Tailor already exists with this $type"] ,409);
         }
 
-        if(!$request->new_registration && !$exists){
-            return response()->json(['success'=>false, 'message'=>"No tailor found with this $type"] ,404);
+        if($request->purpose === 'forget_password' && !$exists){
+            return response()->json(['success'=>false, 'message'=>"Tailor not found with this $type"] ,404);
         }
 
         
