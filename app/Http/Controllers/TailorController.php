@@ -237,26 +237,44 @@ class TailorController extends Controller
      */
     public function login(Request $request)
     {
-
-        $validation = Validator::make($request->all(), [
+        $request->validate([
             'password' => 'required',
-            'number'  => 'required'
+            'type' => 'required|in:email,phone',
+            'identifier' => [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+
+                    if ($request->type === 'email') {
+                        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                            $fail('InValid Email format.');
+                        }
+                    }
+
+                    if ($request->type === 'phone') {
+                        // E.164 format: +923001234567
+                        if (!preg_match('/^\+[1-9]\d{7,14}$/', $value)) {
+                            $fail('Invalid Mobile Number , see (e.g. +923001234567).');
+                        }
+                    }
+                }
+            ],
         ]);
 
-        if ($validation->fails()) {
-            // validation failed
-            return response()->json(['success' => false, 'message' => 'Validation failed', 'data' => $validation->errors()], 422);
+        $type = $request->type;
+        if($type == 'email'){
+            $tailor = \App\Models\Tailor::with('shops')->where('email', $request->identifier)->first();
+        } else {
+            $tailor = \App\Models\Tailor::with('shops')->where('number', $request->identifier)->first();
         }
-
-        $tailorNumber = $request->input('number');
-        $password = $request->input('password');
-
-        $tailor = Tailor::with('shops')->where('number', $tailorNumber)->where('password', $password)->first();
 
         if (empty($tailor)) {
-            return response()->json(['success' => false, 'message' => 'Incorrect Number or Password'], 422);
+            return response()->json(['success' => false, 'message' => 'Tailor does not exist'], 404);
         }
 
+        if($tailor->password != $request->input('password')){
+            return response()->json(['success' => false, 'message' => 'Invalid Credentials'], 409);
+        }
+        
         $token = $tailor->createToken('auth_token')->plainTextToken;
 
         $statuses = TailorStatusSetting::select('statuses.*')->where('tailor_id', $tailor->id)
@@ -280,7 +298,7 @@ class TailorController extends Controller
     public function changePassword(Request $request)
     {
         $request->validate([
-            'password' => 'required',
+            'password' => 'required|min:4|max:12',
             'type' => 'required|in:email,phone',
             'identifier' => [
                 'required',
