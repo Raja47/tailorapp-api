@@ -279,29 +279,47 @@ class TailorController extends Controller
      */
     public function changePassword(Request $request)
     {
-        $validation = Validator::make($request->all(), [
-            'password'      => 'required',
-            'number'  => 'required|min:10|max:15'
+        $request->validate([
+            'password' => 'required',
+            'type' => 'required|in:email,phone',
+            'identifier' => [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+
+                    if ($request->type === 'email') {
+                        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                            $fail('InValid Email format.');
+                        }
+                    }
+
+                    if ($request->type === 'phone') {
+                        // E.164 format: +923001234567
+                        if (!preg_match('/^\+[1-9]\d{7,14}$/', $value)) {
+                            $fail('Invalid Mobile Number , see (e.g. +923001234567).');
+                        }
+                    }
+                }
+            ],
         ]);
 
-        if ($validation->fails()) {
-            // validation failed
-            return response()->json(['success' => false, 'message' => 'Validation failed', 'data' => $validation->errors()], 422);
+        $type = $request->type;
+        if($type == 'email'){
+            $tailor = \App\Models\Tailor::where('email', $request->identifier)->first();
+        } else {
+            $tailor = \App\Models\Tailor::where('number', $request->identifier)->first();
         }
 
-        $tailorNumber = $request->input('number');
+        if(empty($tailor)){
+            return response()->json(['success'=>false, 'message'=>"Tailor not found with this $type"] ,404);
+        }
+        
         $password = $request->input('password');
-
-        $tailor = Tailor::where('number', $tailorNumber)->first();
-
-        if (empty($tailor)) {
-            return response()->json(['success' => false, 'message' => 'Incorrect Mobile number password', 'data' => []], 200);
-        }
-
         $tailor->password = $password;
 
         if ($tailor->save()) {
-            return response()->json(['success' => true, 'message' => '', 'data' => ['tailor' => $tailor->toArray()]], 200);
+            return response()->json(['success' => true, 'message' => '', 'data' => []], 200);
+        }else {
+            return response()->json(['success' => false, 'message' => 'Failed to update password', 'data' => []], 500);
         }
     }
 

@@ -12,9 +12,9 @@ class OtpService
 
     public function __construct()
     {
-        $this->ttl = env('OTP_TTL', 300);
+        $this->ttl = env('OTP_TTL', 150);
         $this->maxAttempts = env('OTP_MAX_ATTEMPTS', 3);
-        $this->resendCooldown = env('OTP_RESEND_COOLDOWN', 60);
+        $this->resendCooldown = env('OTP_RESEND_COOLDOWN', 150);
     }
 
     public function canSend($type, $identifier)
