@@ -8,6 +8,8 @@ use App\Models\Status;
 use App\Models\TailorStatusSetting;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
 
 class TailorController extends Controller
 {
@@ -123,19 +125,42 @@ class TailorController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+
+       $request->validate([
             'name' => 'required|max:255',
-            'email' => 'required|email|unique:tailors',
+
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                'unique:tailors,email',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->email_verified && $request->filled('email')) {
+                        $fail('Email is required.');
+                    }
+                },
+            ],
+
+            'number' => [
+                'nullable',
+                'max:15',
+                'unique:tailors,number',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->number_verified && !$request->filled('number')) {
+                        $fail('Number is required.');
+                    }
+                },
+            ],
+
             'password' => 'required|min:4|max:12',
-            'username' => 'required|unique:tailors|max:99',
-            'number'   => 'required|unique:tailors|max:15',
+            'username' => 'required|max:20|unique:tailors,username',
         ]);
 
         // validation passed
         $tailor = new Tailor();
         $tailor->name               = $request->input('name');
-        $tailor->email_verified     = $request->input('email_verified');
-        $tailor->number_verified    = $request->input('number_verified');
+        $tailor->email_verified     = $request->input('email_verified') ?? false;
+        $tailor->number_verified    = $request->input('number_verified') ?? false;
         $tailor->email              = $request->input('email');
         $tailor->password           = $request->input('password');
         $tailor->username           = $request->input('username');
@@ -238,26 +263,36 @@ class TailorController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'password' => 'required',
-            'type' => 'required|in:email,phone',
-            'identifier' => [
-                'required',
+            'name' => 'required|max:255',
+
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                'unique:tailors,email',
                 function ($attribute, $value, $fail) use ($request) {
-
-                    if ($request->type === 'email') {
-                        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                            $fail('InValid Email format.');
-                        }
+                    if (!$request->number_verified && empty($value)) {
+                        $fail('Email is required when number is not verified.');
                     }
-
-                    if ($request->type === 'phone') {
-                        // E.164 format: +923001234567
-                        if (!preg_match('/^\+[1-9]\d{7,14}$/', $value)) {
-                            $fail('Invalid Mobile Number , see (e.g. +923001234567).');
-                        }
-                    }
-                }
+                },
             ],
+
+            'number' => [
+                'nullable',
+                'max:15',
+                'unique:tailors,number',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (!$request->email_verified && empty($value)) {
+                        $fail('Phone number is required when email is not verified.');
+                    }
+                },
+            ],
+
+            'password' => 'required|min:4|max:12',
+            'username' => 'required|max:99|unique:tailors,username',
+
+            'email_verified' => 'required|boolean',
+            'number_verified' => 'required|boolean',
         ]);
 
         $type = $request->type;
