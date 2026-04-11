@@ -123,20 +123,20 @@ class TailorController extends Controller
      */
     public function store(Request $request)
     {
-        $validation = Validator::make($request->all(), [
-            'name'     => 'required|max:255',
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|unique:tailors',
             'password' => 'required|min:4|max:12',
             'username' => 'required|unique:tailors|max:99',
-            'number'   => 'required|unique:tailors|max:15'
+            'number'   => 'required|unique:tailors|max:15',
         ]);
 
-        if ($validation->fails()) {
-            // validation failed
-            return response()->json(['success' => false, 'message' => 'Validation Error', 'data' => $validation->errors()], 422);
-        }
         // validation passed
         $tailor = new Tailor();
         $tailor->name               = $request->input('name');
+        $tailor->email_verified     = $request->input('email_verified');
+        $tailor->number_verified    = $request->input('number_verified');
+        $tailor->email              = $request->input('email');
         $tailor->password           = $request->input('password');
         $tailor->username           = $request->input('username');
         $tailor->number             = $request->input('number');
