@@ -384,32 +384,23 @@ class TailorController extends Controller
      */
     public function destroy(Request $request)
     {
-
-        $validation = Validator::make($request->all(), [
+        $request->validate([
             'id'      => 'required|numeric',
         ]);
 
-        if ($validation->fails()) {
-            // validation failed
-            return response()->json(['status' => 'error', 'message' => 'Validation failed', 'data' => $validation->errors()], 422);
-        }
-
         $tailor = Tailor::find($request->input('id'));
 
-        if ($tailor) {
-
-            $tailor->delete();
-            return response()->json(['status' => 'success', 'message' => 'Tailor Deleted successfully', 'data' => []], 200);
-        } else {
-
-            return response()->json(['status' => 'error', 'message' => 'Tailor doesnt exist', 'data' => []], 404);
+        if (empty($tailor)) {
+            return response()->json(['status' => 'error', 'message' => 'Tailor doesn\'t exist', 'data' => []], 404);
         }
+
+        $tailor->delete();
+        return response()->json(['status' => 'success', 'message' => 'Tailor Deleted successfully', 'data' => []], 200); 
     }
+
     public function logout(Request $request)
     {
-        // $tailor = Tailor::where('id',$request->tailor_id)->first();
-        // $tailor->tokens()->delete();
         $request->user()->currentAccessToken()->delete();
-        return 'logged out';
+        return response()->json(['success' => true, 'message' => 'Logged out successfully', 'data' => []], 200);
     }
 }
