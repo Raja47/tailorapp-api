@@ -255,7 +255,7 @@ class TailorController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-           'indentifier' => 'required',
+           'identifier' => 'required',
            'password' => 'required|min:4|max:12',
            'type' => 'required|in:email,phone'
         ]);
@@ -358,6 +358,7 @@ class TailorController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Tailor doesn\'t exist', 'data' => []], 404);
         }
 
+        $request->user()->currentAccessToken()->delete();
         $tailor->delete();
         return response()->json(['status' => 'success', 'message' => 'Tailor Deleted successfully', 'data' => []], 200); 
     }
