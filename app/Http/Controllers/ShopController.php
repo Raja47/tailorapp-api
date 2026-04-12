@@ -22,8 +22,6 @@ class ShopController extends Controller
         return response()->json(Shop::all());
     }
 
-
-
     /**
      * Store a newly created resource in storage.
      *
@@ -32,26 +30,18 @@ class ShopController extends Controller
      */
     public function store(Request $request)
     {
-        $validation = Validator::make( $request->all() ,[
+        $request->validate([
             'tailor_id'         => 'required|max:255',
             'name'              => 'required|min:4|max:29',
             'contact_number'    => 'max:12|required',
             'contact_number2'   => 'max:12',
             'address'           => 'required',
-            'picture'           => '',
-            'city_name'           => '',
-            'services_to_gender'=> '',
         ]);
-
-        if($validation->fails()) {
-            // validation failed
-            return response()->json(['success' => false  ,'message' => 'Shop Validation Error' , 'data' => $validation->errors() ] , 422);
-        } 
 
         $tailor = Tailor::where('id', $request->input('tailor_id'))->first();
 
         if( empty($tailor) ){
-            return response()->json(['success' => false , 'message' => 'Associated Tailor not found' , 'data' => [] ] , 200);
+            return response()->json(['success' => false , 'message' => 'Associated Tailor not found' , 'data' => [] ] , 409);
         }
         // validation passed
         $shop = new Shop();
@@ -67,10 +57,10 @@ class ShopController extends Controller
         
         if($shop->save()){
             // Tailor is created
-            return response()->json(['success' => true , 'message' => 'Shop Created Successfully' , 'data' => ['id' => $shop->id ] ] , 200);
-        }else{
-            return response()->json(['success' => false , 'message' => 'Shop creation failed' , 'data' => [] ] , 422);
-        }     
+            return response()->json(['success' => true , 'message' => 'Shop Created Successfully' , 'data' => ['shop' => $shop ] ] , 200);
+        } 
+        
+        return response()->json(['success' => false , 'message' => 'Shop Creation Failed' , 'data' => [] ] , 500);
     }   
 
      /**
@@ -81,40 +71,58 @@ class ShopController extends Controller
      */
     public function update(Request $request)
     {   
-
-        $validation = Validator::make( $request->all() ,[
+        $request->validate([
             'shop_id'           => 'required',
             'name'              => 'required|min:4|max:29',
-            'contact_number'    => 'max:12|required',
-            'contact_number2'   => 'max:12',
+            'contact_number'    => 'required',
             'address'           => 'required',
         ]);
 
-        if($validation->fails()) {
-            // validation failed
-            return response()->json(['success' => false  ,'message' => 'Shop Validation Error' , 'data' => $validation->errors() ] , 422);
-        } 
-        // validation passed
         $shop = Shop::find($request->input('shop_id'));
-        if(!empty($shop)){
-            $shop->name                 = $request->input('name');
-            $shop->contact_number       = $request->input('contact_number');
-            $shop->contact_number2      = $request->input('contact_number2');
-            $shop->address              = $request->input('address');
-            $shop->picture              = $request->input('picture');
-            $shop->city_name              = $request->input('city_name');
-            $shop->services_to_gender   = $request->input('services_to_gender') ;
-        }else{
-            return response()->json(['success' => false , 'message' => 'Shop not found' , 'data' => [] ] , 422);        
+
+        if(empty($shop)){
+            return response()->json(['success' => false , 'message' => 'Shop not found' , 'data' => [] ] , 404);
         }
         
+        $shop->name                 = $request->input('name');
+        $shop->contact_number       = $request->input('contact_number');
+        $shop->contact_number2      = $request->input('contact_number2');
+        $shop->address              = $request->input('address');
+        $shop->picture              = $request->input('picture');
+        $shop->city_name            = $request->input('city_name');
+        $shop->services_to_gender   = $request->input('services_to_gender') ;
+    
         if($shop->save()){
-            // Tailor is created
-            return response()->json(['success' => true , 'message' => 'Shop Updated Successfully' , 'data' => ['id' => $shop->id ] ] , 200);
-        }else{
-            return response()->json(['success' => false , 'message' => 'Shop Updation failed' , 'data' => [] ] , 422); 
-        }     
+            // Shop is updated
+            return response()->json(['success' => true , 'message' => 'Shop Updated Successfully' , 'data' => ['shop' => $shop ] ] , 200);
+        }
+        
+        return response()->json(['success' => false , 'message' => 'Shop Updation failed' , 'data' => [] ] , 500); 
     }  
+
+    public function destroy(Request $request , $shopId)
+    {
+        $request->validate([
+            'shop_id' => 'required'
+        ]);
+
+        $shop = Shop::find($request->input('shop_id'));
+        
+        if($shop->tailor_id  != auth()->user()->id) {  // Improve this check if you want to allow admins to delete any shop only
+            return response()->json(['success' => false , 'message' => 'Unauthorized Action' , 'data' => [] ] , 401);
+        }; 
+
+        if(empty($shop)){
+            return response()->json(['success' => false , 'message' => 'Shop not found' , 'data' => [] ] , 404);
+        }
+
+        if($shop->delete()){
+            // Shop is deleted
+            return response()->json(['success' => true , 'message' => 'Shop Deleted Successfully' , 'data' => [] ] , 200);
+        }
+
+        return response()->json(['success' => false , 'message' => 'Shop Deletion Failed' , 'data' => [] ] , 500); 
+     }
 
 
     

@@ -134,22 +134,12 @@ class TailorController extends Controller
                 'email',
                 'max:255',
                 'unique:tailors,email',
-                function ($attribute, $value, $fail) use ($request) {
-                    if ($request->email_verified && $request->filled('email')) {
-                        $fail('Email is required.');
-                    }
-                },
             ],
 
             'number' => [
-                'nullable',
+                'required',
                 'max:15',
                 'unique:tailors,number',
-                function ($attribute, $value, $fail) use ($request) {
-                    if ($request->number_verified && !$request->filled('number')) {
-                        $fail('Number is required.');
-                    }
-                },
             ],
 
             'password' => 'required|min:4|max:12',
@@ -185,6 +175,8 @@ class TailorController extends Controller
                     'sort_order' => $status->sort_order,
                 ]);
             }
+
+            $tailor->shops = []; // No shops at the time of registration
 
             $token = $tailor->createToken('auth_token')->plainTextToken;
             return response()->json(['success' => true, 'message' => 'Tailor Created Successfully', 'data' => ['tailor' => $tailor->toArray(), "token" => $token , 'statuses' => $statuses]], 200);
@@ -263,36 +255,9 @@ class TailorController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:255',
-
-            'email' => [
-                'nullable',
-                'email',
-                'max:255',
-                'unique:tailors,email',
-                function ($attribute, $value, $fail) use ($request) {
-                    if (!$request->number_verified && empty($value)) {
-                        $fail('Email is required when number is not verified.');
-                    }
-                },
-            ],
-
-            'number' => [
-                'nullable',
-                'max:15',
-                'unique:tailors,number',
-                function ($attribute, $value, $fail) use ($request) {
-                    if (!$request->email_verified && empty($value)) {
-                        $fail('Phone number is required when email is not verified.');
-                    }
-                },
-            ],
-
-            'password' => 'required|min:4|max:12',
-            'username' => 'required|max:99|unique:tailors,username',
-
-            'email_verified' => 'required|boolean',
-            'number_verified' => 'required|boolean',
+           'indentifier' => 'required',
+           'password' => 'required|min:4|max:12',
+           'type' => 'required|in:email,phone'
         ]);
 
         $type = $request->type;
@@ -384,11 +349,10 @@ class TailorController extends Controller
      */
     public function destroy(Request $request)
     {
-        $request->validate([
-            'id'      => 'required|numeric',
-        ]);
+            
+        $id = auth()->user()->id;
 
-        $tailor = Tailor::find($request->input('id'));
+        $tailor = Tailor::find($id);
 
         if (empty($tailor)) {
             return response()->json(['status' => 'error', 'message' => 'Tailor doesn\'t exist', 'data' => []], 404);
