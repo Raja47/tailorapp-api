@@ -73,8 +73,10 @@ Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/tailors
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'logging'], 'prefix' => '/shops'], function ($router) {
-    $router->post('/index', [ShopController::class, 'index']);
+    $router->get('/index', [ShopController::class, 'index']);
+    $router->get('/show', [ShopController::class, 'show']);
     $router->post('/store', [ShopController::class, 'store']);
+    $router->post('/update', [ShopController::class, 'update']);
     $router->get('/{shop_id}/dresses-count-by-status', [DressController::class, 'countByStatus']);
     $router->get('/{shop_id}/monthly-dresses-count-to-be-delivered', [DressController::class, 'getMonthlyStatsOfDressesToBeDelivered']);
 });

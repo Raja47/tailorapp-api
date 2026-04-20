@@ -33,8 +33,8 @@ class ShopController extends Controller
     {
         $request->validate([
             'name'              => 'required|min:4|max:29',
-            'contact_number'    => 'max:12|required',
-            'contact_number2'   => 'max:12',
+            'contact_number'    => 'min:7|max:15,required',
+            'contact_number2'   => 'min:7|max:15',
             'address'           => 'required',
             'country_code'      => 'required',
             'services_to_gender'=> 'required',          
@@ -49,10 +49,10 @@ class ShopController extends Controller
 
         // validation passed
         $shop = new Shop();
-        $shop->tailor_id            = $request->input('tailor_id');
+        $shop->tailor_id            = $tailorId;
         $shop->name                 = $request->input('name');
         $shop->contact_number       = $request->input('contact_number');
-        $shop->country_code         = $tailor->country_code;
+        $shop->country_code         = $request->input('country_code');
         $shop->contact_number2      = $request->input('contact_number2');
         $shop->city_name            = $request->input('city_name');
         $shop->address              = $request->input('address');
@@ -66,6 +66,17 @@ class ShopController extends Controller
         
         return response()->json(['success' => false , 'message' => 'Shop Creation Failed' , 'data' => [] ] , 500);
     }   
+
+    public function show($id){
+        
+        $shop = Shop::find($id);
+
+        if(empty($shop) || $shop->tailor_id != auth()->user()->id){
+            return response()->json(['success' => false , 'message' => 'Shop not found' , 'data' => [] ] , 404);
+        }
+
+        return response()->json(['success' => true , 'message' => '' , 'data' => ['shop' => $shop ] ] , 200);
+    }
 
      /**
      * Store a newly created resource in storage.
@@ -114,7 +125,7 @@ class ShopController extends Controller
         ]);
 
         $shop = Shop::find($request->input('shop_id'));
-        
+
         if(empty($shop)){
             return response()->json(['success' => false , 'message' => 'Shop not found' , 'data' => [] ] , 404);
         }
