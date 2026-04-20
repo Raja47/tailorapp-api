@@ -18,8 +18,9 @@ class ShopController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        return response()->json(Shop::all());
+    {   
+        $tailorId = auth('sanctum')->user()->id;
+        return response()->json(['success' => true, 'data' => Shop::where('tailor_id', $tailorId)->get()]);
     }
 
     /**
@@ -31,18 +32,21 @@ class ShopController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tailor_id'         => 'required|max:255',
             'name'              => 'required|min:4|max:29',
             'contact_number'    => 'max:12|required',
             'contact_number2'   => 'max:12',
             'address'           => 'required',
+            'country_code'      => 'required',
+            'services_to_gender'=> 'required',          
         ]);
 
-        $tailor = Tailor::where('id', $request->input('tailor_id'))->first();
+        $tailorId = auth()->user()->id;
 
-        if( empty($tailor) ){
-            return response()->json(['success' => false , 'message' => 'Associated Tailor not found' , 'data' => [] ] , 409);
+        $tailor = Tailor::find($tailorId);
+        if(empty($tailor)){
+            return response()->json(['success' => false , 'message' => 'Tailor not found' , 'data' => [] ] , 404);
         }
+
         // validation passed
         $shop = new Shop();
         $shop->tailor_id            = $request->input('tailor_id');
@@ -76,17 +80,20 @@ class ShopController extends Controller
             'name'              => 'required|min:4|max:29',
             'contact_number'    => 'required',
             'address'           => 'required',
+            'countrue_code'     => 'required',
+            'services_to_gender'=> 'required',
         ]);
-
+    
         $shop = Shop::find($request->input('shop_id'));
 
-        if(empty($shop)){
+        if( empty($shop) || $shop->tailor_id != auth()->user()->id){
             return response()->json(['success' => false , 'message' => 'Shop not found' , 'data' => [] ] , 404);
         }
-        
+
         $shop->name                 = $request->input('name');
         $shop->contact_number       = $request->input('contact_number');
         $shop->contact_number2      = $request->input('contact_number2');
+        $shop->country_code         = $request->input('country_code');
         $shop->address              = $request->input('address');
         $shop->picture              = $request->input('picture');
         $shop->city_name            = $request->input('city_name');
@@ -108,13 +115,13 @@ class ShopController extends Controller
 
         $shop = Shop::find($request->input('shop_id'));
         
-        if($shop->tailor_id  != auth()->user()->id) {  // Improve this check if you want to allow admins to delete any shop only
-            return response()->json(['success' => false , 'message' => 'Unauthorized Action' , 'data' => [] ] , 401);
-        }; 
-
         if(empty($shop)){
             return response()->json(['success' => false , 'message' => 'Shop not found' , 'data' => [] ] , 404);
         }
+
+        if($shop->tailor_id  != auth()->user()->id) {  // Improve this check if you want to allow admins to delete any shop only
+            return response()->json(['success' => false , 'message' => 'Unauthorized Action' , 'data' => [] ] , 401);
+        }; 
 
         if($shop->delete()){
             // Shop is deleted
