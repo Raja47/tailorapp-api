@@ -87,15 +87,15 @@ class ShopController extends Controller
     public function update(Request $request)
     {   
         $request->validate([
-            'shop_id'           => 'required',
+            'id'                => 'required',
             'name'              => 'required|min:4|max:29',
             'contact_number'    => 'required',
             'address'           => 'required',
-            'countrue_code'     => 'required',
+            'country_code'     =>  'required',
             'services_to_gender'=> 'required',
         ]);
     
-        $shop = Shop::find($request->input('shop_id'));
+        $shop = Shop::find($request->input('id'));
 
         if( empty($shop) || $shop->tailor_id != auth()->user()->id){
             return response()->json(['success' => false , 'message' => 'Shop not found' , 'data' => [] ] , 404);
@@ -108,13 +108,12 @@ class ShopController extends Controller
         $shop->address              = $request->input('address');
         $shop->picture              = $request->input('picture');
         $shop->city_name            = $request->input('city_name');
-        $shop->services_to_gender   = $request->input('services_to_gender') ;
+        $shop->services_to_gender   = $request->input('services_to_gender');
     
         if($shop->save()){
-            // Shop is updated
             return response()->json(['success' => true , 'message' => 'Shop Updated Successfully' , 'data' => ['shop' => $shop ] ] , 200);
         }
-        
+
         return response()->json(['success' => false , 'message' => 'Shop Updation failed' , 'data' => ['shop' => $shop] ] , 500); 
     }  
 
