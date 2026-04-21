@@ -20,12 +20,12 @@ class ShopController extends Controller
     public function index()
     {   
         $tailorId = auth('sanctum')->user()->id;
-        return response()->json(['success' => true, 'data' => Shop::where('tailor_id', $tailorId)->get()]);
+        return response()->json(['success' => true, 'data' => ['shops' => Shop::where('tailor_id', $tailorId)->get()]]);
     }
 
     /**
      * Store a newly created resource in storage.
-     *
+     *  
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
@@ -115,7 +115,7 @@ class ShopController extends Controller
             return response()->json(['success' => true , 'message' => 'Shop Updated Successfully' , 'data' => ['shop' => $shop ] ] , 200);
         }
         
-        return response()->json(['success' => false , 'message' => 'Shop Updation failed' , 'data' => [] ] , 500); 
+        return response()->json(['success' => false , 'message' => 'Shop Updation failed' , 'data' => ['shop' => $shop] ] , 500); 
     }  
 
     public function destroy(Request $request , $shopId)
