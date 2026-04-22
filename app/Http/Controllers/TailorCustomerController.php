@@ -698,53 +698,66 @@ class TailorCustomerController extends Controller
      *     )
      * )
      */
+
+    /**
+     * 
+     */
     public function update(Request $request)
     {
-        $rules = [
+        $request->validate([
             'id' => 'required',
-            'number' => 'max:12',
+            'number' => 'required|min:7|max:12',
             'name' => 'required',
             'gender' => 'required',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
             'city_name' => '',
-        ];
+        ]);
 
-        $validation = Validator::make($request->all(), $rules);
+        $tailor_id = auth('sanctum')->user()->id;
+        $tailorcustomer = TailorCustomer::where([['id', $request->id], ['tailor_id', $tailor_id]])->first();
 
-        if ($validation->fails()) {
-            return response()->json(['success' => false, 'message' => 'Customer data validation error', 'data' => $validation->errors()], 422);
-        } else {
-            $tailor_id = auth('sanctum')->user()->id;
-
-            $path = null;
-            if ($request->hasFile('picture')) {
-                $file = $request->file('picture');
-                $filename = time() . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/customers', $filename);
-
-                $base_url = url('');
-                $path = $base_url . '/storage/customers/' . $filename;
-            }
-
-            $tailorcustomer = TailorCustomer::where([['id', $request->id], ['tailor_id', $tailor_id]])->first();
-            if (empty($tailorcustomer)) {
-                return response()->json(['success' => false, 'message' => 'Customer does not exist.', 'data' => []], 404);
-            } else {
-                $tailorcustomer->name = $request->name;
-                $tailorcustomer->address = $request->address;
-                $tailorcustomer->gender = $request->gender;
-                $tailorcustomer->city_name = $request->city_name;
-
-                if ($request->picture != null) {
-                    $tailorcustomer->picture = $path;
-                }
-                if ($tailorcustomer->save()) {
-                    return response()->json(['success' => true, 'message' => 'Your Customer Updated Successfully', 'data' => ['id' => $tailorcustomer->id]], 200);
-                } else {
-                    return response()->json(['success' => false, 'message' => 'Customer Updation Failed', 'data' => []], 500);
-                }
-            }
+        if (empty($tailorcustomer)) {
+            return response()->json(['success' => false, 'message' => 'Customer does not exist.', 'data' => []], 404);
         }
+
+        // Uploading picture & getting refernece path       
+        if ($request->hasFile('picture')) {
+            $file = $request->file('picture');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/customers', $filename);
+
+            $base_url = url('');
+            $path = $base_url . '/storage/customers/' . $filename;
+            $tailorcustomer->picture = $path;
+        }
+        
+        
+        // if number is to be updated then look for updated master customer id or create
+        if($tailorcustomer->number != $request->number){
+            $masterCustomer = Customer::where('number', $request->number)->first();
+            if(empty($masterCustomer)){
+            $masterCustomer = Customer::create(
+                [
+                    'number' => $request->number,
+                    'name' => $request->name,
+                    'address' => $request->address,
+                ]
+                );
+            }
+            $tailorcustomer->number = $request->number;
+            $tailorcustomer->customer_id = $masterCustomer->id;
+        }
+
+        $tailorcustomer->name = $request->name;
+        $tailorcustomer->address = $request->address;
+        $tailorcustomer->gender = $request->gender;
+        $tailorcustomer->city_name = $request->city_name;
+        
+        if ($tailorcustomer->save()) {
+            return response()->json(['success' => true, 'message' => 'Your Customer Updated Successfully', 'data' => ['id' => $tailorcustomer->id]], 200);
+        } 
+        
+        
     }
 
     /**
